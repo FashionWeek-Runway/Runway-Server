@@ -31,10 +31,8 @@ public class User extends BaseEntity implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name="profile_url")
     private String profileImgUrl;
-
 
     @Column(name="phone")
     private String username;
@@ -48,10 +46,8 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name = "nickname", length = 50)
     private String nickname;
 
-
     @Column(name = "activated")
     private boolean activated;
-
 
     @Column(name="gender")
     private String gender;
@@ -64,6 +60,19 @@ public class User extends BaseEntity implements UserDetails{
 
     @Column(name="login_date")
     private LocalDateTime loginDate;
+
+    @Column(name="latitude")
+    private double latitude;
+
+    @Column(name="longitude")
+    private double longitude;
+
+    @Builder.Default
+    private int alarm=1;
+
+    // 일반 유저 = 0, 사장님 = 1
+    @Builder.Default
+    private int owner=0;
 
 
 
@@ -81,6 +90,9 @@ public class User extends BaseEntity implements UserDetails{
 
     public void updateToken(String fcmToken) {
         this.fcmToken=fcmToken;
+    }
+    public void updateLogInDate(LocalDateTime now){
+        this.loginDate=now;
     }
 
 

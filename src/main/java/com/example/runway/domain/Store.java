@@ -25,5 +25,27 @@ public class Store extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "time")
+    private String time;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "instagram_link")
+    private String instagramLink;
+
+    @Column(name = "website")
+    private String website;
+
+    @Column(name="latitude")
+    private double latitude;
+
+    @Column(name="longitude")
+    private double longitude;
+
+
 
 }

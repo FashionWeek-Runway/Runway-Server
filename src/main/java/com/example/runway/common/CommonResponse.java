@@ -24,7 +24,7 @@ public class CommonResponse<T> {
     private final String message;
     @Schema(description = "응답코드", required = true, example = "1000")
     private final String code;
-    @Schema(description = "응답코드", required = false, example = "응답 결과")
+    @Schema(description = "응답 결과", required = false, example = "응답 결과")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
 

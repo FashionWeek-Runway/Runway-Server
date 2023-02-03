@@ -2,8 +2,10 @@ package com.example.runway.convertor;
 
 import com.example.runway.domain.Authority;
 import com.example.runway.domain.User;
+import com.example.runway.domain.UserCategory;
 import com.example.runway.dto.user.UserReq;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 public class UserConvertor {
@@ -22,6 +24,14 @@ public class UserConvertor {
                 .gender(signupUser.getGender())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
+                .loginDate(LocalDateTime.now())
                 .build();
     }
+
+
+    public static UserCategory PostUserCategory(Long userId, Long categoryId) {
+        return UserCategory.builder().categoryId(categoryId).userId(userId).build();
+    }
+
+
 }

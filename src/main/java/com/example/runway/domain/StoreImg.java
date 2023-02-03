@@ -1,9 +1,9 @@
 package com.example.runway.domain;
 
+import com.example.runway.common.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 
@@ -16,19 +16,22 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class StoreImg {
+public class StoreImg extends BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "storeId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id",insertable=false, updatable=false)
     private Store store;
 
-    @Column(name="storeImg")
+    @Column(name="store_id")
+    private Long storeId;
+
+    @Column(name="store_img")
     private String storeImg;
 
-    @Column(name="index")
-    private int index;
+    @Column(name="sequence")
+    private int sequence;
 }

@@ -27,8 +27,8 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-        Server serverLocal = new Server("local", "http://localhost:8081", "for local usages", Collections.emptyList(), Collections.emptyList());
-        Server UbuntuServer = new Server("test", "https://www.lifolio.shop", "for testing", Collections.emptyList(), Collections.emptyList());
+        Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
+        Server UbuntuServer = new Server("server", "https://www.runway.shop", "for server", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
                 .securityContexts(Arrays.asList(securityContext())) // 추가
                 .securitySchemes(Arrays.asList(apiKey())) // 추가
@@ -63,13 +63,13 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
+        return Arrays.asList(new SecurityReference("X-AUTH-TOKEN", authorizationScopes));
     }
 
 
     private ApiKey apiKey() {
         //return new ApiKey("Authorization", "Authorization", "header");
-        return new ApiKey("Authorization", "Bearer", "header");
+        return new ApiKey("X-AUTH-TOKEN", "Bearer", "header");
     }
 
 

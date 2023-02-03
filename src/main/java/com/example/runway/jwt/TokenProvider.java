@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.example.runway.jwt.JwtFilter.AUTHORIZATION_HEADER;
+import static com.example.runway.jwt.JwtFilter.REFRESH_TOKEN_HEADER;
 
 @Component
 public class TokenProvider implements InitializingBean {
@@ -110,8 +111,6 @@ public class TokenProvider implements InitializingBean {
         Optional<User> users=userRepository.findById(userId);
         String userName = users.get().getUsername();
 
-        System.out.println(userName);
-
 
         return new UsernamePasswordAuthenticationToken(users.get(),"",users.get().getAuthorities());
     }
@@ -156,6 +155,11 @@ public class TokenProvider implements InitializingBean {
     public String getJwt(){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader(AUTHORIZATION_HEADER);
+    }
+
+    public String getRefreshToken(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader(REFRESH_TOKEN_HEADER);
     }
 
 

@@ -1,24 +1,27 @@
 package com.example.runway.service;
 
+import com.example.runway.domain.UserCategory;
 import com.example.runway.exception.BaseException;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.Authority;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
-import com.example.runway.jwt.JwtFilter;
 import com.example.runway.jwt.TokenProvider;
+import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +31,9 @@ import static com.example.runway.common.CommonResponseStatus.NOT_EXIST_USER;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class LoginServiceImpl implements LoginService {
     private final UserRepository userRepository;
+    private final UserCategoryRepository userCategoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
     private final TokenProvider tokenProvider;
@@ -41,23 +45,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException {
+        Optional<User> user=userRepository.findByUsername(loginUserInfo.getPhone());
+        Long userId = user.get().getId();
 
-        if(!checkUserId(loginUserInfo.getPhone())){
+        if(!checkuserId(loginUserInfo.getPhone())){
             throw new BaseException(NOT_EXIST_USER);
         }
 
-        Optional<User> user=userRepository.findByUsername(loginUserInfo.getPhone());
-        Long userId = user.get().getId();
+
 
         if(!passwordEncoder.matches(loginUserInfo.getPassword(),user.get().getPassword())){
             throw new BaseException(NOT_CORRECT_PASSWORD);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserInfo.getPhone(), loginUserInfo.getPassword());
+        user.get().updateLogInDate(LocalDateTime.now());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        userRepository.save(user.get());
 
         UserRes.GenerateToken generateToken=createToken(userId);
 
@@ -75,12 +78,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = SQLException.class)
     public UserRes.Token signUp(UserReq.SignupUser signupUser) throws BaseException {
+
         Authority authority = UserConvertor.PostAuthroity();
         String passwordEncoded=passwordEncoder.encode(signupUser.getPassword());
         User user = UserConvertor.SignUpUser(signupUser,authority,passwordEncoded);
 
         Long userId=userRepository.save(user).getId();
+
+
+
+        for(int i=0;i<signupUser.getCategoryList().size();i++){
+            UserCategory userCategory=UserConvertor.PostUserCategory(userId,signupUser.getCategoryList().get(i));
+            userCategoryRepository.save(userCategory);
+        }
+
+
+
 
         UserRes.GenerateToken token = createToken(userId);
 
@@ -88,7 +103,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkUserId(String phone) {
+    public boolean checkuserId(String phone) {
         return userRepository.existsByUsername(phone);
     }
 

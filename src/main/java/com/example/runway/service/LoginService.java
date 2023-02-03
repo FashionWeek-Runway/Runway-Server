@@ -4,12 +4,12 @@ import com.example.runway.exception.BaseException;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 
-public interface UserService {
+public interface LoginService {
     UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException;
 
     UserRes.Token signUp(UserReq.SignupUser signupUser) throws BaseException;
 
-    boolean checkUserId(String username);
+    boolean checkuserId(String username);
 
     boolean validationPassword(String password);
 

@@ -4,13 +4,13 @@ package com.example.runway.service;
 import java.time.Duration;
 
 public interface RedisService {
-    public void setValues(String key, String data) ;
+    void setValues(String key, String data) ;
 
-    public void setValues(String key, String data, Duration duration) ;
+    void setValues(String key, String data, Duration duration) ;
 
-    public String getValues(String key) ;
+    String getValues(String key) ;
 
-    public void deleteValues(String key) ;
+    void deleteValues(String key) ;
 
-    public void saveToken(String userId, String refreshToken, long time);
+    void saveToken(String userId, String refreshToken, long time);
 }

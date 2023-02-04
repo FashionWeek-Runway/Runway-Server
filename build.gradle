@@ -55,3 +55,6 @@ dependencies {
 
 }
 
+jar {
+    enabled = false
+}

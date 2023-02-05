@@ -71,7 +71,7 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="alarm")
     private boolean alarm;
 
-    // 일반 유저 = 0, 사장님 = 1
+    // 일반 유저 = 0,  사장님 = 1
     @Builder.Default
     private int owner=0;
 

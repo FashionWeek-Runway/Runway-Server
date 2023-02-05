@@ -34,7 +34,7 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="profile_url")
     private String profileImgUrl;
 
-    @Column(name="phone")
+    @Column(name= "username")
     private String username;
 
     @Column(name = "password", length = 100)

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-BUILD_JAR=$(ls /var/www/dev/*.jar)
+BUILD_JAR=$(ls /var/www/dev/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo ">>> build 파일명: $JAR_NAME" >> /var/www/dev/deploy.log
 
 echo ">>> build 파일 복사" >> /var/www/dev/deploy.log
-DEPLOY_PATH=/home/ec2-user/action/
+DEPLOY_PATH=/var/www/dev/build/libs
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo ">>> 현재 실행중인 애플리케이션 pid 확인" >> /var/www/dev/deploy.log

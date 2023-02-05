@@ -3,6 +3,10 @@ name: github-action
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
+  # main branch에 대한 push 나 pull request 이벤트를 트리거로 지정
+  push:
+    branches: [ master ]
+
   pull_request:
     branches:
       - master
@@ -53,4 +57,5 @@ jobs:
 
       - name: Code Deploy
         run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+
 

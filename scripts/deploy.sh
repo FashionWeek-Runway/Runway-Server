@@ -5,7 +5,7 @@ JAR_NAME=$(basename $BUILD_JAR)
 echo ">>> build 파일명: $JAR_NAME" >> /var/www/dev/deploy.log
 
 echo ">>> build 파일 복사" >> /var/www/dev/deploy.log
-DEPLOY_PATH=/var/www/dev/build/libs
+DEPLOY_PATH=/var/www/dev/build/libs/
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo ">>> 현재 실행중인 애플리케이션 pid 확인" >> /var/www/dev/deploy.log

@@ -1,7 +1,6 @@
 package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
-import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BaseException;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,7 +19,7 @@ import javax.validation.Valid;
 import static com.example.runway.common.CommonResponseStatus.*;
 import static com.example.runway.common.CommonResponseStatus.USERS_EXISTS_ID;
 
-@Api(tags = "01. 로그인 🔑")
+@Api(tags = "01 - 로그인 🔑")
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -42,6 +40,8 @@ public class LoginController {
     @ApiOperation(value = "로그인 🔑", notes = "로그인을 하는 API")
     @PostMapping("")
     public CommonResponse<UserRes.Token> login(@Valid @RequestBody UserReq.LoginUserInfo loginUserInfo){
+        log.info("post-logIn");
+        log.info("api = logIn ,username={}",loginUserInfo.getPhone());
         log.info("login");
         if(loginUserInfo.getPhone()==null){
             return new CommonResponse<>(USERS_EMPTY_USER_ID);
@@ -71,13 +71,14 @@ public class LoginController {
     @ApiOperation(value = "회원가입 🔑", notes = "회원가입 ")
     @PostMapping("/signup")
     public CommonResponse<UserRes.Token> signup(@Valid @RequestBody UserReq.SignupUser signupUser) {
+        log.info("post-signup");
+        log.info("api = signup ");
         try {
             if (logInService.checkuserId(signupUser.getPhone()))  throw new ForbiddenException(USERS_EXISTS_ID);
             if(!logInService.validationPassword(signupUser.getPassword())) throw new ForbiddenException(NOT_CORRECT_PASSWORD_FORM);
             if (logInService.checkNickName(signupUser.getNickname())) throw new ForbiddenException(USERS_EXISTS_NICKNAME);
             if(!logInService.validationPhoneNumber(signupUser.getPhone())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
-            log.info("sign-up");
 
             UserRes.Token token = logInService.signUp(signupUser);
 
@@ -96,6 +97,8 @@ public class LoginController {
     @ApiOperation(value = "닉네임 중복체크 🔑", notes = "닉네임 중복체크")
     @GetMapping("/check/nickname")
     public CommonResponse<String> checkNickName(@RequestParam("nickname") String nickName) {
+        log.info("get-check-nickname");
+        log.info("api = check-nickname, nickname={}",nickName);
         String result="";
         if(logInService.checkNickName(nickName)){
             return new CommonResponse<>(USERS_EXISTS_NICKNAME);
@@ -117,6 +120,8 @@ public class LoginController {
     @ApiOperation(value = "유저 아이디 중복체크 🔑", notes = "유저 아이디 중복체크")
     @GetMapping("/check/phone")
     public CommonResponse<String> checkuserId(@RequestParam("phone") String phone){
+        log.info("get-check-phone");
+        log.info("api = check-phone, phonenumber={}",phone);
         String result="";
         if(logInService.checkuserId(phone)){
             return new CommonResponse<>(USERS_EXISTS_ID);

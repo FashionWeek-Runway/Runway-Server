@@ -1,5 +1,5 @@
 # workflow의 이름
-name: github-action-test
+name: github-action
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
@@ -54,8 +54,5 @@ build:
       run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://archive/$GITHUB_SHA.zip
 
     - name: Code Deploy
-      run: aws deploy create-deployment --application-name runway-codedeploy
-      --deployment-config-name CodeDeployDefault.AllAtOnce
-      --deployment-group-name githubactions
-      --s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+      run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
 

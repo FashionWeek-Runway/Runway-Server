@@ -1,11 +1,7 @@
-# workflow의 이름
 name: github-action
 
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
-  # main branch에 대한 push 나 pull request 이벤트를 트리거로 지정
-  push:
-    branches: [ master ]
   pull_request:
     branches:
       - master
@@ -18,40 +14,41 @@ env:
   S3_BUCKET_NAME: runway-codedeploy
   AWS_REGION: ap-northeast-2
 
-build:
-  runs-on: ubuntu-latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Setup JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
-      shell: bash
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
 
-    - name: Build with Gradle
-      run: ./gradlew build
-      shell: bash
+      - name: Build with Gradle
+        run: ./gradlew build
+        shell: bash
 
-    - name: Make zip file
-      run: zip -r ./$GITHUB_SHA.zip .
-      shell: bash
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        shell: bash
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-    - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://archive/$GITHUB_SHA.zip
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://archive/$GITHUB_SHA.zip
 
-    - name: Code Deploy
-      run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip

@@ -53,4 +53,46 @@ jobs:
 
       - name: Code Deploy
         run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+# workflow의 이름
+name: github-action
+# 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
+  # main branch에 대한 push 나 pull request 이벤트를 트리거로 지정
+  push:
+    branches: [ master ]
+
+
+  # 수동으로 해당 workflow 실행 지정
+# workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
+env:
+  S3_BUCKET_NAME: runway-codedeploy
+  AWS_REGION: ap-northeast-2
+
+
+        uses: actions/checkout@v3
+      - name: Setup JDK 11
+        run: ./gradlew build
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://archive/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://archive/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name runway-codedeploy--deployment-config-name CodeDeployDefault.AllAtOnce--deployment-group-name githubactions--s3-location bucket=runway-codedeploy,bundleType=zip,key=$GITHUB_SHA.zip
+
+
 

@@ -28,8 +28,7 @@ spring:
 
 
 jwt:
-  header: Authorization
-  #umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio
+  header: X-AUTH-TOKEN
   secret: ${JWT_SECRET}
   token-validity-in-seconds: 86400
   refresh: ${JWT_REFRESH}

@@ -9,7 +9,7 @@ on:
   # 수동으로 해당 workflow 실행 지정
   workflow_dispatch:
 
-# workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
+# workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.3
 env:
   S3_BUCKET_NAME: runway-codedeploy
   AWS_REGION: ap-northeast-2

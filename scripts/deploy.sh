@@ -24,6 +24,8 @@ fi
 
 source ~/.bashrc
 
+echo ">>>환경변수 주입"
+
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/dev/deploy.log
 nohup java -jar $DEPLOY_JAR >> /var/www/dev/deploy.log 2>/var/www/dev/deploy_err.log &

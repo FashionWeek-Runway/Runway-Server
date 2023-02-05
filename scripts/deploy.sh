@@ -1,4 +1,5 @@
 #!/bin/bash
+source ~/.bash_profile
 
 BUILD_JAR=$(ls /var/www/dev/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)

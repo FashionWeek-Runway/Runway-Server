@@ -19,21 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.example.runway.common.CommonResponseStatus.INVALID_REFRESH_TOKEN;
 import static com.example.runway.common.CommonResponseStatus.INVALID_USER_JWT;
 
-@Api(tags = "02. 사용자 👤")
-@ApiResponses(
-        {
-                @ApiResponse(code = 1000,message = "요청 성공"),
-                @ApiResponse(code = 410, message = "해당요청에 권한이 없습니다."),
-                @ApiResponse(code = 411, message = "로그인 후 이용가능합니다. 토큰을 입력해 주세요"),
-                @ApiResponse(code = 412, message = "기존 토큰이 만료되었습니다. 토큰을 재발급해주세요."),
-                @ApiResponse(code = 413, message = "모든 토큰이 만료되었습니다. 다시 로그인해주세요."),
-                @ApiResponse(code = 414, message = "토큰이 올바르지 않습니다."),
-                @ApiResponse(code = 415, message = "탈취된(로그아웃 된) 토큰입니다 다시 로그인해주세요."),
-                @ApiResponse(code = 416, message = "존재하지 않는 유저입니다."),
-
-
-        }
-)
+@Api(tags = "02 - 사용자 👤")
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -92,8 +78,6 @@ public class UserController {
         //logInService.deleteFcmToken(userId);
         String result="로그아웃 성공";
         return new CommonResponse<>(result);
-
-
 
     }
 }

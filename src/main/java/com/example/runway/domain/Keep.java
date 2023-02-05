@@ -1,6 +1,5 @@
 package com.example.runway.domain;
 
-import com.example.runway.common.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;

@@ -1,5 +1,4 @@
 #!/bin/bash
-source ~/.bash_profile
 
 BUILD_JAR=$(ls /var/www/dev/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
@@ -22,6 +21,8 @@ else
   kill -15 $CURRENT_PID
   sleep 5
 fi
+
+source ~/.bashrc
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/dev/deploy.log

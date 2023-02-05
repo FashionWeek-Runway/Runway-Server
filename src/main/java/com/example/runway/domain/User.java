@@ -1,7 +1,7 @@
 package com.example.runway.domain;
 
-import com.example.runway.common.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,12 +67,16 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="longitude")
     private double longitude;
 
-    @Builder.Default
+    @ColumnDefault("1")
     private int alarm=1;
 
     // 일반 유저 = 0, 사장님 = 1
     @Builder.Default
     private int owner=0;
+
+    @ColumnDefault("true")
+    @Column(name="agree_info")
+    private boolean agreeInfo;
 
 
 

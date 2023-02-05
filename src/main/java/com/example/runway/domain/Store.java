@@ -1,6 +1,5 @@
 package com.example.runway.domain;
 
-import com.example.runway.common.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -21,6 +20,13 @@ public class Store extends BaseEntity {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false,insertable=false, updatable=false)
+    private User user;
+
+    @Column(name="user_id",columnDefinition = "게시한 사용자")
+    private Long userId;
 
     @Column(name = "name")
     private String name;

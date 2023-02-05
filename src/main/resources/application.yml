@@ -1,0 +1,47 @@
+server:
+  port: 9000
+
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show-sql: true # DDL ??
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST_NAME}:3306/runway_schema
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  redis:
+    host: localhost
+    port: 6379
+
+
+
+
+jwt:
+  header: Authorization
+  #umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio-umc-3rd-team-project-lifolio
+  secret: ${JWT_SECRET}
+  token-validity-in-seconds: 86400
+  refresh: ${JWT_REFRESH}
+  access-token-seconds: 31536000
+  refresh-token-seconds: 31536000
+
+
+logging:
+  level:
+    study.cherry: DEBUG
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
+

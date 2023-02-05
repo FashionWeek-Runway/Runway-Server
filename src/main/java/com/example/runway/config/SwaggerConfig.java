@@ -28,7 +28,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
-        Server UbuntuServer = new Server("server", "https://www.runway.shop", "for server", Collections.emptyList(), Collections.emptyList());
+        Server UbuntuServer = new Server("server", "https://dev.runwayserver.shop", "for server", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
                 .securityContexts(Arrays.asList(securityContext())) // 추가
                 .securitySchemes(Arrays.asList(apiKey())) // 추가
@@ -42,9 +42,9 @@ public class SwaggerConfig {
 
 
     private ApiInfo apiInfo() {
-        String description = "LIFOLIO";
+        String description = "Runway";
         return new ApiInfoBuilder()
-                .title("LIFOLIO API Documentation")
+                .title("Runway API 명세서")
                 .description(description)
                 .version("1.0")
                 .build();

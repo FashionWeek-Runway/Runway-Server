@@ -12,7 +12,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST_NAME}:3306/runway_schema
+    url: jdbc:mysql://${DB_HOST_NAME}:3306/runway_schema?useSSL=false&characterEncoding=UTF-8&serverTimeZone=Asia/Seoul
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 

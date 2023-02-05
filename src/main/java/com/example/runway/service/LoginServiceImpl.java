@@ -46,11 +46,12 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException {
         Optional<User> user=userRepository.findByUsername(loginUserInfo.getPhone());
-        Long userId = user.get().getId();
-
         if(!checkuserId(loginUserInfo.getPhone())){
             throw new BaseException(NOT_EXIST_USER);
         }
+
+        Long userId = user.get().getId();
+
 
 
 

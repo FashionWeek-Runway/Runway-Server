@@ -14,9 +14,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @EnableSwagger2
@@ -30,6 +28,8 @@ public class SwaggerConfig {
         Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
         Server UbuntuServer = new Server("server", "https://dev.runwayserver.shop", "for server", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
+                .consumes(getConsumeContentTypes())
+                .produces(getProduceContentTypes())
                 .securityContexts(Arrays.asList(securityContext())) // 추가
                 .securitySchemes(Arrays.asList(apiKey())) // 추가
                 .ignoredParameterTypes(User.class)
@@ -39,12 +39,26 @@ public class SwaggerConfig {
                 .build().apiInfo(apiInfo());
     }
 
+    private Set<String> getConsumeContentTypes() {
+        Set<String> consumes = new HashSet<>();
+        consumes.add("application/json;charset=UTF-8");
+        consumes.add("application/x-www-form-urlencoded");
+        return consumes;
+    }
+
+    private Set<String> getProduceContentTypes() {
+        Set<String> produces;
+        produces = new HashSet<>();
+        produces.add("application/json;charset=UTF-8");
+        return produces;
+    }
+
 
 
     private ApiInfo apiInfo() {
         String description = "Runway";
         return new ApiInfoBuilder()
-                .title("Runway API 명세서")
+                .title("Runway Rest API 명세서")
                 .description(description)
                 .version("1.0")
                 .build();

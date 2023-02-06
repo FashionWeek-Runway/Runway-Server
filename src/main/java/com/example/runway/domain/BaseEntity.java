@@ -30,7 +30,7 @@ public class BaseEntity {
     private LocalDateTime updatedAt;
 
     @ColumnDefault("true")
-    private boolean status;
+    private boolean status=true;
 }
 // test
 // test2

@@ -67,9 +67,8 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="longitude")
     private double longitude;
 
-    @ColumnDefault("true")
     @Column(name="alarm")
-    private boolean alarm;
+    private boolean alarm=true;
 
     // 일반 유저 = 0,  사장님 = 1
     @Builder.Default
@@ -77,7 +76,7 @@ public class User extends BaseEntity implements UserDetails{
 
     @ColumnDefault("true")
     @Column(name="agree_info")
-    private boolean agreeInfo;
+    private boolean agreeInfo=true;
 
 
 

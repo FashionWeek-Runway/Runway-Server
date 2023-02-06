@@ -16,8 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.runway.common.CommonResponseStatus.ForbiddenException;
 import static com.example.runway.common.CommonResponseStatus.INVALID_REFRESH_TOKEN;
-import static com.example.runway.common.CommonResponseStatus.INVALID_USER_JWT;
+
 
 @Api(tags = "02. 사용자 👤")
 @ApiResponses(
@@ -41,7 +42,6 @@ import static com.example.runway.common.CommonResponseStatus.INVALID_USER_JWT;
 public class UserController {
     private final RedisService redisService;
     private final TokenProvider tokenProvider;
-    private final LoginService logInService;
 
 
     @Operation(summary = "토큰 재발급 👤", description = "액세스 토큰 만료시 재발급 요청 하는 API")
@@ -64,7 +64,7 @@ public class UserController {
 
         }
         if(!redisRT.equals(tokenProvider.getRefreshToken())){
-            return new CommonResponse<>(INVALID_USER_JWT);
+            return new CommonResponse<>(ForbiddenException);
         }
 
         UserRes.ReIssueToken tokenRes=new UserRes.ReIssueToken(tokenProvider.createRefreshToken(userId));

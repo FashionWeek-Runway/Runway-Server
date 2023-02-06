@@ -4,7 +4,7 @@ name: github-action
 on:
   pull_request:
     branches:
-      - master
+      - deploy
 
   # 수동으로 해당 workflow 실행 지정
   workflow_dispatch:

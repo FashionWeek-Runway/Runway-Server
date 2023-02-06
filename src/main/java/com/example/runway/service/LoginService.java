@@ -3,11 +3,14 @@ package com.example.runway.service;
 import com.example.runway.exception.BaseException;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface LoginService {
     UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException;
 
-    UserRes.Token signUp(UserReq.SignupUser signupUser) throws BaseException;
+    UserRes.SignUp signUp(MultipartFile multipartFile,UserReq.SignupUser signupUser) throws BaseException, IOException;
 
     boolean checkuserId(String username);
 

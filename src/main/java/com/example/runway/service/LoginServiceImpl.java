@@ -12,16 +12,17 @@ import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +39,8 @@ public class LoginServiceImpl implements LoginService {
     private final RedisService redisService;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AwsS3Service awsS3Service;
+
 
     @Value("${jwt.refresh-token-seconds}")
     private long refreshTime;
@@ -80,14 +83,24 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional(rollbackFor = SQLException.class)
-    public UserRes.Token signUp(UserReq.SignupUser signupUser) throws BaseException {
+    public UserRes.SignUp signUp(MultipartFile multipartFile, UserReq.SignupUser signupUser) throws BaseException, IOException {
+
+
 
         Authority authority = UserConvertor.PostAuthroity();
         String passwordEncoded=passwordEncoder.encode(signupUser.getPassword());
-        User user = UserConvertor.SignUpUser(signupUser,authority,passwordEncoded);
+        String profileImgUrl;
+
+        if(multipartFile==null){
+            profileImgUrl = null;
+        }
+        else {
+            profileImgUrl = awsS3Service.upload(multipartFile, "profile");
+        }
+        User user = UserConvertor.SignUpUser(signupUser,authority,passwordEncoded,profileImgUrl);
+
 
         Long userId=userRepository.save(user).getId();
-
 
 
         for(int i=0;i<signupUser.getCategoryList().size();i++){
@@ -95,12 +108,35 @@ public class LoginServiceImpl implements LoginService {
             userCategoryRepository.save(userCategory);
         }
 
+        List<String> categoryList = new ArrayList<>();
 
+        for(int i=0;i<signupUser.getCategoryList().size();i++){
+            if(signupUser.getCategoryList().get(i)==1){
+                categoryList.add("미니멀");
+            }
+            else if(signupUser.getCategoryList().get(i)==2){
+                categoryList.add("캐주얼");
+            }
+            else if(signupUser.getCategoryList().get(i)==3){
+                categoryList.add("시티보이");
+            }
+            else if(signupUser.getCategoryList().get(i)==4){
+                categoryList.add("스트릿");
+            }
+            else if(signupUser.getCategoryList().get(i)==5){
+                categoryList.add("빈티지");
+            }
+            else if(signupUser.getCategoryList().get(i)==6){
+                categoryList.add("페미닌");
+            }
+        }
 
 
         UserRes.GenerateToken token = createToken(userId);
 
-        return new UserRes.Token(userId,token.getAccessToken(),token.getRefreshToken());
+        UserRes.SignUp signUp = UserConvertor.SignUpUserRes(token,user,categoryList);
+
+        return signUp;
     }
 
     @Override
@@ -110,8 +146,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean validationPassword(String password) {
-        // 비밀번호 포맷 확인(영문, 특수문자, 숫자 포함 8자 이상)
-        Pattern pattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$");
+        // 비밀번호 포맷 확인(영문, 숫자 포함 8자 이상)
+        Pattern pattern = Pattern.compile("^[A-Za-z[0-9]]{8,16}$");
         Matcher matcher = pattern.matcher(password);
 
         return matcher.find();

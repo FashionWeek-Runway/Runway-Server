@@ -1,6 +1,6 @@
 package com.example.runway.exception;
 
-import com.example.runway.common.CommonResponseStatus;
+import com.example.runway.constants.CommonResponseStatus;
 import lombok.Getter;
 
 @Getter

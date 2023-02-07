@@ -1,6 +1,6 @@
 package com.example.runway.jwt;
 
-import com.example.runway.common.CommonResponseStatus;
+import com.example.runway.constants.CommonResponseStatus;
 import org.json.JSONObject;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

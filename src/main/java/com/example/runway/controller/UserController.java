@@ -2,23 +2,19 @@ package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
-import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BaseException;
 import com.example.runway.jwt.TokenProvider;
-import com.example.runway.service.LoginService;
 import com.example.runway.service.RedisService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.runway.common.CommonResponseStatus.ForbiddenException;
-import static com.example.runway.common.CommonResponseStatus.INVALID_REFRESH_TOKEN;
+import static com.example.runway.constants.CommonResponseStatus.ForbiddenException;
+import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
 
 
 @Api(tags = "02. 사용자 👤")

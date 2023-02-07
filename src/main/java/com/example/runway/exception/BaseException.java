@@ -1,9 +1,7 @@
 package com.example.runway.exception;
 
-import com.example.runway.common.CommonResponseStatus;
-import lombok.AllArgsConstructor;
+import com.example.runway.constants.CommonResponseStatus;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;

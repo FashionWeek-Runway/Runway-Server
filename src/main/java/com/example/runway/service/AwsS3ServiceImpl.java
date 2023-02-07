@@ -11,15 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.runway.common.CommonResponseStatus.FAIL_UPLOAD_IMG;
-import static com.example.runway.common.CommonResponseStatus.WRONG_FORMAT_FILE;
+import static com.example.runway.constants.CommonResponseStatus.FAIL_UPLOAD_IMG;
+import static com.example.runway.constants.CommonResponseStatus.WRONG_FORMAT_FILE;
 
 @Service
 @RequiredArgsConstructor

@@ -29,8 +29,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.runway.common.CommonResponseStatus.NOT_CORRECT_PASSWORD;
-import static com.example.runway.common.CommonResponseStatus.NOT_EXIST_USER;
+import static com.example.runway.constants.CommonResponseStatus.NOT_CORRECT_PASSWORD;
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_USER;
 
 @Service
 @RequiredArgsConstructor

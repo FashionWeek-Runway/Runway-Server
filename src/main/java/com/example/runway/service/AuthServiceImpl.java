@@ -1,37 +1,23 @@
 package com.example.runway.service;
 
-import com.example.runway.common.CommonResponseStatus;
-import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
-import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.repository.UserRepository;
 import com.google.gson.*;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
-import static com.example.runway.common.CommonResponseStatus.*;
+import static com.example.runway.constants.CommonResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor

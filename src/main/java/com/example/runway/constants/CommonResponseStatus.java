@@ -1,4 +1,4 @@
-package com.example.runway.common;
+package com.example.runway.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

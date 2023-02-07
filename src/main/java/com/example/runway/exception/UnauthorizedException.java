@@ -1,10 +1,9 @@
 package com.example.runway.exception;
 
-import com.example.runway.exception.BaseException;
 import lombok.Getter;
-import com.example.runway.common.CommonResponseStatus;
+import com.example.runway.constants.CommonResponseStatus;
 
-import static com.example.runway.common.CommonResponseStatus._UNAUTHORIZED;
+import static com.example.runway.constants.CommonResponseStatus._UNAUTHORIZED;
 
 @Getter
 public class UnauthorizedException extends BaseException {

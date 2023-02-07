@@ -1,5 +1,6 @@
 package com.example.runway.service;
 
+import com.example.runway.domain.SmsUser;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.exception.BaseException;
 import com.example.runway.convertor.UserConvertor;
@@ -8,6 +9,7 @@ import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.jwt.TokenProvider;
+import com.example.runway.repository.SmsUserRepository;
 import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class LoginServiceImpl implements LoginService {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AwsS3Service awsS3Service;
+    private final SmsUserRepository smsUserRepository;
 
 
     @Value("${jwt.refresh-token-seconds}")
@@ -72,7 +75,7 @@ public class LoginServiceImpl implements LoginService {
         return new UserRes.Token(userId,generateToken.getAccessToken(),generateToken.getRefreshToken());
     }
 
-    private UserRes.GenerateToken createToken(Long userId) throws BaseException {
+    public UserRes.GenerateToken createToken(Long userId) {
         String accessToken=tokenProvider.createToken(userId);
         String refreshToken=tokenProvider.createRefreshToken(userId);
 
@@ -80,6 +83,45 @@ public class LoginServiceImpl implements LoginService {
 
         return new UserRes.GenerateToken(accessToken,refreshToken);
     }
+
+    @Override
+    public void countUserPhone(String phone) {
+        SmsUser smsUser=SmsUser.builder().phone(phone).build();
+        smsUserRepository.save(smsUser);
+    }
+
+    @Override
+    public UserRes.SignUp signUpSocial(UserReq.SocialSignUp socialSignUp) throws IOException {
+        Authority authority = UserConvertor.PostAuthroity();
+        String passwordEncoded=passwordEncoder.encode(socialSignUp.getSocialId());
+        String profileImgUrl;
+
+        if(socialSignUp.getMultipartFile()==null){
+            profileImgUrl = socialSignUp.getProfileImgUrl();
+        }
+        else {
+            profileImgUrl = awsS3Service.upload(socialSignUp.getMultipartFile(), "profile");
+        }
+
+        User user = UserConvertor.SignUpSocialUser(socialSignUp,authority,passwordEncoded,profileImgUrl);
+
+
+        Long userId=userRepository.save(user).getId();
+
+
+        for(int i=0;i<socialSignUp.getCategoryList().size();i++){
+            UserCategory userCategory=UserConvertor.PostUserCategory(userId,socialSignUp.getCategoryList().get(i));
+            userCategoryRepository.save(userCategory);
+        }
+
+        List<String> categoryList = getCategoryNameList(socialSignUp.getCategoryList());
+
+
+        UserRes.GenerateToken token = createToken(userId);
+
+        return UserConvertor.SignUpUserRes(token,user,categoryList);
+    }
+
 
     @Override
     @Transactional(rollbackFor = SQLException.class)
@@ -97,6 +139,7 @@ public class LoginServiceImpl implements LoginService {
         else {
             profileImgUrl = awsS3Service.upload(multipartFile, "profile");
         }
+
         User user = UserConvertor.SignUpUser(signupUser,authority,passwordEncoded,profileImgUrl);
 
 
@@ -108,35 +151,13 @@ public class LoginServiceImpl implements LoginService {
             userCategoryRepository.save(userCategory);
         }
 
-        List<String> categoryList = new ArrayList<>();
+        List<String> categoryList = getCategoryNameList(signupUser.getCategoryList());
 
-        for(int i=0;i<signupUser.getCategoryList().size();i++){
-            if(signupUser.getCategoryList().get(i)==1){
-                categoryList.add("미니멀");
-            }
-            else if(signupUser.getCategoryList().get(i)==2){
-                categoryList.add("캐주얼");
-            }
-            else if(signupUser.getCategoryList().get(i)==3){
-                categoryList.add("시티보이");
-            }
-            else if(signupUser.getCategoryList().get(i)==4){
-                categoryList.add("스트릿");
-            }
-            else if(signupUser.getCategoryList().get(i)==5){
-                categoryList.add("빈티지");
-            }
-            else if(signupUser.getCategoryList().get(i)==6){
-                categoryList.add("페미닌");
-            }
-        }
 
 
         UserRes.GenerateToken token = createToken(userId);
 
-        UserRes.SignUp signUp = UserConvertor.SignUpUserRes(token,user,categoryList);
-
-        return signUp;
+        return UserConvertor.SignUpUserRes(token,user,categoryList);
     }
 
     @Override
@@ -174,4 +195,44 @@ public class LoginServiceImpl implements LoginService {
 
         userRepository.save(user.get());
     }
+
+    @Override
+    public void modifyPassword(UserReq.PostPassword postPassword) {
+        Optional<User> user = userRepository.findByUsername(postPassword.getPhone());
+
+        String passwordEncoded=passwordEncoder.encode(postPassword.getPassword());
+
+        user.get().modifyPassword(passwordEncoded);
+
+        userRepository.save(user.get());
+    }
+
+
+    public List<String> getCategoryNameList(List<Long> categoryList){
+        List<String> categoryNameList=new ArrayList<>();
+
+        for(int i=0;i<categoryList.size();i++){
+            if(categoryList.get(i)==1){
+                categoryNameList.add("미니멀");
+            }
+            else if(categoryList.get(i)==2){
+                categoryNameList.add("캐주얼");
+            }
+            else if(categoryList.get(i)==3){
+                categoryNameList.add("시티보이");
+            }
+            else if(categoryList.get(i)==4){
+                categoryNameList.add("스트릿");
+            }
+            else if(categoryList.get(i)==5){
+                categoryNameList.add("빈티지");
+            }
+            else if(categoryList.get(i)==6){
+                categoryNameList.add("페미닌");
+            }
+        }
+        return categoryNameList;
+
+    }
+
 }

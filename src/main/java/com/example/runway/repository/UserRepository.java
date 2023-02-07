@@ -34,4 +34,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String phone);
 
+
+    Optional<User> findByUsernameAndSocialAndStatus(String username, String social, boolean status);
 }

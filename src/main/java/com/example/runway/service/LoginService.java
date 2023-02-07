@@ -21,4 +21,13 @@ public interface LoginService {
     boolean validationPhoneNumber(String phone);
 
     void updateFcmToken(Long userId, String token);
+
+    void modifyPassword(UserReq.PostPassword postPassword);
+
+    UserRes.GenerateToken createToken(Long userId);
+
+
+    void countUserPhone(String phone);
+
+    UserRes.SignUp signUpSocial(UserReq.SocialSignUp socialSignUp) throws IOException;
 }

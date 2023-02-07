@@ -24,18 +24,16 @@ public class TestController {
     public CommonResponse<String> test(@AuthenticationPrincipal User user) {
             Long userId = user.getId();
             System.out.println("유저 아이디값:" + userId);
-            return new CommonResponse<>("유저 아이디값:" + userId);
+            return CommonResponse.onSuccess("유저 아이디값:" + userId);
 
     }
 
     @PostMapping("/img")
     public CommonResponse<String> imgUpload(@RequestParam("img")MultipartFile multipartFile) throws IOException {
-        try {
-            String imgurl = awsS3Service.upload(multipartFile, "test");
-            return new CommonResponse<>(imgurl);
-        }catch(BaseException e){
-            return new CommonResponse<>(e.getStatus());
-        }
+
+        String imgurl = awsS3Service.upload(multipartFile, "test");
+        return CommonResponse.onSuccess(imgurl);
+
         }
 
 

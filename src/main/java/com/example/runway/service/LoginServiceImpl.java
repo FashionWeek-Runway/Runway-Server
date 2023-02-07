@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException {
-        Optional<User> user=userRepository.findByUsername(loginUserInfo.getPhone());
+        Optional<User> user=userRepository.findByUsernameAndStatus(loginUserInfo.getPhone(),true);
         if(!checkuserId(loginUserInfo.getPhone())){
             throw new BaseException(NOT_EXIST_USER);
         }
@@ -162,7 +162,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean checkuserId(String phone) {
-        return userRepository.existsByUsername(phone);
+        return userRepository.existsByUsernameAndStatus(phone,true);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean checkNickName(String nickname) {
-        return userRepository.existsByNickname(nickname);
+        return userRepository.existsByNicknameAndStatus(nickname,true);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void modifyPassword(UserReq.PostPassword postPassword) {
-        Optional<User> user = userRepository.findByUsername(postPassword.getPhone());
+        Optional<User> user = userRepository.findByUsernameAndStatus(postPassword.getPhone(),true);
 
         String passwordEncoded=passwordEncoder.encode(postPassword.getPassword());
 

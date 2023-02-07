@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01 - 02 유저 로그인 🔑 API Response")
+    @ApiModel(value = "01-02 유저 로그인 🔑 API Response")
     public static class Token {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스
@@ -38,7 +39,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "토큰 재발급 🔑 API Response")
+    @ApiModel(value = "02-01 토큰 재발급 🔑 API Response")
     public static class ReIssueToken {
         @ApiModelProperty(notes = "액세스 토큰", required = true, example = "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ-----")
         private String accessToken;
@@ -49,7 +50,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01 - 01 회원가입 🔑 API Response")
+    @ApiModel(value = "01-01 회원가입 🔑 API Response")
     public static class SignUp {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스
@@ -72,7 +73,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01 - 07 카카오 로그인 🔑 API Response")
+    @ApiModel(value = "01-07 카카오 로그인 🔑 API Response")
     public static class SocialSignUp {
         @ApiModelProperty(notes = "소셜 id", required = true, example = "214124215125")
         private String id;
@@ -80,4 +81,27 @@ public class UserRes {
         @ApiModelProperty(notes = "소셜 프로필 사진", required = true, example = "이미지 url")
         private String profileImgUrl;
     }
+
+    @Getter
+    @Builder
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "01-06 문자인증 🔑 API Response")
+    public static class SmsResponse{
+        @ApiModelProperty(notes = "요청 id", required = true, example = "VORSSA-21j4nl12n4ln12kl4n~~~")
+        private String requestId;
+        @ApiModelProperty(notes = "요청 시간", required = true, example = "2023-02-07T23:02:21.275")
+        private LocalDateTime requestTime;
+        @ApiModelProperty(notes = "요청 상태 코드", required = true, example = "200")
+        private String statusCode;
+        @ApiModelProperty(notes = "요청 상태", required = true, example = "true")
+        private String statusName;
+        @ApiModelProperty(notes = "문자인증 난수 6글자입니다. 해당 반환값으로 확인하시면 됩니다", required = true, example = "123456")
+        private String smsConfirmNum;
+
+
+    }
+
+
 }

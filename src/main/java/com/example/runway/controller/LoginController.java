@@ -9,6 +9,8 @@ import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.service.AuthService;
 import com.example.runway.service.LoginService;
+import com.example.runway.service.SmsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +19,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import static com.example.runway.constants.CommonResponseStatus.*;
 import static com.example.runway.constants.CommonResponseStatus.USERS_EXISTS_ID;
 
-@Api(tags = "01 - 로그인 🔑")
+@Api(tags = "01-로그인 🔑")
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -29,9 +35,10 @@ import static com.example.runway.constants.CommonResponseStatus.USERS_EXISTS_ID;
 public class LoginController {
     private final LoginService logInService;
     private final AuthService authService;
+    private final SmsService smsService;
 
     @RequestMapping(value = "/signup", consumes = {"multipart/form-data"},method = RequestMethod.POST)
-    @ApiOperation(value = "01 - 01 회원가입 🔑", notes = "회원가입 API 보내실 때 multipart/from-data 로 보내주시면 됩니다.")
+    @ApiOperation(value = "01-01 회원가입 🔑", notes = "회원가입 API 보내실 때 multipart/from-data 로 보내주시면 됩니다.")
     public CommonResponse<UserRes.SignUp> signup(@ModelAttribute UserReq.SignupUser signupUser) throws IOException {
         log.info("post-signup");
         log.info("api = signup ");
@@ -50,7 +57,7 @@ public class LoginController {
     }
 
 
-    @ApiOperation(value = "01 - 02 로그인 🔑", notes = "로그인을 하는 API")
+    @ApiOperation(value = "01-02 로그인 🔑", notes = "로그인을 하는 API")
     @PostMapping("")
     public CommonResponse<UserRes.Token> login( @Valid @RequestBody UserReq.LoginUserInfo loginUserInfo){
         log.info("post-logIn");
@@ -67,7 +74,7 @@ public class LoginController {
     }
 
 
-    @ApiOperation(value = "01 - 03 닉네임 중복체크 🔑", notes = "닉네임 중복체크")
+    @ApiOperation(value = "01-03 닉네임 중복체크 🔑", notes = "닉네임 중복체크")
     @GetMapping("/check/nickname")
     public CommonResponse<String> checkNickName(@RequestParam("nickname") String nickName) {
         log.info("get-check-nickname");
@@ -82,7 +89,7 @@ public class LoginController {
     }
 
 
-    @ApiOperation(value = "01 - 04 유저 전화번호 중복체크 🔑", notes = "유저 아이디 중복체크")
+    @ApiOperation(value = "01-04 유저 전화번호 중복체크 🔑", notes = "유저 아이디 중복체크")
     @GetMapping("/check/phone")
     public CommonResponse<String> checkuserId(@RequestParam("phone") String phone){
         log.info("get-check-phone");
@@ -95,7 +102,7 @@ public class LoginController {
     }
 
 
-    @ApiOperation(value = "01 - 05 유저 비밀번호 변경 🔑", notes = "유저 비밀번호찾기")
+    @ApiOperation(value = "01-05 유저 비밀번호 변경 🔑", notes = "유저 비밀번호찾기")
     @PostMapping("/phone")
     public CommonResponse<String> findPassword(@RequestBody UserReq.PostPassword postPassword){
         log.info("change-password-phone");
@@ -109,21 +116,24 @@ public class LoginController {
 
     }
 
-    @ApiOperation(value = "01 - 06 유저 전화번호 인증 🔑", notes = "유저 전화번호 인증")
-    @GetMapping("/send")
-    public CommonResponse<String> sendSMS(@RequestParam("phone") String phone){
+    @ApiOperation(value = "01-06 유저 전화번호 인증 🔑", notes = "유저 전화번호 인증")
+    @PostMapping("/send")
+    public CommonResponse<UserRes.SmsResponse> sendSMS(@RequestBody UserReq.Message message) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         log.info("send-sms");
-        log.info("api = send-sms, phonenumber={}",phone);
+        log.info("api = send-sms, phonenumber={}",message.getTo());
 
-        logInService.countUserPhone(phone);
+        if(logInService.checkuserId(message.getTo()))throw new BadRequestException(USERS_EXISTS_ID);
+        if(!logInService.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
-        return CommonResponse.onSuccess("사용 가능합니다.");
+        //logInService.countUserPhone(phone);
+        UserRes.SmsResponse response=smsService.sendSms(message);
+        return CommonResponse.onSuccess(response);
 
     }
 
 
 
-    @ApiOperation(value = "01 - 07 카카오 로그인 테스트용 코드발급🔑", notes = "유저 카카오 로그인")
+    @ApiOperation(value = "01-07 카카오 로그인 테스트용 코드발급 🔑", notes = "유저 카카오 로그인")
     @GetMapping("/kakao")
     public CommonResponse<String> getAccessTokenKakao(@RequestParam String code){
         String accessToken=authService.getKakaoAccessToken(code);
@@ -131,7 +141,7 @@ public class LoginController {
         return CommonResponse.onSuccess(accessToken);
     }
 
-    @ApiOperation(value = "01 - 07 카카오 로그인 🔑", notes = "유저 카카오 로그인")
+    @ApiOperation(value = "01-07 카카오 로그인 🔑", notes = "유저 카카오 로그인")
     @ResponseBody
     @PostMapping("/kakao")
     public CommonResponse<UserRes.Token> kakaoLogin(@RequestBody UserReq.SocialReq socialReq) throws BaseException{
@@ -141,7 +151,7 @@ public class LoginController {
 
     }
 
-    @ApiOperation(value = "01 - 09 소셜 회원가입 🔑", notes = "유저 카카오 로그인")
+    @ApiOperation(value = "01-09 소셜 회원가입 🔑", notes = "유저 카카오 로그인")
     @ResponseBody
     @RequestMapping(value = "/signup/kakao", consumes = {"multipart/form-data"},method = RequestMethod.POST)
     public CommonResponse<UserRes.SignUp> socialSignUp(@ModelAttribute UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {

@@ -13,27 +13,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "authorities")
     Optional<User> findOneWithAuthoritiesByUsername(String phone);
 
-//    @EntityGraph(attributePaths = "authorities")
-//    Optional<User> findOneWithAuthoritiesById(Long userId);
+    boolean existsByUsernameAndStatus(String userId, boolean b);
 
+    boolean existsByNicknameAndStatus(String nickname, boolean b);
 
-
-
-
-    boolean existsByUsername(String userId);
-
-    boolean existsByNickname(String nickname);
-
-
-    boolean existsByUsernameAndSocial(String id, String social);
-
-
-
-    User findByUsernameAndSocial(String valueOf, String social);
-
-
-    Optional<User> findByUsername(String phone);
-
+    Optional<User> findByUsernameAndStatus(String phone, boolean b);
 
     Optional<User> findByUsernameAndSocialAndStatus(String username, String social, boolean status);
 }

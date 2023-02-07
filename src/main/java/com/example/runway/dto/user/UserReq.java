@@ -103,4 +103,28 @@ public class UserReq {
         @ApiModelProperty(notes="프로필 사진 변경",required = true,example = "프로필 사진 변경")
         private MultipartFile multipartFile;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Builder
+    public static class SmsRequest {
+        private String type;
+        private String contentType;
+        private String countryCode;
+        private String from;
+        private String content;
+        private List<Message> messages;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Builder
+    @ApiModel(value = "01-06 문자인증 🔑 API Request")
+    public static class Message {
+        @ApiModelProperty(notes ="요청 전화번호", required = true, example = "01012345678")
+        private String to;
+//    String content;
+    }
 }

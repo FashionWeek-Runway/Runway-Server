@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +37,9 @@ public class User extends BaseEntity implements UserDetails{
 
     @Column(name= "username")
     private String username;
+
+    @Column(name="birth")
+    private LocalDate birth;
 
     @Column(name = "password", length = 100)
     private String password;
@@ -97,6 +101,9 @@ public class User extends BaseEntity implements UserDetails{
     }
     public void updateLogInDate(LocalDateTime now){
         this.loginDate=now;
+    }
+    public void modifyPassword(String password){
+        this.password=password;
     }
 
 

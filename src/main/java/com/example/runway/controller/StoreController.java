@@ -23,6 +23,6 @@ public class StoreController {
     private CommonResponse<StoreRes.getHomeList> getMainHome(@AuthenticationPrincipal User user){
         Long userId=user.getId();
         StoreRes.getHomeList getHomeList=storeService.getMainHome(userId);
-        return new CommonResponse<>(getHomeList);
+        return CommonResponse.onSuccess(getHomeList);
     }
 }

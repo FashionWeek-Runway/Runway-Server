@@ -28,6 +28,7 @@ public class UserConvertor {
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .agreeInfo(true)
+                .alarm(true)
                 .loginDate(LocalDateTime.now())
                 .build();
     }
@@ -47,4 +48,21 @@ public class UserConvertor {
                 .categoryList(categoryList)
                 .build();
     }
+
+    public static User SignUpSocialUser(UserReq.SocialSignUp socialSignUp, Authority authority, String passwordEncoded, String profileImgUrl) {
+        return User.builder()
+                .profileImgUrl(profileImgUrl)
+                .password(passwordEncoded)
+                .name(socialSignUp.getNickname())
+                .nickname(socialSignUp.getNickname())
+                .username(socialSignUp.getSocialId())
+                .social("KAKAO")
+                .authorities(Collections.singleton(authority))
+                .activated(true)
+                .agreeInfo(true)
+                .alarm(true)
+                .loginDate(LocalDateTime.now())
+                .build();
+    }
+
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class UserRes {
     @Getter
@@ -13,7 +14,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "🔑 01 - 02 유저 로그인 API Response")
+    @ApiModel(value = "01 - 02 유저 로그인 🔑 API Response")
     public static class Token {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스
@@ -37,7 +38,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "🔑 토큰 재발급 API Response")
+    @ApiModel(value = "토큰 재발급 🔑 API Response")
     public static class ReIssueToken {
         @ApiModelProperty(notes = "액세스 토큰", required = true, example = "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ-----")
         private String accessToken;
@@ -48,7 +49,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "🔑 01 - 01 회원가입 API Response")
+    @ApiModel(value = "01 - 01 회원가입 🔑 API Response")
     public static class SignUp {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스
@@ -64,5 +65,19 @@ public class UserRes {
         private List<String> categoryList;
 
 
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "01 - 07 카카오 로그인 🔑 API Response")
+    public static class SocialSignUp {
+        @ApiModelProperty(notes = "소셜 id", required = true, example = "214124215125")
+        private String id;
+
+        @ApiModelProperty(notes = "소셜 프로필 사진", required = true, example = "이미지 url")
+        private String profileImgUrl;
     }
 }

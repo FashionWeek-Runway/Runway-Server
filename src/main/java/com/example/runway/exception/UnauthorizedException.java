@@ -4,14 +4,14 @@ import com.example.runway.exception.BaseException;
 import lombok.Getter;
 import com.example.runway.common.CommonResponseStatus;
 
-import static com.example.runway.common.CommonResponseStatus.UNAUTHORIZED;
+import static com.example.runway.common.CommonResponseStatus._UNAUTHORIZED;
 
 @Getter
 public class UnauthorizedException extends BaseException {
     private String message;
 
     public UnauthorizedException(String message) {
-        super(UNAUTHORIZED);
+        super(_UNAUTHORIZED);
         this.message = message;
     }
 

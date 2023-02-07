@@ -2,14 +2,16 @@ package com.example.runway.exception;
 
 import com.example.runway.common.CommonResponseStatus;
 import lombok.Getter;
-import static com.example.runway.common.CommonResponseStatus.BAD_REQUEST;
+
+
+import static com.example.runway.common.CommonResponseStatus._BAD_REQUEST;
 
 @Getter
 public class ForbiddenException extends BaseException {
     private String message;
 
     public ForbiddenException(String message) {
-        super(BAD_REQUEST);
+        super(_BAD_REQUEST);
         this.message = message;
     }
 
@@ -21,4 +23,5 @@ public class ForbiddenException extends BaseException {
     public ForbiddenException(CommonResponseStatus errorCode) {
         super(errorCode);
     }
+
 }

@@ -85,6 +85,9 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "01-09 소셜 회원가입 Request🔑")
     public static class SocialSignUp {
+        @ApiModelProperty(notes = "소셜 type",required = true,example = "KAKAO")
+        private String type;
+
         @ApiModelProperty(notes = "소셜 id", required = true, example = "214124215125")
         private String socialId;
 

@@ -56,7 +56,7 @@ public class UserConvertor {
                 .name(socialSignUp.getNickname())
                 .nickname(socialSignUp.getNickname())
                 .username(socialSignUp.getSocialId())
-                .social("KAKAO")
+                .social(socialSignUp.getType())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .agreeInfo(true)

@@ -1,29 +1,25 @@
 package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
+import com.example.runway.constants.Constants;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.service.AuthService;
-import com.example.runway.service.AwsS3Service;
 import com.example.runway.service.LoginService;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
 import java.io.IOException;
 
-import static com.example.runway.common.CommonResponseStatus.*;
-import static com.example.runway.common.CommonResponseStatus.USERS_EXISTS_ID;
+import static com.example.runway.constants.CommonResponseStatus.*;
+import static com.example.runway.constants.CommonResponseStatus.USERS_EXISTS_ID;
 
 @Api(tags = "01 - 로그인 🔑")
 @RequiredArgsConstructor
@@ -153,7 +149,11 @@ public class LoginController {
         if(socialSignUp.getSocialId()==null) throw new BadRequestException(USERS_EMPTY_USER_ID);
         if(logInService.checkuserId(socialSignUp.getSocialId()))  throw new ForbiddenException(USERS_EXISTS_SOCIAL_ID);
         if(logInService.checkNickName(socialSignUp.getNickname())) throw new ForbiddenException(USERS_EXISTS_NICKNAME);
-        UserRes.SignUp signUp = logInService.signUpSocial(socialSignUp);
+
+        UserRes.SignUp signUp = null;
+        if(socialSignUp.getType().equals(Constants.kakao)){
+            signUp=logInService.signUpSocial(socialSignUp);
+        }
         return CommonResponse.onSuccess(signUp);
 
     }

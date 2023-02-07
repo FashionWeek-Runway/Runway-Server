@@ -3,14 +3,14 @@ package com.example.runway.exception;
 import com.example.runway.common.CommonResponseStatus;
 import lombok.Getter;
 
-import static com.example.runway.common.CommonResponseStatus.BAD_REQUEST;
+import static com.example.runway.common.CommonResponseStatus._BAD_REQUEST;
 
 @Getter
 public class BadRequestException extends BaseException {
     private String message;
 
     public BadRequestException(String message) {
-        super(BAD_REQUEST);
+        super(_BAD_REQUEST);
         this.message = message;
     }
 

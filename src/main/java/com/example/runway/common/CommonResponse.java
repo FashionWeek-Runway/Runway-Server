@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.example.runway.common.CommonResponseStatus.SUCCESS;
 
 
 @Getter
@@ -22,7 +21,7 @@ public class CommonResponse<T> {
     private final Boolean isSuccess;
     @Schema(description = "응답 메시지", required = true, example = "요청에 성공하였습니다.")
     private final String message;
-    @Schema(description = "응답코드", required = true, example = "1000")
+    @Schema(description = "응답 코드", required = true, example = "1000")
     private final String code;
     @Schema(description = "응답 결과", required = false, example = "응답 결과")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,18 +30,17 @@ public class CommonResponse<T> {
 
 
     // 요청에 성공한 경우
-    public CommonResponse(T result) {
-        this.isSuccess = SUCCESS.isSuccess();
-        this.message = SUCCESS.getMessage();
-        this.code = SUCCESS.getCode();
-        this.result = result;
+
+
+
+
+    public static <T> CommonResponse<T> onSuccess(T data) {
+        return new CommonResponse<>(true, "요청에 성공하였습니다.","1000", data);
     }
 
-    // 요청에 실패한 경우
-    public CommonResponse(CommonResponseStatus status) {
-        this.isSuccess = status.isSuccess();
-        this.message = status.getMessage();
-        this.code = status.getCode();
+    public static <T> CommonResponse<T> onFailure(String code, String message, T data) {
+        return new CommonResponse<>(false, message, code, data);
     }
+
 }
 

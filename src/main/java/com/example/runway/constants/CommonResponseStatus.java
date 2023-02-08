@@ -79,10 +79,10 @@ public enum CommonResponseStatus {
     NOT_CORRECT_PASSWORD(NOT_FOUND, "U010", "비밀번호가 일치하지 않습니다."),
 
     ALREADY_DELETED_USER(BAD_REQUEST, "U011", "이미 탈퇴된 유저입니다."),
+
     NOT_CORRECT_USER(NOT_FOUND,"U012","회원 정보에 일치하는 아이디가 없습니다."),
+
     NOT_EXIST_KAKAO(NOT_FOUND,"U013","회원정보에 존재하는 카카오가 존재하지 않습니다. 회원가입 해주세요"),
-
-
 
     NOT_POST_CONTENT(BAD_REQUEST,"U015","내용을 입력해주세요."),
 
@@ -92,11 +92,14 @@ public enum CommonResponseStatus {
 
     FAIL_UPLOAD_IMG(BAD_REQUEST,"U018","사진 업로드에 실패했습니다."),
     WRONG_FORMAT_FILE(BAD_REQUEST,"U019","잘못된 형식에 이미지 파일입니다."),
+
     CATEGORY_EMPTY_USERS(BAD_REQUEST,"U020","취향을 하나 이상 등록해주세요"),
     NOT_EXIST_USER(NOT_FOUND, "U021", "존재하지 않는 유저입니다."),
     USER_NOT_FOUND(NOT_FOUND,"U022","가입되지 않은 유저입니다. 추가정보를 입력해 주세요"),
     KAKAO_SERVER_ERROR(FORBIDDEN,"U023","카카오 서버 에러"),
-    USERS_EXISTS_SOCIAL_ID(BAD_REQUEST,"U024","중복된 소셜 ID 입니다.")
+    USERS_EXISTS_SOCIAL_ID(BAD_REQUEST,"U024","중복된 소셜 ID 입니다."),
+
+    LIMIT_CERTIFICATE_SMS(BAD_REQUEST,"U025","해당 번호는 인증 횟수를 초과 하였습니다. 10분뒤에 시도해주세요")
 
 
     ;

@@ -122,11 +122,15 @@ public class LoginController {
         log.info("send-sms");
         log.info("api = send-sms, phonenumber={}",message.getTo());
 
+
         if(logInService.checkuserId(message.getTo()))throw new BadRequestException(USERS_EXISTS_ID);
         if(!logInService.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
-        //logInService.countUserPhone(phone);
+        if(smsService.checkLimitCertification(message.getTo())>=5)throw new BadRequestException(LIMIT_CERTIFICATE_SMS);
+
         UserRes.SmsResponse response=smsService.sendSms(message);
+        //문자 인증 횟수 카운트
+        logInService.countUserPhone(message.getTo());
         return CommonResponse.onSuccess(response);
 
     }
@@ -150,6 +154,20 @@ public class LoginController {
             return CommonResponse.onSuccess(tokenRes);
 
     }
+
+    /*
+    @ApiOperation(value = "01-08 애플 로그인 🔑", notes = "유저 애플 로그인")
+    @ResponseBody
+    @PostMapping("/apple")
+    public CommonResponse<UserRes.Token> appleLogin(@RequestBody UserReq.SocialReq socialReq) throws BaseException{
+
+        UserRes.Token tokenRes = authService.logInKakaoUser(socialReq);
+        return CommonResponse.onSuccess(tokenRes);
+
+    }
+
+     */
+
 
     @ApiOperation(value = "01-09 소셜 회원가입 🔑", notes = "유저 카카오 로그인")
     @ResponseBody

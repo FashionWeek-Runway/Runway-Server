@@ -14,6 +14,10 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
             " join Category C on SC.category_id = C.id where C.category IN (:categoryList) group by S.id",nativeQuery = true)
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList);
+
+    boolean existsByIdAndStatus(Long storeId, boolean b);
+
+
     interface GetMapList{
         Long getStoreId();
         String getStoreName();
@@ -40,5 +44,31 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getStoreImg();
         String getStoreCategory();
         String getStoreName();
+    }
+
+    @Query(value = "select S.id             'storeId',\n" +
+            "       S.name           'storeName',\n" +
+            "       S.address,\n" +
+            "       S.time           'storeTime',\n" +
+            "       S.phone_number   'storePhone',\n" +
+            "       S.instagram_link 'instagram',\n" +
+            "       S.website,\n" +
+            "       (select GROUP_CONCAT(C.category SEPARATOR ',')\n" +
+            "                    from Category C\n" +
+            "                             join StoreCategory SC on SC.category_id = C.id\n" +
+            "                             join Store S2 on SC.store_id = S2.id\n" +
+            "                    where S.id = S2.id\n" +
+            "                   )as 'category'\n" +
+            "from Store S where S.id=:storeId and S.status=true;",nativeQuery = true)
+    StoreInfo getStoreInfo(@Param("storeId") Long storeId);
+    interface StoreInfo {
+        Long getStoreId();
+        String getCategory();
+        String getStoreName();
+        String getAddress();
+        String getWebsite();
+        String getStoreTime();
+        String getStorePhone();
+        String getInstagram();
     }
 }

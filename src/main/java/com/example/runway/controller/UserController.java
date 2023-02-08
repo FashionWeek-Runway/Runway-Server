@@ -17,7 +17,7 @@ import static com.example.runway.constants.CommonResponseStatus.ForbiddenExcepti
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
 
 
-@Api(tags = "02 - 사용자 👤")
+@Api(tags = "02-사용자 👤")
 @RequiredArgsConstructor
 @RestController
 @Slf4j

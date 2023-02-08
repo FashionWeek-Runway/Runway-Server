@@ -2,6 +2,7 @@ package com.example.runway.service;
 
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.repository.SmsUserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +43,8 @@ public class SmsServiceImpl implements SmsService {
 
     @Value("${naver-cloud-sms.sender.phone}")
     private String phone;
+
+    private final SmsUserRepository smsUserRepository;
 
     public String makeSignature(String time) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         String space = " ";
@@ -69,7 +74,7 @@ public class SmsServiceImpl implements SmsService {
         return encodeBase64String;
     }
 
-    public UserRes.SmsResponse sendSms(UserReq.Message messageDto) throws RestClientException, URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException, JsonProcessingException {
+    public UserRes.SmsResponse sendSms(UserReq.Message messageDto) throws  URISyntaxException, InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException, JsonProcessingException {
         String time = Long.toString(System.currentTimeMillis());
 
         String smsConfirmNum = createSmsKey();
@@ -106,6 +111,15 @@ public class SmsServiceImpl implements SmsService {
         smsResponseDto.setSmsConfirmNum(smsConfirmNum);
         // redisUtil.setDataExpire(smsConfirmNum, messageDto.getTo(), 60 * 3L); // 유효시간 3분
         return smsResponseDto;
+    }
+
+    @Override
+    public int checkLimitCertification(String to) {
+
+        LocalDateTime todayLocalTime = LocalDateTime.now();
+        LocalDateTime dateTime =todayLocalTime.minusMinutes(10);
+
+        return smsUserRepository.countByPhoneAndCreatedAtGreaterThan(to,dateTime);
     }
 
     // 인증코드 만들기

@@ -44,7 +44,7 @@ public class UserController {
             throw new BaseException(ForbiddenException);
         }
 
-        UserRes.ReIssueToken tokenRes=new UserRes.ReIssueToken(tokenProvider.createRefreshToken(userId));
+        UserRes.ReIssueToken tokenRes=new UserRes.ReIssueToken(tokenProvider.createToken(userId));
 
         return CommonResponse.onSuccess(tokenRes);
 

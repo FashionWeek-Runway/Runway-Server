@@ -166,7 +166,7 @@ public class TokenProvider implements InitializingBean {
     public void logOut(Long userId, String accessToken) {
         long expiredAccessTokenTime=getExpiredTime(accessToken).getTime() - new Date().getTime();
         //Redis 에 액세스 토큰값을 key 로 가지는 userId 값 저장
-        redisService.saveToken(accessToken,String.valueOf(userId),expiredAccessTokenTime);
+        redisService.saveValues(accessToken,String.valueOf(userId),expiredAccessTokenTime);
         //Redis 에 저장된 refreshToken 삭제
         redisService.deleteValues(String.valueOf(userId));
     }

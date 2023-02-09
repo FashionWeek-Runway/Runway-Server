@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StoreConvertor {
-    public static MapRes.GetMapRes StoreMapBuilder(Store value) {
-        return MapRes.GetMapRes.builder().storeId(value.getId()).storeName(value.getName()).latitude(value.getLatitude()).longitude(value.getLongitude()).build();
+    public static MapRes.Map StoreMapBuilder(Store value) {
+        return MapRes.Map.builder().storeId(value.getId()).storeName(value.getName()).latitude(value.getLatitude()).longitude(value.getLongitude()).build();
     }
 
     public static StoreRes.StoreInfo getStoreDetail(StoreRepository.StoreInfo storeResult, boolean checkBookMark, List<String> imgList) {

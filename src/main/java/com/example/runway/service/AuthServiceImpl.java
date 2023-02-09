@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public UserRes.Token logInKakaoUser(UserReq.SocialReq socialReq) throws ForbiddenException {
+    public UserRes.Token logInKakaoUser(UserReq.SocialLogin SocialLogin) throws ForbiddenException {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
         //access_token을 이용하여 사용자 정보 조회
@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService{
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + socialReq.getAccessToken()); //전송할 header 작성, access_token전송
+            conn.setRequestProperty("Authorization", "Bearer " + SocialLogin.getAccessToken()); //전송할 header 작성, access_token전송
 
             //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
@@ -143,7 +143,7 @@ public class AuthServiceImpl implements AuthService{
 
             UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
-            redisService.saveToken(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
+            redisService.saveValues(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
 
             return new UserRes.Token(userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
 
@@ -176,9 +176,9 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    public UserRes.Token appleLogin(UserReq.SocialReq socialReq) {
+    public UserRes.Token appleLogin(UserReq.SocialLogin SocialLogin) {
 
-        String token = socialReq.getAccessToken();
+        String token = SocialLogin.getAccessToken();
         String appleReqUrl = "https://appleid.apple.com/auth/keys";
         StringBuffer result = new StringBuffer();
         String email;
@@ -263,7 +263,7 @@ public class AuthServiceImpl implements AuthService{
         Long userId=user.getId();
         UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
-        redisService.saveToken(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
+        redisService.saveValues(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
 
         return new UserRes.Token(userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
 

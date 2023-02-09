@@ -50,7 +50,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01-01 회원가입 🔑 API Response")
+    @ApiModel(value = "01-01,10 회원가입 🔑 API Response")
     public static class SignUp {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스

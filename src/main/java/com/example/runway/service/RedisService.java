@@ -12,5 +12,5 @@ public interface RedisService {
 
     void deleteValues(String key) ;
 
-    void saveToken(String userId, String refreshToken, long time);
+    void saveValues(String key, String value, long time);
 }

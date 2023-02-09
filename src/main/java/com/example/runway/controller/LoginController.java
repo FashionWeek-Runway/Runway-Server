@@ -7,6 +7,7 @@ import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
+import com.example.runway.exception.NotFoundException;
 import com.example.runway.service.AuthService;
 import com.example.runway.service.LoginService;
 import com.example.runway.service.RedisService;
@@ -111,7 +112,7 @@ public class LoginController {
         log.info("change-password-phone");
         log.info("api = check-phone, phonenumber={}",postPassword.getPassword());
 
-        if (logInService.checkuserId(postPassword.getPhone())) throw new ForbiddenException(NOT_EXIST_USER);
+        if (logInService.checkuserId(postPassword.getPhone())) throw new NotFoundException(NOT_EXIST_USER);
 
         logInService.modifyPassword(postPassword);
         return CommonResponse.onSuccess("비밀번호 변경성공");
@@ -120,7 +121,7 @@ public class LoginController {
     }
 
     @ApiOperation(value = "01-06 유저 인증번호 전송 🔑", notes = "유저 전화번호 인증")
-    @PostMapping("/check")
+    @PostMapping("/send")
     public CommonResponse<String> sendSMS(@RequestBody UserReq.Message message) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         log.info("send-sms");
         log.info("api = send-sms, phonenumber={}",message.getTo());
@@ -138,7 +139,7 @@ public class LoginController {
 
     }
     @ApiOperation(value = "01-07 유저 인증번호 확인 🔑", notes = "유저 인증번호 확인")
-    @PostMapping("/send")
+    @PostMapping("/check")
     public CommonResponse<String> checkSMS(@RequestBody UserReq.MessageCheck message)  {
         log.info("send-sms");
         log.info("api = check-sms, phonenumber={}",message.getTo());

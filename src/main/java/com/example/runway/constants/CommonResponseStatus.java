@@ -65,15 +65,14 @@ public enum CommonResponseStatus {
 
     FAILED_TO_SIGN_UP(FORBIDDEN, "U004", "회원가입에 실패하였습니다."),
 
-    USERS_EXISTS_ID(BAD_REQUEST,"U005","중복된 전화번호입니다."),
+    USERS_EXISTS_ID(FORBIDDEN,"U005","중복된 전화번호입니다."),
 
-    USERS_EXISTS_NICKNAME(BAD_REQUEST,"U006","중복된 닉네임입니다."),
+    USERS_EXISTS_NICKNAME(FORBIDDEN,"U006","중복된 닉네임입니다."),
 
     POST_USERS_EMPTY_NICKNAME(BAD_REQUEST,"U007","닉네임을 입력해주세요."),
 
     FAILED_TO_LOGIN(BAD_REQUEST, "U008", "로그인에 실패하였습니다."),
 
-    NOT_EXIST_NICKNAME(NOT_FOUND, "U009", "존재하지 않는 닉네임입니다."),
 
 
     NOT_CORRECT_PASSWORD(NOT_FOUND, "U010", "비밀번호가 일치하지 않습니다."),
@@ -95,16 +94,18 @@ public enum CommonResponseStatus {
 
     CATEGORY_EMPTY_USERS(BAD_REQUEST,"U020","취향을 하나 이상 등록해주세요"),
     NOT_EXIST_USER(NOT_FOUND, "U021", "존재하지 않는 유저입니다."),
-    USER_NOT_FOUND(NOT_FOUND,"U022","가입되지 않은 유저입니다. 추가정보를 입력해 주세요"),
+    USER_NOT_FOUND(BAD_REQUEST,"U022","가입되지 않은 유저입니다. 추가정보를 입력해 주세요"),
     KAKAO_SERVER_ERROR(FORBIDDEN,"U023","카카오 서버 에러"),
     USERS_EXISTS_SOCIAL_ID(BAD_REQUEST,"U024","중복된 소셜 ID 입니다."),
 
     LIMIT_CERTIFICATE_SMS(BAD_REQUEST,"U025","해당 번호는 인증 횟수를 초과 하였습니다. 10분뒤에 시도해주세요"),
+
     NOT_CORRECT_CONFIRM_NUM(BAD_REQUEST,"U026","인증번호가 일치하지 않습니다."),
+
     NOT_EXIST_CONFIRM_NUM(BAD_REQUEST,"U027","요청한 전화번호가 존재하지 않습니다."),
 
 
-    NOT_EXIST_STORE(BAD_REQUEST,"S001","해당 가게는 존재하지 않습니다.")
+    NOT_EXIST_STORE(NOT_FOUND,"S001","해당 가게는 존재하지 않습니다.")
 
 
     ;

@@ -80,7 +80,7 @@ public class LoginServiceImpl implements LoginService {
         String accessToken=tokenProvider.createToken(userId);
         String refreshToken=tokenProvider.createRefreshToken(userId);
 
-        redisService.saveToken(String.valueOf(userId),refreshToken, (System.currentTimeMillis()+ refreshTime*1000));
+        redisService.saveValues(String.valueOf(userId),refreshToken, (System.currentTimeMillis()+ refreshTime*1000));
 
         return new UserRes.GenerateToken(accessToken,refreshToken);
     }

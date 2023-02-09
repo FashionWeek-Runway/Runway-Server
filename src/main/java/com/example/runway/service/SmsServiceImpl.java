@@ -21,8 +21,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class SmsServiceImpl implements SmsService {
     @Value("${naver-cloud-sms.sender.phone}")
     private String phone;
 
+    private final RedisService redisService;
+
     private final SmsUserRepository smsUserRepository;
 
     public String makeSignature(String time) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
@@ -64,11 +68,11 @@ public class SmsServiceImpl implements SmsService {
                 .append(accessKey)
                 .toString();
 
-        SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
+        SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(signingKey);
 
-        byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
+        byte[] rawHmac = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
         String encodeBase64String = Base64.encodeBase64String(rawHmac);
 
         return encodeBase64String;
@@ -105,11 +109,15 @@ public class SmsServiceImpl implements SmsService {
         HttpEntity<String> httpBody = new HttpEntity<>(body, headers);
 
         RestTemplate restTemplate = new RestTemplate();
+
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         //restTemplate로 post 요청 보내고 오류가 없으면 202코드 반환
         UserRes.SmsResponse smsResponseDto = restTemplate.postForObject(new URI("https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages"), httpBody, UserRes.SmsResponse.class);
+
         smsResponseDto.setSmsConfirmNum(smsConfirmNum);
-        // redisUtil.setDataExpire(smsConfirmNum, messageDto.getTo(), 60 * 3L); // 유효시간 3분
+
+        redisService.setValues(messageDto.getTo(),smsConfirmNum, Duration.ofSeconds(180));
+
         return smsResponseDto;
     }
 
@@ -120,6 +128,11 @@ public class SmsServiceImpl implements SmsService {
         LocalDateTime dateTime =todayLocalTime.minusMinutes(10);
 
         return smsUserRepository.countByPhoneAndCreatedAtGreaterThan(to,dateTime);
+    }
+
+    @Override
+    public String getSmsConfirmNum(String to) {
+        return redisService.getValues(to);
     }
 
     // 인증코드 만들기

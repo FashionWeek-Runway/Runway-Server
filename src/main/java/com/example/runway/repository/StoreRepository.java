@@ -1,6 +1,8 @@
 package com.example.runway.repository;
 
 import com.example.runway.domain.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,8 +39,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "       )as 'storeCategory'\n" +
             "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
             "join Category C on SC.category_id = C.id\n" +
-            "join StoreImg SI on S.id = SI.store_id where C.category IN (:categoryList) and sequence=1  group by S.id;",nativeQuery = true)
-    List<StoreInfoList> getStoreInfoFilter(@Param("categoryList") List<String> categoryList);
+            "join StoreImg SI on S.id = SI.store_id where C.category IN (:categoryList) and sequence=1 and S.status=true group by S.id ",
+            countQuery = "select count(*) from Store S join StoreCategory SC on S.id = SC.store_id \n" +
+                    "join Category C on SC.category_id = C.id \n" +
+                    "join StoreImg SI on S.id = SI.store_id where C.category IN (:categoryList) and sequence=1 and S.status=true group by S.id",
+            nativeQuery = true)
+    Page<StoreInfoList> getStoreInfoFilter(@Param("categoryList") List<String> categoryList, Pageable pageReq);
     interface StoreInfoList {
         Long getStoreId();
         String getStoreImg();

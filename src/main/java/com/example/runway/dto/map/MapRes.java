@@ -14,7 +14,7 @@ public class MapRes {
     @AllArgsConstructor
     @NoArgsConstructor
     @ApiModel(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API Response")
-    public static class GetMapRes {
+    public static class Map {
 
         @ApiModelProperty(notes = "쇼룸 id", required = true, example = "1")
         private Long storeId;
@@ -36,7 +36,7 @@ public class MapRes {
     @AllArgsConstructor
     @NoArgsConstructor
     @ApiModel(value = "04-02 지도 필터링 조회 🗺 API Response")
-    public static class GetStoreInfoListRes {
+    public static class StoreInfo {
 
         @ApiModelProperty(notes = "쇼룸 id", required = true, example = "1")
         private Long storeId;
@@ -51,5 +51,17 @@ public class MapRes {
         private String storeName;
 
 
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "04-02 지도 검색 조회 🗺 API Response")
+    public static class StoreSearchList {
+        private Long storeId;
+        private String storeName;
+        private String address;
     }
 }

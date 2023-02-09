@@ -13,7 +13,7 @@ public class StoreRes {
     @AllArgsConstructor
     @NoArgsConstructor
     @ApiModel(value = "03. 쇼룸🏬 API Response")
-    public static class getHomeList{
+    public static class HomeList{
         @ApiModelProperty(notes ="추천 쇼롬", required = true, example = "추천 쇼룸입니다.")
         private StorePreview recommendStore;
         @ApiModelProperty(notes ="쇼룸", required = true, example = "쇼룸 리스트가 나옵니다.")
@@ -43,7 +43,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03 Map 쇼룸 상세 페이지 상단 정보 🗺 API Response")
+    @ApiModel(value = "03-02 쇼룸 상단정보  🏬 API Response")
     public static class StoreInfo {
         @ApiModelProperty(notes ="쇼룸 Id", required = true, example = "1")
         private Long storeId;
@@ -82,9 +82,21 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-04 Map 쇼룸 사용자 후기 API Response")
+    @ApiModel(value = "03-03 쇼룸 사용자 후기 🏬 API Response")
     public static class StoreReview {
         private Long reviewId;
         private String imgUrl;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "03-04 쇼룸 블로그 크롤링 🏬 API Response")
+    public static class StoreBlog {
+        private String webUrl;
+        private String imgUrl;
+        private String title;
     }
 }

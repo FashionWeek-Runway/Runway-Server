@@ -2,10 +2,14 @@ package com.example.runway.service;
 
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Store;
+import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,19 +24,19 @@ public class MapServiceImpl implements MapService {
     private final StoreService storeService;
 
     @Override
-    public List<MapRes.GetMapRes> getMainMap(Long userId) {
+    public List<MapRes.Map> getMainMap(Long userId) {
         List<Store> storeList=storeRepository.findAll();
-        List<MapRes.GetMapRes> getMapList=new ArrayList<>();
+        List<MapRes.Map> getMapList=new ArrayList<>();
         for (Store value : storeList){
-            MapRes.GetMapRes map= StoreConvertor.StoreMapBuilder(value);
+            MapRes.Map map= StoreConvertor.StoreMapBuilder(value);
             getMapList.add(map);
         }
         return getMapList;
     }
 
     @Override
-    public List<MapRes.GetMapRes> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
-        List<MapRes.GetMapRes> mapList=new ArrayList<>();
+    public List<MapRes.Map> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
+        List<MapRes.Map> mapList=new ArrayList<>();
         List<String> categoryList=storeService.getCategoryList();
 
         List<StoreRepository.GetMapList> mapResult=null;
@@ -46,7 +50,7 @@ public class MapServiceImpl implements MapService {
 
         mapResult.forEach(
                 result->{
-                    mapList.add(new MapRes.GetMapRes(
+                    mapList.add(new MapRes.Map(
                             result.getStoreId(),
                             result.getStoreName(),
                             result.getLatitude(),
@@ -61,14 +65,15 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public List<MapRes.GetStoreInfoListRes> getStoreInfoFilter(Long userId, MapReq.FilterMap filterMap) {
-        List<MapRes.GetStoreInfoListRes> storeInfoList=new ArrayList<>();
+    public PageResponse<List<MapRes.StoreInfo>> getStoreInfoFilter(Long userId, MapReq.FilterMap filterMap, Integer page, Integer size) {
+        List<MapRes.StoreInfo> storeInfoList=new ArrayList<>();
 
-        List<StoreRepository.StoreInfoList> storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory());
+        Pageable pageReq = PageRequest.of(page, size);
+        Page<StoreRepository.StoreInfoList> storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq);
 
         storeResult.forEach(
                 result->{
-                    storeInfoList.add(new MapRes.GetStoreInfoListRes(
+                    storeInfoList.add(new MapRes.StoreInfo(
                             result.getStoreId(),
                             result.getStoreImg(),
                             Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
@@ -77,7 +82,12 @@ public class MapServiceImpl implements MapService {
                 }
         );
 
-        return storeInfoList;
+        return new PageResponse<>(storeResult.isLast(),storeInfoList);
+    }
+
+    @Override
+    public List<MapRes.StoreSearchList> getStoreBySearch(String content) {
+        return null;
     }
 
 }

@@ -32,8 +32,8 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.delete(key);
     }
 
-    public void saveToken(String userId, String refreshToken, long time){
-        redisTemplate.opsForValue().set(userId, refreshToken, time, TimeUnit.MILLISECONDS);
+    public void saveValues(String key, String value, long time){
+        redisTemplate.opsForValue().set(key, value, time, TimeUnit.MILLISECONDS);
         //💡 Redis 에 저장 후 만료시간 설정을 위해 자동 삭제처리
     }
 }

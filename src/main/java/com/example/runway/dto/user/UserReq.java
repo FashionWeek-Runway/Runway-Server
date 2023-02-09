@@ -72,8 +72,8 @@ public class UserReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01-06,07 소셜 로그인 토큰 API Request🔑")
-    public static class SocialReq {
+    @ApiModel(value = "01-08,09 소셜 로그인 토큰 API Request🔑")
+    public static class SocialLogin {
         @ApiModelProperty(notes ="액세스 토큰", required = true, example = "소셜 액세스 토큰")
         private String accessToken;
     }
@@ -83,7 +83,7 @@ public class UserReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01-09 소셜 회원가입 Request🔑")
+    @ApiModel(value = "01-10 소셜 회원가입 Request🔑")
     public static class SocialSignUp {
         @ApiModelProperty(notes = "소셜 type",required = true,example = "KAKAO")
         private String type;
@@ -125,6 +125,20 @@ public class UserReq {
     public static class Message {
         @ApiModelProperty(notes ="요청 전화번호", required = true, example = "01012345678")
         private String to;
+//    String content;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Builder
+    @ApiModel(value = "01-07 문자인증 🔑 API Request")
+    public static class MessageCheck {
+        @ApiModelProperty(notes ="요청 전화번호", required = true, example = "01012345678")
+        private String to;
+
+        @ApiModelProperty(notes ="인증번호", required = true, example = "124566")
+        private String confirmNum;
 //    String content;
     }
 }

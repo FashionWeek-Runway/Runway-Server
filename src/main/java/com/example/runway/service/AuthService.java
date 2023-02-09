@@ -7,6 +7,6 @@ import com.example.runway.exception.ForbiddenException;
 public interface AuthService {
     String getKakaoAccessToken(String code);
 
-    UserRes.Token logInKakaoUser(UserReq.SocialReq socialReq) throws ForbiddenException;
+    UserRes.Token logInKakaoUser(UserReq.SocialLogin SocialLogin) throws ForbiddenException;
 
 }

@@ -8,6 +8,7 @@ import com.example.runway.domain.Authority;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.exception.NotFoundException;
 import com.example.runway.jwt.TokenProvider;
 import com.example.runway.repository.SmsUserRepository;
 import com.example.runway.repository.UserCategoryRepository;
@@ -63,7 +64,7 @@ public class LoginServiceImpl implements LoginService {
 
 
         if(!passwordEncoder.matches(loginUserInfo.getPassword(),user.get().getPassword())){
-            throw new BaseException(NOT_CORRECT_PASSWORD);
+            throw new NotFoundException(NOT_CORRECT_PASSWORD);
         }
 
         user.get().updateLogInDate(LocalDateTime.now());

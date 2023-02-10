@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.example.runway.constants.Constants.CATEGORY;
+
 @Service
 @RequiredArgsConstructor
 public class MapServiceImpl implements MapService {
@@ -37,12 +39,11 @@ public class MapServiceImpl implements MapService {
     @Override
     public List<MapRes.Map> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
         List<MapRes.Map> mapList=new ArrayList<>();
-        List<String> categoryList=storeService.getCategoryList();
 
         List<StoreRepository.GetMapList> mapResult=null;
 
         if(filterMap.getCategory().size()==0){
-            mapResult=storeRepository.getMapListFilter(categoryList);
+            mapResult=storeRepository.getMapListFilter(CATEGORY);
         }
         else{
             mapResult=storeRepository.getMapListFilter(filterMap.getCategory());

@@ -9,5 +9,6 @@ public interface AuthService {
 
     UserRes.Token logInKakaoUser(UserReq.SocialLogin SocialLogin) throws ForbiddenException;
 
-    UserRes.Token appleLogin(UserReq.SocialLogin socialLogin);
+    UserRes.Token appleLogin(UserReq.SocialLogin SocialLogin);
+
 }

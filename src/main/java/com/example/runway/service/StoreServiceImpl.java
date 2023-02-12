@@ -1,5 +1,6 @@
 package com.example.runway.service;
 
+import com.example.runway.convertor.ReviewConvertor;
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.*;
 import com.example.runway.dto.PageResponse;
@@ -10,7 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +27,7 @@ public class StoreServiceImpl implements StoreService{
     private final KeepRepository keepRepository;
     private final StoreImgRepository storeImgRepository;
     private final StoreReviewRepository storeReviewRepository;
+    private final AwsS3Service awsS3Service;
 
     public StoreRes.HomeList getMainHome(Long userId) {
 
@@ -54,7 +58,7 @@ public class StoreServiceImpl implements StoreService{
 
         Pageable pageReq = PageRequest.of(page, size);
 
-        Page<StoreReview> storeReview = storeReviewRepository.findByStoreIdAndStatus(storeId, true,pageReq);
+        Page<StoreReview> storeReview = storeReviewRepository.findByStoreIdAndStatusOrderByCreatedAtDesc(storeId, true, pageReq);
 
         for (StoreReview review : storeReview) {
             StoreRes.StoreReview storeReviewDto = StoreConvertor.StoreReviewBuilder(review);
@@ -68,6 +72,15 @@ public class StoreServiceImpl implements StoreService{
     public PageResponse<List<StoreRes.StoreBlog>> getStoreBlog(Long storeId, Integer page, Integer size) {
 
         return null;
+    }
+
+    @Override
+    public void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException {
+        String imgUrl = awsS3Service.upload(multipartFile,"review");
+
+        StoreReview storeReview = ReviewConvertor.UploadImg(storeId,userId,imgUrl);
+
+        storeReviewRepository.save(storeReview);
     }
 
     private List<String> getStoreImgList(Long storeId) {

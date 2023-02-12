@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
-    Page<StoreReview> findByStoreIdAndStatus(Long storeId,  boolean b,Pageable pageReq);
+    Page<StoreReview> findByStoreIdAndStatusOrderByCreatedAtDesc(Long storeId,  boolean b,Pageable pageReq);
 }

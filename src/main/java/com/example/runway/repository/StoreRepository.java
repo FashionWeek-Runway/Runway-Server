@@ -1,6 +1,7 @@
 package com.example.runway.repository;
 
 import com.example.runway.domain.Store;
+import com.example.runway.dto.map.MapRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,10 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList);
 
     boolean existsByIdAndStatus(Long storeId, boolean b);
+
+
+
+    List<Store> findByNameContainingOrAddressContainingOrRegionContaining(String content, String content1, String content2);
 
 
     interface GetMapList{

@@ -175,18 +175,18 @@ public class LoginController {
 
     }
 
-    /*
+
     @ApiOperation(value = "01-09 애플 로그인 🔑", notes = "유저 애플 로그인")
     @ResponseBody
     @PostMapping("/apple")
     public CommonResponse<UserRes.Token> appleLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
 
-        UserRes.Token tokenRes = authService.logInKakaoUser(SocialLogin);
+        UserRes.Token tokenRes = authService.appleLogin(SocialLogin);
         return CommonResponse.onSuccess(tokenRes);
 
     }
 
-     */
+
 
 
     @ApiOperation(value = "01-10 소셜 회원가입 🔑", notes = "유저 카카오 로그인")

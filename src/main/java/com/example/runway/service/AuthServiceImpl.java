@@ -3,19 +3,31 @@ package com.example.runway.service;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.repository.UserRepository;
 import com.google.gson.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.example.runway.constants.CommonResponseStatus.*;
 
@@ -155,7 +167,7 @@ public class AuthServiceImpl implements AuthService{
 
 
 
-    /*
+
     //애플 공개키
     public PublicKey getPublicKey(JsonObject object) {
         String nStr = object.get("n").toString();
@@ -181,7 +193,7 @@ public class AuthServiceImpl implements AuthService{
         String token = SocialLogin.getAccessToken();
         String appleReqUrl = "https://appleid.apple.com/auth/keys";
         StringBuffer result = new StringBuffer();
-        String email;
+        String sub;
 
         // 애플 api로 토큰 검증용 공개키 요청
         try {
@@ -249,15 +261,15 @@ public class AuthServiceImpl implements AuthService{
             if (!Objects.equals(userInfoObject.get("aud").getAsString(), "com.fashionweek.runway"))
                 throw new BadRequestException(APPLE_BAD_REQUEST);
 
-            email = userInfoObject.get("email").getAsString();
+            sub = userInfoObject.get("sub").getAsString();
 
         } catch (Exception e) {
             throw new BadRequestException(APPLE_BAD_REQUEST);
         }
 
 
-        User user = userRepository.findByUsernameAndSocialAndStatus(email, "APPLE", true).orElseThrow(() ->
-                new BaseException(USER_NOT_FOUND, Map.of("email", email)));
+        User user = userRepository.findByUsernameAndSocialAndStatus(sub, "APPLE", true).orElseThrow(() ->
+                new BaseException(USER_NOT_FOUND, Map.of("appleId", sub)));
 
         // 가입된 유저 확인 시 jwt, refreshToken 반환
         Long userId=user.getId();
@@ -270,6 +282,6 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
-     */
+
 }
 

@@ -4,7 +4,6 @@ import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.store.StoreRes;
-import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.NotFoundException;
 import com.example.runway.service.CrawlingService;
 import com.example.runway.service.StoreService;
@@ -59,10 +58,10 @@ public class StoreController {
         return CommonResponse.onSuccess(storeReview);
     }
 
-    @ApiOperation(value = "03-04 쇼룸 웹 크롤링  🏬 API",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-04 쇼룸 웹 스크랩핑 🏬 API",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/blog/{storeId}")
     private CommonResponse<List<StoreRes.StoreBlog>> getStoreBlog(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
-                                                                  @Parameter(description = "페이지", example = "0") @RequestParam(required = true) String storeName)
+                                                                  @Parameter(description = "매장이름", example = "0") @RequestParam(required = true) String storeName)
     {
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 

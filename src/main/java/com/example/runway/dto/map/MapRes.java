@@ -58,10 +58,22 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-02 지도 검색 조회 🗺 API Response")
+    @ApiModel(value = "04-03 지도 검색 조회 🗺 API Response")
     public static class StoreSearchList {
+
+        @ApiModelProperty(notes="쇼룸 ID", required = true,example = "1")
         private Long storeId;
+
+        @ApiModelProperty(notes ="쇼룸 이름", required = true, example = "무신사 스탠다드 성수")
         private String storeName;
+
+        @ApiModelProperty(notes="쇼룸 주소",required = true,example = "서울시 성동구 ~~")
         private String address;
+
+        @ApiModelProperty(notes = "위도", required = true, example = "37.544499")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도", required = true, example = "127.055327")
+        private double longitude;
     }
 }

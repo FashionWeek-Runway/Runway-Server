@@ -1,7 +1,6 @@
 package com.example.runway.service;
 
 import com.example.runway.dto.store.StoreRes;
-import com.example.runway.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -48,9 +47,9 @@ public class CrawlingServiceImpl implements CrawlingService{
             StoreRes.StoreBlog storeBlog= StoreRes.StoreBlog.builder().imgUrl(select.select("img.thumb.api_get").attr("src"))
                     .title(select.select("a.api_txt_lines.total_tit._cross_trigger").text())
                     .webUrl(select.select("a.api_txt_lines.total_tit._cross_trigger").attr("href")).build();
-
             storeBlogList.add(storeBlog);
         }
+
         return storeBlogList;
     }
 

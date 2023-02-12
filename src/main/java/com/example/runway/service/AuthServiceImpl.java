@@ -193,7 +193,8 @@ public class AuthServiceImpl implements AuthService{
         String token = SocialLogin.getAccessToken();
         String appleReqUrl = "https://appleid.apple.com/auth/keys";
         StringBuffer result = new StringBuffer();
-        String sub;
+
+        String appleId;
 
         // 애플 api로 토큰 검증용 공개키 요청
         try {
@@ -261,7 +262,8 @@ public class AuthServiceImpl implements AuthService{
             if (!Objects.equals(userInfoObject.get("aud").getAsString(), "com.fashionweek.runway"))
                 throw new BadRequestException(APPLE_BAD_REQUEST);
 
-            sub = userInfoObject.get("sub").getAsString();
+            appleId  = userInfoObject.get("sub").getAsString();
+
 
         } catch (Exception e) {
             throw new BadRequestException(APPLE_BAD_REQUEST);
@@ -269,7 +271,8 @@ public class AuthServiceImpl implements AuthService{
 
 
         User user = userRepository.findByUsernameAndSocialAndStatus(sub, "APPLE", true).orElseThrow(() ->
-                new BaseException(USER_NOT_FOUND, Map.of("appleId", sub)));
+                new BaseException(USER_NOT_FOUND, Map.of("appleId", appleId)));
+
 
         // 가입된 유저 확인 시 jwt, refreshToken 반환
         Long userId=user.getId();

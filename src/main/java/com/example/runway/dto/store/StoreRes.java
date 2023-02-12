@@ -93,10 +93,13 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-04 쇼룸 블로그 크롤링 🏬 API Response")
+    @ApiModel(value = "03-04 쇼룸 블로그 스크랩핑 🏬 API Response")
     public static class StoreBlog {
+        @ApiModelProperty(notes="네이버 view 링크",required = true,example = "네이버 view 링크")
         private String webUrl;
+        @ApiModelProperty(notes="네이버 view imgUrl",required = true,example = "네이버 view imgUrl")
         private String imgUrl;
+        @ApiModelProperty(notes="네이버 view 제목",required = true,example = "네이버 view 제목")
         private String title;
     }
 }

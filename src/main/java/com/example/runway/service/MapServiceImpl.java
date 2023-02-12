@@ -29,10 +29,18 @@ public class MapServiceImpl implements MapService {
     public List<MapRes.Map> getMainMap(Long userId) {
         List<Store> storeList=storeRepository.findAll();
         List<MapRes.Map> getMapList=new ArrayList<>();
-        for (Store value : storeList){
-            MapRes.Map map= StoreConvertor.StoreMapBuilder(value);
-            getMapList.add(map);
-        }
+        storeList.forEach(
+                result->{
+                    getMapList.add(
+                            new MapRes.Map(
+                                    result.getId(),
+                                    result.getName(),
+                                    result.getLatitude(),
+                                    result.getLongitude()
+                            )
+                    );
+                }
+        );
         return getMapList;
     }
 
@@ -95,7 +103,21 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public List<MapRes.StoreSearchList> getStoreBySearch(String content) {
-        return null;
+        List<Store> store=storeRepository.findByNameContainingOrAddressContainingOrRegionContaining(content,content,content);
+        List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
+
+        store.forEach(
+                result-> {
+                    storeSearchList.add(new MapRes.StoreSearchList(
+                            result.getId(),
+                            result.getName(),
+                            result.getAddress(),
+                            result.getLatitude(),
+                            result.getLongitude()
+                    ));
+                }
+        );
+        return storeSearchList;
     }
 
 }

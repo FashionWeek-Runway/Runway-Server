@@ -4,6 +4,7 @@ import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.jwt.TokenProvider;
 import com.example.runway.service.RedisService;
@@ -42,7 +43,7 @@ public class UserController {
         String redisRT= redisService.getValues(String.valueOf(userId));
 
         if(redisRT==null){
-            throw new BaseException(INVALID_REFRESH_TOKEN);
+            throw new BadRequestException(INVALID_REFRESH_TOKEN);
 
         }
 

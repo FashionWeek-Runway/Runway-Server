@@ -24,6 +24,7 @@ import java.net.URL;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,7 +156,6 @@ public class AuthServiceImpl implements AuthService{
 
             UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
-            redisService.saveValues(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
 
             return new UserRes.Token(userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
 
@@ -278,7 +278,6 @@ public class AuthServiceImpl implements AuthService{
         Long userId=user.getId();
         UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
-        redisService.saveValues(String.valueOf(userId), generateToken.getRefreshToken(), (System.currentTimeMillis() + refreshTime * 1000));
 
         return new UserRes.Token(userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
 

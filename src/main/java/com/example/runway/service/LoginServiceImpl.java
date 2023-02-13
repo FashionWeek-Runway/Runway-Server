@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class LoginServiceImpl implements LoginService {
         String accessToken=tokenProvider.createToken(userId);
         String refreshToken=tokenProvider.createRefreshToken(userId);
 
-        redisService.saveValues(String.valueOf(userId),refreshToken, (System.currentTimeMillis()+ refreshTime*1000));
+        redisService.setValues(String.valueOf(userId),refreshToken, Duration.ofSeconds(refreshTime));
 
         return new UserRes.GenerateToken(accessToken,refreshToken);
     }

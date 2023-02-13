@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.runway.constants.CommonResponseStatus.ForbiddenException;
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
 
 
@@ -34,18 +33,19 @@ public class UserController {
     @ApiImplicitParam(name="X-REFRESH-TOKEN",value = "리프레쉬 토큰값",dataType = "String",paramType = "header")
     @ResponseBody
     @PostMapping("/refresh")
-    public CommonResponse<UserRes.ReIssueToken> reIssueToken(@AuthenticationPrincipal User user){
+    public CommonResponse<UserRes.ReIssueToken> reIssueToken(){
 
-        Long userId = user.getId();
+        String refreshToken = tokenProvider.getRefreshToken();
+
+        Long userId=tokenProvider.getUserIdByRefreshToken(refreshToken);
+
         String redisRT= redisService.getValues(String.valueOf(userId));
 
         if(redisRT==null){
             throw new BaseException(INVALID_REFRESH_TOKEN);
 
         }
-        if(!redisRT.equals(tokenProvider.getRefreshToken())){
-            throw new BaseException(ForbiddenException);
-        }
+
 
         UserRes.ReIssueToken tokenRes=new UserRes.ReIssueToken(tokenProvider.createToken(userId));
 
@@ -59,14 +59,15 @@ public class UserController {
     @ApiOperation(value = "02-02 로그아웃 👤", notes = "로그아웃 요청 API")
     @ResponseBody
     @GetMapping("/logout")
-    public CommonResponse<String> logOut(){
+    public CommonResponse<String> logOut(@AuthenticationPrincipal User user){
 
         //탈취된 토큰인지 검증
+        Long userId = user.getId();
 
         //헤더에서 토큰 가져오기
         String accessToken = tokenProvider.getJwt();
         //jwt 에서 로그아웃 처리 & 오류처리 &
-        tokenProvider.logOut(accessToken);
+        tokenProvider.logOut(userId,accessToken);
         //TODO : FCM 설정 시 메소드 주석 삭제
         //logInService.deleteFcmToken(userId);
         String result="로그아웃 성공";
@@ -84,4 +85,6 @@ public class UserController {
         return CommonResponse.onSuccess("위치 정보 저장 성공");
 
     }
+
+
 }

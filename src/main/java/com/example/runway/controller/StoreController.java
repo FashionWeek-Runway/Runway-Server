@@ -87,18 +87,6 @@ public class StoreController {
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
-    @ApiOperation(value = "03-06 쇼룸 후기 조회  🏬 API",notes = "쇼룸 후기 작성 API")
-    @PostMapping("/review/{storeId}")
-    private CommonResponse<String> getStoreReview(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
-                                                   @Parameter(description="img",example ="이미지") @RequestPart(value="img",required = true) MultipartFile multipartFile) throws IOException {
-        Long userId=user.getId();
-
-        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
-
-        storeService.postStoreReview(storeId,userId,multipartFile);
-
-        return CommonResponse.onSuccess("리뷰 등록 성공");
-    }
 
 
 

@@ -1,5 +1,6 @@
 package com.example.runway.domain;
 
+import com.example.runway.dto.user.UserReq;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -106,6 +107,10 @@ public class User extends BaseEntity implements UserDetails{
         this.password=password;
     }
 
+    public void updateUserLocation(UserReq.UserLocation userLocation){
+        this.latitude=userLocation.getLatitude();
+        this.longitude=userLocation.getLongitude();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

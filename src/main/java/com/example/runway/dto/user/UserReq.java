@@ -141,4 +141,17 @@ public class UserReq {
         private String confirmNum;
 //    String content;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Builder
+    @ApiModel(value = "02-03 유저 위치 저장 🔑 API Request")
+    public static class UserLocation {
+        @ApiModelProperty(notes = "유저 위도", required = true, example = "37.544499")
+        private double latitude;
+
+        @ApiModelProperty(notes = "유저 경도", required = true, example = "127.055327")
+        private double longitude;
+    }
 }

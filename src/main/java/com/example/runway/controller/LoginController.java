@@ -212,7 +212,7 @@ public class LoginController {
 
     }
 
-    @Operation(summary = "01-11 리프레쉬 토큰 유효성 검증 👤", description = "처음 앱 진입시 체크 API")
+    @Operation(summary = "01-11 리프레쉬 토큰 유효성 검증 🔑", description = "처음 앱 진입시 체크 API")
     @ApiImplicitParam(name="X-REFRESH-TOKEN",value = "리프레쉬 토큰값",dataType = "String",paramType = "header")
     @ResponseBody
     @PostMapping("/refresh")
@@ -225,14 +225,11 @@ public class LoginController {
         String redisRT= redisService.getValues(String.valueOf(userId));
 
         if(redisRT==null){
-            throw new BaseException(INVALID_REFRESH_TOKEN);
+            throw new BadRequestException(INVALID_REFRESH_TOKEN);
 
         }
 
-
         UserRes.GenerateToken token=logInService.createToken(userId);
-
-
 
         return CommonResponse.onSuccess(new UserRes.Token(userId,token.getAccessToken(),token.getRefreshToken()));
     }

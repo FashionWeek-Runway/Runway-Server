@@ -12,6 +12,7 @@ import com.example.runway.service.AuthService;
 import com.example.runway.service.LoginService;
 import com.example.runway.service.RedisService;
 import com.example.runway.service.SmsService;
+import com.example.runway.util.ValidationRegex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class LoginController {
         if(signupUser.getPhone()==null) throw new BadRequestException(USERS_EMPTY_USER_ID);
         if(logInService.checkuserId(signupUser.getPhone()))  throw new ForbiddenException(USERS_EXISTS_ID);
         if(logInService.checkNickName(signupUser.getNickname())) throw new ForbiddenException(USERS_EXISTS_NICKNAME);
-        if(!logInService.validationPhoneNumber(signupUser.getPhone())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
+        if(!ValidationRegex.validationPhoneNumber(signupUser.getPhone())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
 
         UserRes.SignUp signUp = logInService.signUp(signupUser.getMultipartFile(),signupUser);
@@ -127,7 +128,7 @@ public class LoginController {
         log.info("api = send-sms, phonenumber={}",message.getTo());
 
         if(logInService.checkuserId(message.getTo()))throw new BadRequestException(USERS_EXISTS_ID);
-        if(!logInService.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
+        if(!ValidationRegex.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
         if(smsService.checkLimitCertification(message.getTo())>=5)throw new BadRequestException(LIMIT_CERTIFICATE_SMS);
 

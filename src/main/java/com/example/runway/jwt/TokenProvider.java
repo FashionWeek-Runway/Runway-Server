@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
 
@@ -163,27 +164,25 @@ public class TokenProvider implements InitializingBean {
     }
 
 
-    public void logOut(String refreshToken) {
-        long expiredAccessTokenTime=getExpiredTime(refreshToken).getTime() - new Date().getTime();
-
-        Long userId=getUserIdByRefresh(refreshToken);
+    public void logOut(Long userId, String accessToken) {
+        long expiredAccessTokenTime=getExpiredTime(accessToken).getTime() - new Date().getTime();
         //Redis 에 액세스 토큰값을 key 로 가지는 userId 값 저장
-        redisService.saveValues(refreshToken,String.valueOf(userId),expiredAccessTokenTime);
+        redisService.setValues(accessToken,String.valueOf(userId), Duration.ofSeconds(expiredAccessTokenTime));
         //Redis 에 저장된 refreshToken 삭제
         redisService.deleteValues(String.valueOf(userId));
     }
 
-    public Long getUserIdByRefresh(String refreshToken){
+    public Date getExpiredTime(String token){
+        //받은 토큰의 유효 시간을 받아오기
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();
+    }
+
+    public Long getUserIdByRefreshToken(String refreshToken) {
         Jws<Claims> claims;
         claims = Jwts.parser()
                 .setSigningKey(refreshSecret)
                 .parseClaimsJws(refreshToken);
 
         return claims.getBody().get("userId",Long.class);
-    }
-
-    public Date getExpiredTime(String token){
-        //받은 토큰의 유효 시간을 받아오기
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();
     }
 }

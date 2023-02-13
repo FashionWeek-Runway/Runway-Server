@@ -34,7 +34,24 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         System.out.println(s3FileName);
         ObjectMetadata objMeta = new ObjectMetadata();
 
-        objMeta.setContentType(multipartFile.getContentType());
+
+        //파일 형식 구하기
+        String ext = s3FileName.split("\\.")[1];
+        String contentType = "";
+
+        switch (ext) {
+            case "jpeg":
+                contentType = "image/jpeg";
+                break;
+            case "png":
+                contentType = "image/png";
+                break;
+            case "jpg":
+                contentType = "image/jpg";
+                break;
+        }
+
+        objMeta.setContentType(contentType);
         objMeta.setContentLength(multipartFile.getInputStream().available());
 
         amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);

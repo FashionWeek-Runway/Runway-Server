@@ -78,7 +78,14 @@ public class MapServiceImpl implements MapService {
         List<MapRes.StoreInfo> storeInfoList=new ArrayList<>();
 
         Pageable pageReq = PageRequest.of(page, size);
-        Page<StoreRepository.StoreInfoList> storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq);
+        Page<StoreRepository.StoreInfoList> storeResult=null;
+
+        if(filterMap.getCategory().size()==0){
+            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq);
+        }
+        else{
+            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq);
+        }
 
         storeResult.forEach(
                 result->{

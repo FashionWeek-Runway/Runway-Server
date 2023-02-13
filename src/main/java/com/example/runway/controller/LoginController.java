@@ -204,6 +204,7 @@ public class LoginController {
         if(socialSignUp.getType().equals(Constants.kakao)){
             signUp=logInService.signUpSocial(socialSignUp);
         }
+
         return CommonResponse.onSuccess(signUp);
 
     }

@@ -8,6 +8,7 @@ import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.exception.NotFoundException;
+import com.example.runway.jwt.TokenProvider;
 import com.example.runway.service.AuthService;
 import com.example.runway.service.LoginService;
 import com.example.runway.service.RedisService;
@@ -15,6 +16,7 @@ import com.example.runway.service.SmsService;
 import com.example.runway.util.ValidationRegex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,7 @@ public class LoginController {
     private final AuthService authService;
     private final SmsService smsService;
     private final RedisService redisService;
+    private final TokenProvider tokenProvider;
 
     @RequestMapping(value = "/signup", consumes = {"multipart/form-data"},method = RequestMethod.POST)
     @ApiOperation(value = "01-01 회원가입 🔑", notes = "회원가입 API 보내실 때 multipart/from-data 로 보내주시면 됩니다.")
@@ -208,4 +211,31 @@ public class LoginController {
         return CommonResponse.onSuccess(signUp);
 
     }
+
+    @Operation(summary = "01-11 리프레쉬 토큰 유효성 검증 👤", description = "처음 앱 진입시 체크 API")
+    @ApiImplicitParam(name="X-REFRESH-TOKEN",value = "리프레쉬 토큰값",dataType = "String",paramType = "header")
+    @ResponseBody
+    @PostMapping("/refresh")
+    public CommonResponse<UserRes.Token> checkRefreshToken(){
+
+        String refreshToken=tokenProvider.getRefreshToken();
+
+        Long userId = tokenProvider.getUserIdByRefreshToken(refreshToken);
+
+        String redisRT= redisService.getValues(String.valueOf(userId));
+
+        if(redisRT==null){
+            throw new BaseException(INVALID_REFRESH_TOKEN);
+
+        }
+
+
+        UserRes.GenerateToken token=logInService.createToken(userId);
+
+
+
+        return CommonResponse.onSuccess(new UserRes.Token(userId,token.getAccessToken(),token.getRefreshToken()));
+    }
+
+
 }

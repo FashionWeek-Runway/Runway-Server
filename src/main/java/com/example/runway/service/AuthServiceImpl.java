@@ -270,7 +270,7 @@ public class AuthServiceImpl implements AuthService{
         }
 
 
-        User user = userRepository.findByUsernameAndSocialAndStatus(sub, "APPLE", true).orElseThrow(() ->
+        User user = userRepository.findByUsernameAndSocialAndStatus(appleId, "APPLE", true).orElseThrow(() ->
                 new BaseException(USER_NOT_FOUND, Map.of("appleId", appleId)));
 
 

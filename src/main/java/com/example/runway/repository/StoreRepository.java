@@ -1,22 +1,33 @@
 package com.example.runway.repository;
 
 import com.example.runway.domain.Store;
-import com.example.runway.dto.map.MapRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
-    @Query(value="select S.id 'storeId',S.name'storeName',latitude,longitude" +
+    @Query(value="select S.id 'storeId',S.name'storeName',IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
+            " latitude,longitude, C2.category'storeCategory' " +
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
-            " join Category C on SC.category_id = C.id where C.category IN (:categoryList) group by S.id",nativeQuery = true)
-    List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList);
+            " join Category C on SC.category_id = C.id " +
+            " join Category C2 on C2.id=main_category where C.category IN (:categoryList) group by S.id",nativeQuery = true)
+    List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList,@Param("userId") Long userId);
+
+    interface GetMapList{
+        Long getStoreId();
+        String getStoreName();
+        String getStoreCategory();
+        boolean getBookMark();
+        double getLatitude();
+        double getLongitude();
+    }
 
     boolean existsByIdAndStatus(Long storeId, boolean b);
 
@@ -25,12 +36,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByNameContainingOrAddressContainingOrRegionContaining(String content, String content1, String content2);
 
 
-    interface GetMapList{
-        Long getStoreId();
-        String getStoreName();
-        double getLatitude();
-        double getLongitude();
-    }
+
 
     @Query(value="select S.id 'storeId',\n" +
             "       S.name'storeName',\n" +
@@ -81,5 +87,13 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getStoreTime();
         String getStorePhone();
         String getInstagram();
+    }
+
+    List<StoreSearchMapList> getStoreBySearch(@Param("content") String content,@Param("latitude") double latitude,@Param("longitude") double longitude);
+    interface StoreSearchMapList {
+        Long getId();
+        String getName();
+        String getAddress();
+
     }
 }

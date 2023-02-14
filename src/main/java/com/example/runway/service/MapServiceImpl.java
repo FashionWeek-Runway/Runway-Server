@@ -1,6 +1,5 @@
 package com.example.runway.service;
 
-import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Store;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
@@ -25,6 +24,7 @@ public class MapServiceImpl implements MapService {
     private final StoreRepository storeRepository;
     private final StoreService storeService;
 
+    /*
     @Override
     public List<MapRes.Map> getMainMap(Long userId) {
         List<Store> storeList=storeRepository.findAll();
@@ -35,6 +35,7 @@ public class MapServiceImpl implements MapService {
                             new MapRes.Map(
                                     result.getId(),
                                     result.getName(),
+                                    Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                     result.getLatitude(),
                                     result.getLongitude()
                             )
@@ -44,6 +45,8 @@ public class MapServiceImpl implements MapService {
         return getMapList;
     }
 
+     */
+
     @Override
     public List<MapRes.Map> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
         List<MapRes.Map> mapList=new ArrayList<>();
@@ -51,10 +54,10 @@ public class MapServiceImpl implements MapService {
         List<StoreRepository.GetMapList> mapResult=null;
 
         if(filterMap.getCategory().size()==0){
-            mapResult=storeRepository.getMapListFilter(CATEGORY);
+            mapResult=storeRepository.getMapListFilter(CATEGORY,userId);
         }
         else{
-            mapResult=storeRepository.getMapListFilter(filterMap.getCategory());
+            mapResult=storeRepository.getMapListFilter(filterMap.getCategory(),userId);
         }
 
         mapResult.forEach(
@@ -62,6 +65,8 @@ public class MapServiceImpl implements MapService {
                     mapList.add(new MapRes.Map(
                             result.getStoreId(),
                             result.getStoreName(),
+                            result.getBookMark(),
+                            result.getStoreCategory(),
                             result.getLatitude(),
                             result.getLongitude()
                     ));
@@ -102,9 +107,10 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public List<MapRes.StoreSearchList> getStoreBySearch(String content) {
+    public List<MapRes.StoreSearchList> getStoreBySearch(String content, MapReq.SearchStore searchStore) {
         List<Store> store=storeRepository.findByNameContainingOrAddressContainingOrRegionContaining(content,content,content);
         List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
+        List<StoreRepository.StoreSearchMapList> storeSearchMapResult=storeRepository.getStoreBySearch(content,searchStore.getLatitude(),searchStore.getLatitude());
 
         store.forEach(
                 result-> {

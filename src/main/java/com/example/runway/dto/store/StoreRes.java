@@ -99,7 +99,11 @@ public class StoreRes {
         private String webUrl;
         @ApiModelProperty(notes="네이버 view imgUrl",required = true,example = "네이버 view imgUrl")
         private String imgUrl;
+        @ApiModelProperty(notes="네이버 view img 갯수",required = true,example = "네이버 view img 갯수")
+        private int imgCnt;
         @ApiModelProperty(notes="네이버 view 제목",required = true,example = "네이버 view 제목")
         private String title;
+        @ApiModelProperty(notes="네이버 view 내용",required = true,example = "네이버 view 내용")
+        private String content;
     }
 }

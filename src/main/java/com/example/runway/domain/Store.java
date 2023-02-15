@@ -28,14 +28,27 @@ public class Store extends BaseEntity {
     @Column(name="user_id",columnDefinition = "게시한 사용자")
     private Long userId;
 
+    @ManyToOne
+    @JoinColumn(name = "main_category", nullable = false,insertable=false, updatable=false)
+    private Category category;
+
+    @Column(name="main_category")
+    private Long mainCategoryId;
+
     @Column(name = "name")
     private String name;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false,insertable=false, updatable=false)
+    private Region region;
+
+    @Column(name="region_id",columnDefinition = "게시한 사용자")
+    private Long regionId;
 
     @Column(name = "address")
     private String address;
 
-    @Column(name = "region")
-    private String region;
 
     @Column(name = "time")
     private String time;

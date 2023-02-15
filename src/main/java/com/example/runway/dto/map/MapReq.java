@@ -17,4 +17,21 @@ public class MapReq {
         @ApiModelProperty(notes = "카테고리 리스트",required = true,example = "[\"스트릿\",\"미니멀\"]")
         private List<String> category;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "04-03,04 지도 쇼룸 검색 조회 🗺 API Response")
+    public static class SearchStore {
+        @ApiModelProperty(notes = "검색어", required = true, example = "성수")
+        private String content;
+
+        @ApiModelProperty(notes = "지도 중심의 위도", required = true, example = "37.56653588195168")
+        private double latitude;
+
+        @ApiModelProperty(notes = "지도 중심의 경도", required = true, example = "126.97864102209026")
+        private double longitude;
+    }
 }

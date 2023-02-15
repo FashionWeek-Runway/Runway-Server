@@ -1,7 +1,6 @@
 package com.example.runway.repository;
 
 import com.example.runway.domain.Store;
-import com.example.runway.dto.map.MapRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,24 +12,30 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
-    @Query(value="select S.id 'storeId',S.name'storeName',latitude,longitude" +
+    @Query(value="select S.id 'storeId',S.name'storeName',IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
+            " latitude,longitude, C2.category'storeCategory' " +
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
-            " join Category C on SC.category_id = C.id where C.category IN (:categoryList) group by S.id",nativeQuery = true)
-    List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList);
-
-    boolean existsByIdAndStatus(Long storeId, boolean b);
-
-
-
-    List<Store> findByNameContainingOrAddressContainingOrRegionContaining(String content, String content1, String content2);
+            " join Category C on SC.category_id = C.id " +
+            " join Category C2 on C2.id=main_category where C.category IN (:categoryList) group by S.id",nativeQuery = true)
+    List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList,@Param("userId") Long userId);
 
 
     interface GetMapList{
         Long getStoreId();
         String getStoreName();
+        String getStoreCategory();
+        boolean getBookMark();
         double getLatitude();
         double getLongitude();
     }
+
+    boolean existsByIdAndStatus(Long storeId, boolean b);
+
+
+
+
+
+
 
     @Query(value="select S.id 'storeId',\n" +
             "       S.name'storeName',\n" +
@@ -81,5 +86,20 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getStoreTime();
         String getStorePhone();
         String getInstagram();
+    }
+
+
+
+    @Query(nativeQuery = true,value = "select S.id, S.name, S.address," +
+            "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
+            "    from Store S join Region R on S.region_id = R.id " +
+            "    where S.name LIKE concat('%',:content,'%') or S.address LIKE concat('%',:content,'%') or R.region LIKE concat('%',:content,'%') " +
+            "    order by distance")
+    List<StoreSearch> getStoreSearch(@Param("content") String content,@Param("latitude") Double latitude,@Param("longitude") Double longitude);
+    interface StoreSearch {
+        Long getId();
+        String getName();
+        String getAddress();
     }
 }

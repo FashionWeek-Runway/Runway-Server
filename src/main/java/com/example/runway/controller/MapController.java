@@ -26,7 +26,8 @@ public class MapController {
     private final StoreService storeService;
 
 
-    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API ", notes = "지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
+    //TODO 거리순으로 조회시켜주기
+    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
     @PostMapping("/filter")
     private CommonResponse<List<MapRes.Map>> getMapFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap){
         Long userId=user.getId();
@@ -34,7 +35,7 @@ public class MapController {
         return CommonResponse.onSuccess(mapList);
     }
 
-    @ApiOperation(value = "04-02 지도 쇼룸 필터링 조회 🗺 API", notes = "지도 필터링 조회")
+    @ApiOperation(value = "04-02 스와이프 쇼룸 필터링 조회 🗺 API", notes = "하단 바 쇼룸 필터링 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회")
     @PostMapping("/info")
     private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getStoreInfoFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap,
                                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -44,12 +45,28 @@ public class MapController {
         return CommonResponse.onSuccess(storeInfoList);
     }
 
-    @ApiOperation(value = "04-03 지도 쇼룸 검색 조회 🗺 API", notes = "지도 필터링 조회")
+    //검색
+    @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 검색용 🗺", notes = "지도 필터링 조회")
     @PostMapping("/search")
-    private CommonResponse<List<MapRes.StoreSearchList>> getStoreBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content) {
-        List<MapRes.StoreSearchList> storeSearchList=mapService.getStoreBySearch(content);
+    private CommonResponse<MapRes.SearchList> getContentsBySearch(@AuthenticationPrincipal User user, @RequestBody MapReq.SearchStore searchStore) {
+        MapRes.SearchList storeSearchList=mapService.getStoreBySearch(searchStore);
         return CommonResponse.onSuccess(storeSearchList);
     }
+
+
+    /*
+    //지역 마커
+    @ApiOperation(value = "04-04 지도 쇼룸 검색 지도 조회 마커용 🗺 API", notes = "지도 필터링 조회")
+    @PostMapping("/search")
+    private CommonResponse<List<MapRes.MapMarkerList>> getStoreBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content,
+                                                                          @RequestBody MapReq.SearchStore searchStore) {
+        //List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreBySearch(content,searchStore);
+        return CommonResponse.onSuccess(null);
+    }
+
+     */
+
+    //쇼룸 마커
 
 
 

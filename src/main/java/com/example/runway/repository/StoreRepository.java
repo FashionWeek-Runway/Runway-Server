@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             " join Category C on SC.category_id = C.id " +
             " join Category C2 on C2.id=main_category where C.category IN (:categoryList) group by S.id",nativeQuery = true)
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList,@Param("userId") Long userId);
+
 
     interface GetMapList{
         Long getStoreId();
@@ -33,7 +33,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
 
-    List<Store> findByNameContainingOrAddressContainingOrRegionContaining(String content, String content1, String content2);
 
 
 
@@ -89,11 +88,18 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getInstagram();
     }
 
-    List<StoreSearchMapList> getStoreBySearch(@Param("content") String content,@Param("latitude") double latitude,@Param("longitude") double longitude);
-    interface StoreSearchMapList {
+
+
+    @Query(nativeQuery = true,value = "select S.id, S.name, S.address," +
+            "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
+            "    from Store S join Region R on S.region_id = R.id " +
+            "    where S.name LIKE concat('%',:content,'%') or S.address LIKE concat('%',:content,'%') or R.region LIKE concat('%',:content,'%') " +
+            "    order by distance")
+    List<StoreSearch> getStoreSearch(@Param("content") String content,@Param("latitude") Double latitude,@Param("longitude") Double longitude);
+    interface StoreSearch {
         Long getId();
         String getName();
         String getAddress();
-
     }
 }

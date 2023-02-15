@@ -1,9 +1,10 @@
 package com.example.runway.service;
 
-import com.example.runway.domain.Store;
+import com.example.runway.domain.Region;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
 import com.example.runway.dto.map.MapRes;
+import com.example.runway.repository.RegionRepository;
 import com.example.runway.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ import static com.example.runway.constants.Constants.CATEGORY;
 @RequiredArgsConstructor
 public class MapServiceImpl implements MapService {
     private final StoreRepository storeRepository;
-    private final StoreService storeService;
+    private final RegionRepository regionRepository;
 
     /*
     @Override
@@ -93,25 +94,55 @@ public class MapServiceImpl implements MapService {
         }
 
         storeResult.forEach(
-                result->{
-                    storeInfoList.add(new MapRes.StoreInfo(
-                            result.getStoreId(),
-                            result.getStoreImg(),
-                            Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
-                            result.getStoreName()
-                    ));
-                }
+                result-> storeInfoList.add(new MapRes.StoreInfo(
+                        result.getStoreId(),
+                        result.getStoreImg(),
+                        Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
+                        result.getStoreName()
+                ))
         );
 
         return new PageResponse<>(storeResult.isLast(),storeInfoList);
     }
 
     @Override
-    public List<MapRes.StoreSearchList> getStoreBySearch(String content, MapReq.SearchStore searchStore) {
-        List<Store> store=storeRepository.findByNameContainingOrAddressContainingOrRegionContaining(content,content,content);
-        List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
-        List<StoreRepository.StoreSearchMapList> storeSearchMapResult=storeRepository.getStoreBySearch(content,searchStore.getLatitude(),searchStore.getLatitude());
+    public MapRes.SearchList getStoreBySearch(MapReq.SearchStore searchStore) {
 
+        List<Region> region=regionRepository.findByRegionContaining(searchStore.getContent());
+        List<MapRes.RegionSearchList> searchList=new ArrayList<>();
+
+        region.forEach(
+                result->{
+                    searchList.add(
+                            new MapRes.RegionSearchList(
+                                    result.getId(),
+                                    result.getRegion(),
+                                    result.getAddress()
+                            )
+                    );
+                }
+        );
+
+        List<StoreRepository.StoreSearch> storeSearchListResult=storeRepository.getStoreSearch(searchStore.getContent(),searchStore.getLatitude(),searchStore.getLatitude());
+        List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
+
+        System.out.println(storeSearchListResult.size() );
+        storeSearchListResult.forEach(
+                result->{
+                    storeSearchList.add(
+                            new MapRes.StoreSearchList(
+                                    result.getId(),
+                                    result.getName(),
+                                    result.getAddress()
+                            )
+                    );
+                }
+        );
+
+
+
+
+        /*
         store.forEach(
                 result-> {
                     storeSearchList.add(new MapRes.StoreSearchList(
@@ -123,7 +154,9 @@ public class MapServiceImpl implements MapService {
                     ));
                 }
         );
-        return storeSearchList;
+
+         */
+        return new MapRes.SearchList(searchList,storeSearchList);
     }
 
 }

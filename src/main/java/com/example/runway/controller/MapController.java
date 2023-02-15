@@ -45,22 +45,28 @@ public class MapController {
         return CommonResponse.onSuccess(storeInfoList);
     }
 
-    @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 마커용 🗺 검색용", notes = "지도 필터링 조회")
+    //검색
+    @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 검색용 🗺", notes = "지도 필터링 조회")
     @PostMapping("/search")
-    private CommonResponse<List<MapRes.StoreSearchList>> getContentsBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content,
-                                                                          @RequestBody MapReq.SearchStore searchStore) {
-        List<MapRes.StoreSearchList> storeSearchList=mapService.getStoreBySearch(content,searchStore);
+    private CommonResponse<MapRes.SearchList> getContentsBySearch(@AuthenticationPrincipal User user, @RequestBody MapReq.SearchStore searchStore) {
+        MapRes.SearchList storeSearchList=mapService.getStoreBySearch(searchStore);
         return CommonResponse.onSuccess(storeSearchList);
     }
 
 
+    /*
+    //지역 마커
     @ApiOperation(value = "04-04 지도 쇼룸 검색 지도 조회 마커용 🗺 API", notes = "지도 필터링 조회")
     @PostMapping("/search")
-    private CommonResponse<List<MapRes.StoreSearchList>> getStoreBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content,
+    private CommonResponse<List<MapRes.MapMarkerList>> getStoreBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content,
                                                                           @RequestBody MapReq.SearchStore searchStore) {
-        List<MapRes.StoreSearchList> storeSearchList=mapService.getStoreBySearch(content,searchStore);
-        return CommonResponse.onSuccess(storeSearchList);
+        //List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreBySearch(content,searchStore);
+        return CommonResponse.onSuccess(null);
     }
+
+     */
+
+    //쇼룸 마커
 
 
 

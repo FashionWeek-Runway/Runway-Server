@@ -19,7 +19,7 @@ public class UserReq {
     public static class LoginUserInfo {
         @ApiModelProperty(notes = "로그인 할 전화번호", example = "01012345678")
         private String phone;
-        @ApiModelProperty(notes ="비밀번호", required = true, example = "runway8925!")
+        @ApiModelProperty(notes ="비밀번호", required = true, example = "runway8926!")
         private String password;
     }
 

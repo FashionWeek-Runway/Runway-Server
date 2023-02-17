@@ -24,13 +24,10 @@ import java.net.URL;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.example.runway.constants.CommonResponseStatus.*;
+import static com.example.runway.constants.Constants.apple;
 
 @Service
 @RequiredArgsConstructor
@@ -188,7 +185,7 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    public UserRes.Token appleLogin(UserReq.SocialLogin SocialLogin) {
+    public UserRes.AppleLogin appleLogin(UserReq.SocialLogin SocialLogin) {
 
         String token = SocialLogin.getAccessToken();
         String appleReqUrl = "https://appleid.apple.com/auth/keys";
@@ -239,6 +236,8 @@ public class AuthServiceImpl implements AuthService{
                 JsonObject appleObject = (JsonObject) publicKeys.get(i);
                 JsonElement appleKid = appleObject.get("kid");
                 JsonElement appleAlg = appleObject.get("alg");
+                System.out.println(kid);
+                System.out.println(alg);
 
                 if (Objects.equals(appleKid, kid) && Objects.equals(appleAlg, alg)) {
                     avaliableObject = appleObject;
@@ -251,6 +250,7 @@ public class AuthServiceImpl implements AuthService{
                 throw new BadRequestException(APPLE_BAD_REQUEST);
 
             PublicKey publicKey = this.getPublicKey(avaliableObject);
+            System.out.println(getPublicKey(avaliableObject));
 
             // 일치하는 키를 이용해 정보 확인 후, 사용자 정보 가져오기
             Claims userInfo = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(token).getBody();
@@ -259,7 +259,7 @@ public class AuthServiceImpl implements AuthService{
             if (!Objects.equals(userInfoObject.get("iss").getAsString(), "https://appleid.apple.com"))
                 throw new BadRequestException(APPLE_BAD_REQUEST);
 
-            if (!Objects.equals(userInfoObject.get("aud").getAsString(), "com.fashionweek.runway"))
+            if (!Objects.equals(userInfoObject.get("aud").getAsString(), "com.fashionweek.Runway-iOS"))
                 throw new BadRequestException(APPLE_BAD_REQUEST);
 
             appleId  = userInfoObject.get("sub").getAsString();
@@ -270,16 +270,17 @@ public class AuthServiceImpl implements AuthService{
         }
 
 
-        User user = userRepository.findByUsernameAndSocialAndStatus(appleId, "APPLE", true).orElseThrow(() ->
-                new BaseException(USER_NOT_FOUND, Map.of("appleId", appleId)));
+        if(!userRepository.existsByUsernameAndSocialAndStatus(appleId, "APPLE", true)){
+            return new UserRes.AppleLogin(false,appleId,null,null,null);
+        }
 
-
+        Optional<User> user = userRepository.findByUsernameAndSocialAndStatus(appleId,apple,true);
         // 가입된 유저 확인 시 jwt, refreshToken 반환
-        Long userId=user.getId();
+        Long userId=user.get().getId();
         UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
 
-        return new UserRes.Token(userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
+        return new UserRes.AppleLogin(true,null,userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
 
 
     }

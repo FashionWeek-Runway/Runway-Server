@@ -50,6 +50,8 @@ public class LoginController {
         log.info("post-signup");
         log.info("api = signup ");
 
+        System.out.println(signupUser.getCategoryList());
+
         if(signupUser.getCategoryList()==null) throw new BadRequestException(CATEGORY_EMPTY_USERS);
         if(signupUser.getPassword()==null) throw new BadRequestException(USERS_EMPTY_USER_PASSWORD);
         if(signupUser.getPhone()==null) throw new BadRequestException(USERS_EMPTY_USER_ID);
@@ -130,7 +132,6 @@ public class LoginController {
         log.info("send-sms");
         log.info("api = send-sms, phonenumber={}",message.getTo());
 
-        if(logInService.checkuserId(message.getTo()))throw new BadRequestException(USERS_EXISTS_ID);
         if(!ValidationRegex.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
         if(smsService.checkLimitCertification(message.getTo())>=5)throw new BadRequestException(LIMIT_CERTIFICATE_SMS);
@@ -183,9 +184,9 @@ public class LoginController {
     @ApiOperation(value = "01-09 애플 로그인 🔑", notes = "유저 애플 로그인")
     @ResponseBody
     @PostMapping("/apple")
-    public CommonResponse<UserRes.Token> appleLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
+    public CommonResponse<UserRes.AppleLogin> appleLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
 
-        UserRes.Token tokenRes = authService.appleLogin(SocialLogin);
+        UserRes.AppleLogin tokenRes = authService.appleLogin(SocialLogin);
         return CommonResponse.onSuccess(tokenRes);
 
     }

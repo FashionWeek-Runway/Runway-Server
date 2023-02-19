@@ -85,13 +85,13 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "01-10 소셜 회원가입 Request🔑")
     public static class SocialSignUp {
-        @ApiModelProperty(notes = "소셜 type",required = true,example = "KAKAO")
+        @ApiModelProperty(notes = "소셜 type",required = true,example = "KAKAO or APPLE")
         private String type;
 
         @ApiModelProperty(notes = "소셜 id", required = true, example = "214124215125")
         private String socialId;
 
-        @ApiModelProperty(notes = "소셜 프로필 사진", required = true, example = "이미지 url")
+        @ApiModelProperty(notes = "소셜 프로필 사진(카카오인 경우만 작성)", required = true, example = "이미지 url")
         private String profileImgUrl;
 
         @ApiModelProperty(notes = "닉네임", required = true, example = "이메누")

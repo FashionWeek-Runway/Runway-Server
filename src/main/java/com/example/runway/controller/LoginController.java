@@ -194,7 +194,7 @@ public class LoginController {
 
 
 
-    @ApiOperation(value = "01-10 소셜 회원가입 🔑", notes = "유저 카카오 로그인")
+    @ApiOperation(value = "01-10 소셜 회원가입 🔑", notes = "유저 소셜회원가입")
     @ResponseBody
     @RequestMapping(value = "/signup/kakao", consumes = {"multipart/form-data"},method = RequestMethod.POST)
     public CommonResponse<UserRes.SignUp> socialSignUp(@ModelAttribute UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {

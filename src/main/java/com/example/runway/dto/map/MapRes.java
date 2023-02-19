@@ -139,7 +139,7 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-07 지도 쇼룸 정보 검색 조회용 🗺 API Response")
+    @ApiModel(value = "04-07 지도 쇼룸 검색 조회용 🗺 API Response")
     public static class StorePositionAndInfo {
         @ApiModelProperty(notes="쇼룸 마커용", required = true,example = "")
         private MapMarkerList mapMarker;

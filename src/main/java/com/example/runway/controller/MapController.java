@@ -27,7 +27,7 @@ public class MapController {
 
 
     //TODO 거리순으로 조회시켜주기
-    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
+    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API FRAME 2608429,2608430 ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
     @PostMapping("/filter")
     private CommonResponse<List<MapRes.Map>> getMapFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap){
         Long userId=user.getId();
@@ -35,7 +35,7 @@ public class MapController {
         return CommonResponse.onSuccess(mapList);
     }
 
-    @ApiOperation(value = "04-02 스와이프 쇼룸 필터링 조회 🗺 API", notes = "하단 바 쇼룸 필터링 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회")
+    @ApiOperation(value = "04-02 스와이프 쇼룸 필터링 조회 🗺 API FRAME 2608429,2608430", notes = "하단 바 쇼룸 필터링 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회")
     @PostMapping("/info")
     private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getStoreInfoFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap,
                                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -46,14 +46,14 @@ public class MapController {
     }
 
     //검색
-    @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 검색용 🗺", notes = "지도 필터링 조회")
+    @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 검색용 🗺 FRAME 2608395", notes = "지도 검색 조회")
     @PostMapping("/search")
     private CommonResponse<MapRes.SearchList> getContentsBySearch(@AuthenticationPrincipal User user, @RequestBody MapReq.SearchStore searchStore) {
         MapRes.SearchList storeSearchList=mapService.getStoreBySearch(searchStore);
         return CommonResponse.onSuccess(storeSearchList);
     }
 
-    @ApiOperation(value = "04-04 지도 매장 단일 선택 하단 스와이프 조회 🗺", notes = "지도 필터링 조회")
+    @ApiOperation(value = "04-04 지도 매장 단일 선택 하단 스와이프 조회 🗺 FRAME 2608464", notes = "지도 필터링 조회")
     @GetMapping("/info/{storeId}")
     private CommonResponse<MapRes.StoreInfo> getStoreByStoreId(@AuthenticationPrincipal User user, @PathVariable Long storeId) {
         MapRes.StoreInfo storeInfo = mapService.getStoreByStoreId(storeId);
@@ -61,7 +61,7 @@ public class MapController {
     }
 
     //지역 마커
-    @ApiOperation(value = "04-05 지도 쇼룸 검색 지역 마커용 🗺 API", notes = "지도 필터링 조회")
+    @ApiOperation(value = "04-05 지도 쇼룸 검색 지역 마커용 🗺 API", notes = "지역에 있는 모든 쇼룸 정보")
     @GetMapping("/region")
     private CommonResponse<List<MapRes.MapMarkerList>> getStoreByRegion(@AuthenticationPrincipal User user, @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @RequestParam(required = true) Long regionId) {
         List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreByRegion(regionId);
@@ -83,7 +83,7 @@ public class MapController {
 
     //쇼룸 마커
     @GetMapping("/{storeId}")
-    @ApiOperation(value = "04-07 지도 쇼룸 검색 쇼룸 마커용 🗺 API", notes = "지도 필터링 조회")
+    @ApiOperation(value = "04-07 지도 쇼룸 검색 쇼룸 마커+하단 스와이프 조회 🗺 API", notes = "검색 시 쇼룸 단일 조회  ")
     private CommonResponse<MapRes.StorePositionAndInfo> getStorePositionAndInfo(@PathVariable Long storeId){
         MapRes.StorePositionAndInfo storePositionAndInfo = mapService.getStorePositionAndInfo(storeId);
         return CommonResponse.onSuccess(storePositionAndInfo);

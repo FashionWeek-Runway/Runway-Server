@@ -118,7 +118,7 @@ public class LoginController {
         log.info("change-password-phone");
         log.info("api = check-phone, phonenumber={}",postPassword.getPassword());
 
-        if (logInService.checkuserId(postPassword.getPhone())) throw new NotFoundException(NOT_EXIST_USER);
+        if (!logInService.checkuserId(postPassword.getPhone())) throw new NotFoundException(NOT_EXIST_USER);
 
         logInService.modifyPassword(postPassword);
         return CommonResponse.onSuccess("비밀번호 변경성공");

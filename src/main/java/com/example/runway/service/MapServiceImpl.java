@@ -1,5 +1,6 @@
 package com.example.runway.service;
 
+import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Region;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
@@ -25,28 +26,6 @@ public class MapServiceImpl implements MapService {
     private final StoreRepository storeRepository;
     private final RegionRepository regionRepository;
 
-    /*
-    @Override
-    public List<MapRes.Map> getMainMap(Long userId) {
-        List<Store> storeList=storeRepository.findAll();
-        List<MapRes.Map> getMapList=new ArrayList<>();
-        storeList.forEach(
-                result->{
-                    getMapList.add(
-                            new MapRes.Map(
-                                    result.getId(),
-                                    result.getName(),
-                                    Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
-                                    result.getLatitude(),
-                                    result.getLongitude()
-                            )
-                    );
-                }
-        );
-        return getMapList;
-    }
-
-     */
 
     @Override
     public List<MapRes.Map> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
@@ -177,6 +156,16 @@ public class MapServiceImpl implements MapService {
 
          */
         return new MapRes.SearchList(searchList,storeSearchList);
+    }
+
+    @Override
+    public MapRes.StoreInfo getStoreByStoreId(Long storeId) {
+        StoreRepository.StoreInfoList storeResult=storeRepository.getSingleStore(storeId);
+        List<String> nullList=new ArrayList<>();
+        if(storeResult.getStoreCategory()==null){
+            return StoreConvertor.StoreInfo(storeResult,nullList);
+        }
+        return StoreConvertor.StoreInfo(storeResult,Stream.of(storeResult.getStoreCategory().split(",")).collect(Collectors.toList()));
     }
 
 }

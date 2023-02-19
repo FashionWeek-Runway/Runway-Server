@@ -53,6 +53,12 @@ public class MapController {
         return CommonResponse.onSuccess(storeSearchList);
     }
 
+    @ApiOperation(value = "04-04 지도 매장 단일 선택 하단 스와이프 조회 🗺", notes = "지도 필터링 조회")
+    @GetMapping("/info/{storeId}")
+    private CommonResponse<MapRes.StoreInfo> getStoreByStoreId(@AuthenticationPrincipal User user, @PathVariable Long storeId) {
+        MapRes.StoreInfo storeInfo = mapService.getStoreByStoreId(storeId);
+        return CommonResponse.onSuccess(storeInfo);
+    }
 
     /*
     //지역 마커

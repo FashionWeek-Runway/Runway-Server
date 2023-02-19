@@ -87,7 +87,34 @@ public class StoreController {
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
+    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회  🏬 API",notes = "쇼룸 사장님 소식 리스트 API")
+    @GetMapping("/board/{storeId}")
+    private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoard(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
+                                                                                  @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                                  @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size) throws IOException {
+        Long userId=user.getId();
+
+        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
+
+        PageResponse<List<StoreRes.StoreBoardList>> storeBoard=storeService.getStoreBoard(userId,storeId,page,size);
+        return CommonResponse.onSuccess(storeBoard);
+    }
 
 
+    /*
+    @ApiOperation(value = "03-07 쇼룸 사장님 소식 리스트 조회  🏬 API",notes = "쇼룸 사장님 소식 리스트 API")
+    @GetMapping("/board/{storeId}")
+    private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoard(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
+                                                                                      @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                                      @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size) throws IOException {
+        Long userId=user.getId();
+
+        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
+
+        PageResponse<List<StoreRes.StoreBoardList>> storeBoard=storeService.getStoreBoard(userId,storeId,page,size);
+        return CommonResponse.onSuccess(storeBoard);
+    }
+
+     */
 
 }

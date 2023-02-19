@@ -22,4 +22,6 @@ public interface StoreService {
     PageResponse<List<StoreRes.StoreBlog>> getStoreBlog(Long storeId, Integer page, Integer size);
 
     void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException;
+
+    PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size);
 }

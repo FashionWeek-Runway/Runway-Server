@@ -28,6 +28,7 @@ public class StoreServiceImpl implements StoreService{
     private final StoreImgRepository storeImgRepository;
     private final StoreReviewRepository storeReviewRepository;
     private final AwsS3Service awsS3Service;
+    private final OwnerBoardRepository ownerBoardRepository;
 
     public StoreRes.HomeList getMainHome(Long userId) {
 
@@ -81,6 +82,23 @@ public class StoreServiceImpl implements StoreService{
         StoreReview storeReview = ReviewConvertor.UploadImg(storeId,userId,imgUrl);
 
         storeReviewRepository.save(storeReview);
+    }
+
+    @Override
+    public PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size) {
+        Pageable pageReq = PageRequest.of(page, size);
+        List<StoreRes.StoreBoardList> storeBoard=new ArrayList<>();
+        Page<OwnerBoardRepository.StoreBoardList> storeBoardResult=ownerBoardRepository.getStoreBoardList(storeId,pageReq);
+
+        storeBoardResult.forEach(
+            result->storeBoard.add(new StoreRes.StoreBoardList(
+                    result.getImgUrl(),
+                    result.getStoreId(),
+                    result.getTitle(),
+                    result.getDay()
+            ))
+        );
+        return new PageResponse<>(storeBoardResult.isLast(),storeBoard);
     }
 
     private List<String> getStoreImgList(Long storeId) {

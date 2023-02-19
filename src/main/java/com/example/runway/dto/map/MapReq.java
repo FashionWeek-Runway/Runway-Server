@@ -16,6 +16,12 @@ public class MapReq {
     public static class FilterMap {
         @ApiModelProperty(notes = "카테고리 리스트",required = true,example = "[\"스트릿\",\"미니멀\"]")
         private List<String> category;
+
+        @ApiModelProperty(notes = "유저의 위도", required = true, example = "37.56653588195168")
+        private double latitude;
+
+        @ApiModelProperty(notes = "유저의 경도", required = true, example = "126.97864102209026")
+        private double longitude;
     }
 
     @Getter

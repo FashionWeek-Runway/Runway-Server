@@ -55,10 +55,10 @@ public class MapServiceImpl implements MapService {
         List<StoreRepository.GetMapList> mapResult=null;
 
         if(filterMap.getCategory().size()==0){
-            mapResult=storeRepository.getMapListFilter(CATEGORY,userId);
+            mapResult=storeRepository.getMapListFilter(CATEGORY,userId,filterMap.getLatitude(),filterMap.getLongitude());
         }
         else{
-            mapResult=storeRepository.getMapListFilter(filterMap.getCategory(),userId);
+            mapResult=storeRepository.getMapListFilter(filterMap.getCategory(),userId, filterMap.getLatitude(), filterMap.getLongitude());
         }
 
         mapResult.forEach(
@@ -87,20 +87,40 @@ public class MapServiceImpl implements MapService {
         Page<StoreRepository.StoreInfoList> storeResult=null;
 
         if(filterMap.getCategory().size()==0){
-            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq);
+            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq, filterMap.getLatitude(), filterMap.getLongitude());
         }
         else{
-            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq);
+            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq,filterMap.getLatitude(),filterMap.getLongitude());
         }
 
+
+        System.out.println(storeResult.getTotalElements());
+
+        for(int i=0;i<storeResult.getTotalElements();i++){
+            List<String> categoryList=new ArrayList<>();
+            categoryList=Stream.of(storeResult.getContent().get(i).getStoreCategory().split(",")).collect(Collectors.toList());
+            if(categoryList.contains(storeResult.getContent().get(i).getMainCategory())){
+                categoryList.remove(storeResult.getContent().get(i).getMainCategory());
+            }
+            else{
+              continue;
+            }
+            MapRes.StoreInfo storeInfo =new MapRes.StoreInfo(storeResult.getContent().get(i).getStoreId(),storeResult.getContent().get(i).getStoreImg(),storeResult.getContent().get(i).getMainCategory(),categoryList,storeResult.getContent().get(i).getStoreName());
+            storeInfoList.add(storeInfo);
+        }
+
+        /*
         storeResult.forEach(
                 result-> storeInfoList.add(new MapRes.StoreInfo(
                         result.getStoreId(),
                         result.getStoreImg(),
-                        Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
+                        result.getMainCategory(),
+                        (Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList())),
                         result.getStoreName()
                 ))
         );
+
+         */
 
         return new PageResponse<>(storeResult.isLast(),storeInfoList);
     }

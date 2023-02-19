@@ -46,7 +46,6 @@ public class MapServiceImpl implements MapService {
                             result.getStoreId(),
                             result.getStoreName(),
                             result.getBookMark(),
-                            result.getStoreCategory(),
                             result.getLatitude(),
                             result.getLongitude()
                     ));
@@ -75,31 +74,19 @@ public class MapServiceImpl implements MapService {
 
         System.out.println(storeResult.getTotalElements());
 
-        for(int i=0;i<storeResult.getTotalElements();i++){
-            List<String> categoryList=new ArrayList<>();
-            categoryList=Stream.of(storeResult.getContent().get(i).getStoreCategory().split(",")).collect(Collectors.toList());
-            if(categoryList.contains(storeResult.getContent().get(i).getMainCategory())){
-                categoryList.remove(storeResult.getContent().get(i).getMainCategory());
-            }
-            else{
-              continue;
-            }
-            MapRes.StoreInfo storeInfo =new MapRes.StoreInfo(storeResult.getContent().get(i).getStoreId(),storeResult.getContent().get(i).getStoreImg(),storeResult.getContent().get(i).getMainCategory(),categoryList,storeResult.getContent().get(i).getStoreName());
-            storeInfoList.add(storeInfo);
-        }
 
-        /*
+
+
         storeResult.forEach(
                 result-> storeInfoList.add(new MapRes.StoreInfo(
                         result.getStoreId(),
                         result.getStoreImg(),
-                        result.getMainCategory(),
                         (Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList())),
                         result.getStoreName()
                 ))
         );
 
-         */
+
 
         return new PageResponse<>(storeResult.isLast(),storeInfoList);
     }
@@ -161,10 +148,7 @@ public class MapServiceImpl implements MapService {
     @Override
     public MapRes.StoreInfo getStoreByStoreId(Long storeId) {
         StoreRepository.StoreInfoList storeResult=storeRepository.getSingleStore(storeId);
-        List<String> nullList=new ArrayList<>();
-        if(storeResult.getStoreCategory()==null){
-            return StoreConvertor.StoreInfo(storeResult,nullList);
-        }
+
         return StoreConvertor.StoreInfo(storeResult,Stream.of(storeResult.getStoreCategory().split(",")).collect(Collectors.toList()));
     }
 

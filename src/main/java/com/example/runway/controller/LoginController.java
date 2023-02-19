@@ -204,10 +204,8 @@ public class LoginController {
         if(logInService.checkuserId(socialSignUp.getSocialId()))  throw new ForbiddenException(USERS_EXISTS_SOCIAL_ID);
         if(logInService.checkNickName(socialSignUp.getNickname())) throw new ForbiddenException(USERS_EXISTS_NICKNAME);
 
-        UserRes.SignUp signUp = null;
-        if(socialSignUp.getType().equals(Constants.kakao)){
-            signUp=logInService.signUpSocial(socialSignUp);
-        }
+        UserRes.SignUp signUp = logInService.signUpSocial(socialSignUp);
+
 
         return CommonResponse.onSuccess(signUp);
 

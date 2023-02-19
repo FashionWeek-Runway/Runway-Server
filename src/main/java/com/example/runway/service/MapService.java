@@ -16,4 +16,10 @@ public interface MapService {
     MapRes.SearchList getStoreBySearch(MapReq.SearchStore searchStore);
 
     MapRes.StoreInfo getStoreByStoreId(Long storeId);
+
+    List<MapRes.MapMarkerList> getStoreByRegion(Long region);
+
+    MapRes.StorePositionAndInfo getStorePositionAndInfo(Long storeId);
+
+    PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size);
 }

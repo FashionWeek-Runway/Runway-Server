@@ -2,6 +2,7 @@ package com.example.runway.service;
 
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Region;
+import com.example.runway.domain.Store;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
 import com.example.runway.dto.map.MapRes;
@@ -81,7 +82,7 @@ public class MapServiceImpl implements MapService {
                 result-> storeInfoList.add(new MapRes.StoreInfo(
                         result.getStoreId(),
                         result.getStoreImg(),
-                        (Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList())),
+                        Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                         result.getStoreName()
                 ))
         );
@@ -126,22 +127,6 @@ public class MapServiceImpl implements MapService {
         );
 
 
-
-
-        /*
-        store.forEach(
-                result-> {
-                    storeSearchList.add(new MapRes.StoreSearchList(
-                            result.getId(),
-                            result.getName(),
-                            result.getAddress(),
-                            result.getLatitude(),
-                            result.getLongitude()
-                    ));
-                }
-        );
-
-         */
         return new MapRes.SearchList(searchList,storeSearchList);
     }
 
@@ -150,6 +135,59 @@ public class MapServiceImpl implements MapService {
         StoreRepository.StoreInfoList storeResult=storeRepository.getSingleStore(storeId);
 
         return StoreConvertor.StoreInfo(storeResult,Stream.of(storeResult.getStoreCategory().split(",")).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<MapRes.MapMarkerList> getStoreByRegion(Long regionId) {
+
+        List<Store> store=storeRepository.findByRegionId(regionId);
+        List<MapRes.MapMarkerList> markerList=new ArrayList<>();
+
+        store.forEach(
+                result-> {
+                    markerList.add(new MapRes.MapMarkerList(
+                            result.getId(),
+                            result.getName(),
+                            result.getAddress(),
+                            result.getLatitude(),
+                            result.getLongitude()
+
+                    ));
+                }
+        );
+
+        return markerList;
+    }
+
+    @Override
+    public MapRes.StorePositionAndInfo getStorePositionAndInfo(Long storeId) {
+
+        StoreRepository.StoreInfoList storeResult=storeRepository.getSingleStore(storeId);
+
+        MapRes.MapMarkerList marker= StoreConvertor.PositionBuilder(storeResult);
+
+        MapRes.StoreInfo storeInfo=StoreConvertor.StoreInfo(storeResult,Stream.of(storeResult.getStoreCategory().split(",")).collect(Collectors.toList()));
+
+        return new MapRes.StorePositionAndInfo(marker,storeInfo);
+    }
+
+    @Override
+    public PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size) {
+        Pageable pageReq = PageRequest.of(page, size);
+        List<MapRes.StoreInfo> storeInfoList=new ArrayList<>();
+        Page<StoreRepository.StoreInfoList> storeInfoResult=storeRepository.getStoreInfoRegion(regionId,pageReq);
+        storeInfoResult.forEach(
+                result-> {
+                        storeInfoList.add(new MapRes.StoreInfo(
+                                result.getStoreId(),
+                                result.getStoreImg(),
+                                Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
+                                result.getStoreName()
+                        ));
+                }
+
+        );
+        return new PageResponse<>(storeInfoResult.isLast(),storeInfoList);
     }
 
 }

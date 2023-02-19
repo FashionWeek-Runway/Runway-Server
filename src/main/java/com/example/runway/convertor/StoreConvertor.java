@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StoreConvertor {
-    public static MapRes.Map StoreMapBuilder(Store value) {
-        return MapRes.Map.builder().storeId(value.getId()).storeName(value.getName()).latitude(value.getLatitude()).longitude(value.getLongitude()).build();
+    public static MapRes.MapMarkerList StoreMapBuilder(Store value) {
+        return MapRes.MapMarkerList.builder().storeId(value.getId()).storeName(value.getName()).latitude(value.getLatitude()).longitude(value.getLongitude()).build();
     }
 
     public static StoreRes.StoreInfo getStoreDetail(StoreRepository.StoreInfo storeResult, boolean checkBookMark, List<String> imgList) {
@@ -39,5 +39,14 @@ public class StoreConvertor {
                 .storeImg(storeResult.getStoreImg())
                 .storeName(storeResult.getStoreName())
                 .category(storeCategory).build();
+    }
+
+    public static MapRes.MapMarkerList PositionBuilder(StoreRepository.StoreInfoList storeResult) {
+        return MapRes.MapMarkerList.builder()
+                .storeId(storeResult.getStoreId())
+                .storeName(storeResult.getStoreName())
+                .address(storeResult.getAddress())
+                .latitude(storeResult.getLatitude())
+                .longitude(storeResult.getLongitude()).build();
     }
 }

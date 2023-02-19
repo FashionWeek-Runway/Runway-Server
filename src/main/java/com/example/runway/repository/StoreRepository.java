@@ -48,8 +48,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "        from Category C2\n" +
                     "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
                     "                 join Store S2 on SC2.store_id = S2.id \n" +
-                    "        where S2.id = S.id \n" +
-                    "       )as 'storeCategory',latitude,longitude,address\n" +
+                    "        where S2.id = S.id)as 'storeCategory',latitude,longitude,address\n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
                     "where S.id=:storeId")
@@ -62,11 +61,10 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "        from Category C2\n" +
                     "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
                     "                 join Store S2 on SC2.store_id = S2.id \n" +
-                    "        where S2.id = S.id \n" +
-                    "       )as 'storeCategory',latitude,longitude,address\n" +
+                    "        where S2.id = S.id)as 'storeCategory',latitude,longitude,address \n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
-                    "where S.region_id=:regionId")
+                    "where S.region_id=:regionId",countQuery = "select * from Store where region_id=:regionId")
     Page<StoreInfoList> getStoreInfoRegion(@Param("regionId") Long regionId, Pageable pageReq);
 
     @Query(value="select S.id 'storeId',\n" +

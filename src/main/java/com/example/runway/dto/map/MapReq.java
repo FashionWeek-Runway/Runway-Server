@@ -29,7 +29,7 @@ public class MapReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03,04 지도 쇼룸 검색 조회 🗺 API Response")
+    @ApiModel(value = "04-03,05 지도 쇼룸 검색 조회 🗺 API Response")
     public static class SearchStore {
         @ApiModelProperty(notes = "검색어", required = true, example = "성수")
         private String content;

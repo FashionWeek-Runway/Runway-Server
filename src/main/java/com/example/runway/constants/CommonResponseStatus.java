@@ -105,7 +105,8 @@ public enum CommonResponseStatus {
     NOT_EXIST_CONFIRM_NUM(BAD_REQUEST,"U027","요청한 전화번호가 존재하지 않습니다."),
 
 
-    NOT_EXIST_STORE(NOT_FOUND,"S001","해당 가게는 존재하지 않습니다.")
+    NOT_EXIST_STORE(NOT_FOUND,"S001","해당 가게는 존재하지 않습니다."),
+    NOT_EXIST_REGION(NOT_FOUND,"SOO2","해당 지역은 존재하지 않습니다")
 
 
     ;

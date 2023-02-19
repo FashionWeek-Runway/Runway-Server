@@ -133,4 +133,17 @@ public class MapRes {
         @ApiModelProperty(notes = "경도", required = true, example = "127.055327")
         private double longitude;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "04-07 지도 쇼룸 정보 검색 조회용 🗺 API Response")
+    public static class StorePositionAndInfo {
+        @ApiModelProperty(notes="쇼룸 마커용", required = true,example = "")
+        private MapMarkerList mapMarker;
+        @ApiModelProperty(notes="쇼룸 하단 스와이프 조회", required = true,example = "")
+        private StoreInfo storeInfo;
+    }
 }

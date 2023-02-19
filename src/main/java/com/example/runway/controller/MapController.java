@@ -60,20 +60,33 @@ public class MapController {
         return CommonResponse.onSuccess(storeInfo);
     }
 
-    /*
     //지역 마커
-    @ApiOperation(value = "04-04 지도 쇼룸 검색 지도 조회 마커용 🗺 API", notes = "지도 필터링 조회")
-    @PostMapping("/search")
-    private CommonResponse<List<MapRes.MapMarkerList>> getStoreBySearch(@AuthenticationPrincipal User user, @Parameter(description = "검색어", example = "0") @RequestParam(required = true) String content,
-                                                                          @RequestBody MapReq.SearchStore searchStore) {
-        //List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreBySearch(content,searchStore);
-        return CommonResponse.onSuccess(null);
+    @ApiOperation(value = "04-05 지도 쇼룸 검색 지역 마커용 🗺 API", notes = "지도 필터링 조회")
+    @GetMapping("/region")
+    private CommonResponse<List<MapRes.MapMarkerList>> getStoreByRegion(@AuthenticationPrincipal User user, @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @RequestParam(required = true) Long regionId) {
+        List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreByRegion(regionId);
+        return CommonResponse.onSuccess(storeSearchList);
     }
 
-     */
+
+    @ApiOperation(value = "04-06 지도 쇼룸 검색 지역 스와이프용 🗺 API", notes = "지도 필터링 조회")
+    @GetMapping("/info/region")
+    private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getInfoByRegion(@AuthenticationPrincipal User user,
+                                                                           @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @RequestParam(required = true) Long regionId,
+                                                                           @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                           @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size) {
+        PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getInfoByRegion(regionId,page,size);
+        return CommonResponse.onSuccess(storeInfoList);
+    }
+
+
 
     //쇼룸 마커
-
-
+    @GetMapping("/{storeId}")
+    @ApiOperation(value = "04-07 지도 쇼룸 검색 쇼룸 마커용 🗺 API", notes = "지도 필터링 조회")
+    private CommonResponse<MapRes.StorePositionAndInfo> getStorePositionAndInfo(@PathVariable Long storeId){
+        MapRes.StorePositionAndInfo storePositionAndInfo = mapService.getStorePositionAndInfo(storeId);
+        return CommonResponse.onSuccess(storePositionAndInfo);
+    }
 
 }

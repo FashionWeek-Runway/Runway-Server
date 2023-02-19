@@ -14,12 +14,12 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
     @Query(value="select S.id 'storeId',S.name'storeName',IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
-            " latitude,longitude, C2.category'storeCategory', " +
+            " latitude,longitude, " +
             "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
             "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
             " join Category C on SC.category_id = C.id " +
-            " join Category C2 on C2.id=main_category where C.category IN (:categoryList) group by S.id order by distance",nativeQuery = true)
+            " where C.category IN (:categoryList) group by S.id order by distance",nativeQuery = true)
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList, @Param("userId") Long userId, @Param("latitude") double latitude,@Param("longitude") double longitude);
 
     List<Store> findByRegionId(Long regionId);
@@ -52,7 +52,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "       )as 'storeCategory',latitude,longitude,address\n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
-                    "join Category C on S.main_category = C.id where S.id=:storeId")
+                    "where S.id=:storeId")
 
     StoreInfoList getSingleStore(@Param("storeId") Long storeId);
 
@@ -66,7 +66,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "       )as 'storeCategory',latitude,longitude,address\n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
-                    "join Category C on S.main_category = C.id where S.region_id=:regionId")
+                    "where S.region_id=:regionId")
     Page<StoreInfoList> getStoreInfoRegion(@Param("regionId") Long regionId, Pageable pageReq);
 
     @Query(value="select S.id 'storeId',\n" +

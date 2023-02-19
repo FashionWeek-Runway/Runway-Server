@@ -41,7 +41,7 @@ public class StoreController {
     }
 
 
-    @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 🏬 API",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 FRAME 2608453 🏬 API",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/detail/{storeId}")
     private CommonResponse<StoreRes.StoreInfo> getStoreDetail(@AuthenticationPrincipal User user,@PathVariable("storeId") Long storeId){
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
@@ -49,7 +49,7 @@ public class StoreController {
         return CommonResponse.onSuccess(storeInfo);
     }
 
-    @ApiOperation(value = "03-03 쇼룸 사용자 후기  🏬 API",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-03 쇼룸 사용자 후기 FRAME 2608453 🏬 API",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/review/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreReview>>> getStoreReview(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -61,7 +61,7 @@ public class StoreController {
         return CommonResponse.onSuccess(storeReview);
     }
 
-    @ApiOperation(value = "03-04 쇼룸 웹 스크랩핑 🏬 API",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-04 쇼룸 웹 스크랩핑 FRAME 2608453 🏬 API",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/blog/{storeId}")
     private CommonResponse<List<StoreRes.StoreBlog>> getStoreBlog(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
                                                                   @Parameter(description = "매장이름", example = "0") @RequestParam(required = true) String storeName)
@@ -87,7 +87,7 @@ public class StoreController {
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
-    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회  🏬 API",notes = "쇼룸 사장님 소식 리스트 API")
+    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회 FRAME 2608453  🏬 API",notes = "쇼룸 사장님 소식 리스트 API")
     @GetMapping("/board/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoard(@AuthenticationPrincipal User user, @PathVariable("storeId") Long storeId,
                                                                                   @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,

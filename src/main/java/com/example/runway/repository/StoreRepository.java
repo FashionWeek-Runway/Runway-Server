@@ -22,6 +22,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList, @Param("userId") Long userId, @Param("latitude") double latitude,@Param("longitude") double longitude);
 
 
+
     interface GetMapList{
         Long getStoreId();
         String getStoreName();
@@ -39,9 +40,23 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
 
+    @Query(nativeQuery = true,
+            value = "select S.id'storeId',store_img'storeImg',S.name'storeName', " +
+                    "       (select GROUP_CONCAT(C2.category SEPARATOR ',')\n" +
+                    "        from Category C2\n" +
+                    "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
+                    "                 join Store S2 on SC2.store_id = S2.id \n" +
+                    "        where S2.id = S.id \n" +
+                    "       )as 'storeCategory'\n" +
+                    "from Store S " +
+                    "join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
+                    "join Category C on S.main_category = C.id where S.id=:storeId")
+
+    StoreInfoList getSingleStore(@Param("storeId") Long storeId);
+
     @Query(value="select S.id 'storeId',\n" +
             "       S.name'storeName',\n" +
-            "       SI.store_img'storeImg',C.category 'mainCategory'\n" +
+            "       SI.store_img'storeImg'\n" +
             "       ,\n" +
             "       (select GROUP_CONCAT(C2.category SEPARATOR ',')\n" +
             "        from Category C2\n" +
@@ -62,7 +77,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     interface StoreInfoList {
         Long getStoreId();
         String getStoreImg();
-        String getMainCategory();
         String getStoreCategory();
         String getStoreName();
     }
@@ -107,4 +121,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getName();
         String getAddress();
     }
+
+
 }

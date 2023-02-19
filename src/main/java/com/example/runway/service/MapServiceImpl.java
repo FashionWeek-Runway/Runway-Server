@@ -1,5 +1,6 @@
 package com.example.runway.service;
 
+import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Region;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;
@@ -25,28 +26,6 @@ public class MapServiceImpl implements MapService {
     private final StoreRepository storeRepository;
     private final RegionRepository regionRepository;
 
-    /*
-    @Override
-    public List<MapRes.Map> getMainMap(Long userId) {
-        List<Store> storeList=storeRepository.findAll();
-        List<MapRes.Map> getMapList=new ArrayList<>();
-        storeList.forEach(
-                result->{
-                    getMapList.add(
-                            new MapRes.Map(
-                                    result.getId(),
-                                    result.getName(),
-                                    Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
-                                    result.getLatitude(),
-                                    result.getLongitude()
-                            )
-                    );
-                }
-        );
-        return getMapList;
-    }
-
-     */
 
     @Override
     public List<MapRes.Map> getMapFilter(Long userId, MapReq.FilterMap filterMap) {
@@ -67,7 +46,6 @@ public class MapServiceImpl implements MapService {
                             result.getStoreId(),
                             result.getStoreName(),
                             result.getBookMark(),
-                            result.getStoreCategory(),
                             result.getLatitude(),
                             result.getLongitude()
                     ));
@@ -96,31 +74,19 @@ public class MapServiceImpl implements MapService {
 
         System.out.println(storeResult.getTotalElements());
 
-        for(int i=0;i<storeResult.getTotalElements();i++){
-            List<String> categoryList=new ArrayList<>();
-            categoryList=Stream.of(storeResult.getContent().get(i).getStoreCategory().split(",")).collect(Collectors.toList());
-            if(categoryList.contains(storeResult.getContent().get(i).getMainCategory())){
-                categoryList.remove(storeResult.getContent().get(i).getMainCategory());
-            }
-            else{
-              continue;
-            }
-            MapRes.StoreInfo storeInfo =new MapRes.StoreInfo(storeResult.getContent().get(i).getStoreId(),storeResult.getContent().get(i).getStoreImg(),storeResult.getContent().get(i).getMainCategory(),categoryList,storeResult.getContent().get(i).getStoreName());
-            storeInfoList.add(storeInfo);
-        }
 
-        /*
+
+
         storeResult.forEach(
                 result-> storeInfoList.add(new MapRes.StoreInfo(
                         result.getStoreId(),
                         result.getStoreImg(),
-                        result.getMainCategory(),
                         (Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList())),
                         result.getStoreName()
                 ))
         );
 
-         */
+
 
         return new PageResponse<>(storeResult.isLast(),storeInfoList);
     }
@@ -177,6 +143,13 @@ public class MapServiceImpl implements MapService {
 
          */
         return new MapRes.SearchList(searchList,storeSearchList);
+    }
+
+    @Override
+    public MapRes.StoreInfo getStoreByStoreId(Long storeId) {
+        StoreRepository.StoreInfoList storeResult=storeRepository.getSingleStore(storeId);
+
+        return StoreConvertor.StoreInfo(storeResult,Stream.of(storeResult.getStoreCategory().split(",")).collect(Collectors.toList()));
     }
 
 }

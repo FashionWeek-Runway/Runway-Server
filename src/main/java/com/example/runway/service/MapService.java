@@ -14,4 +14,6 @@ public interface MapService {
     PageResponse<List<MapRes.StoreInfo>> getStoreInfoFilter(Long userId, MapReq.FilterMap filterMap, Integer page, Integer size);
 
     MapRes.SearchList getStoreBySearch(MapReq.SearchStore searchStore);
+
+    MapRes.StoreInfo getStoreByStoreId(Long storeId);
 }

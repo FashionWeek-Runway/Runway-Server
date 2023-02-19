@@ -50,7 +50,10 @@ public class MapRes {
         @ApiModelProperty(notes = "쇼룸 썸네일 이미지",required = true,example = "이미지 url")
         private String storeImg;
 
-        @ApiModelProperty(notes = "쇼룸 카테고리 리스트",required = true,example = "[\"스트릿\",\"미니멀\"]")
+        @ApiModelProperty(notes = "쇼룸 메인 카테고리",required = true,example = "스트릿")
+        private String mainCategory;
+
+        @ApiModelProperty(notes = "쇼룸 카테고리 리스트 만약 쇼룸 메인 카테고리와 겹친다면 쇼룸 메인 카테고리에는 존재하나 리스트에는 제거하고 보냅니다.",required = true,example = "[\"스트릿\",\"미니멀\"]")
         private List<String> category;
 
         @ApiModelProperty(notes = "쇼룸 이름", required = true, example = "무신사 스탠다드")

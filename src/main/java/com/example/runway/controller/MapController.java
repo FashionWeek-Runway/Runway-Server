@@ -27,7 +27,7 @@ public class MapController {
 
 
     //TODO 거리순으로 조회시켜주기
-    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 🗺 API FRAME 2608429,2608430 ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
+    @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 마커용 🗺 API FRAME 2608429,2608430 ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
     @PostMapping("/filter")
     private CommonResponse<List<MapRes.Map>> getMapFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap){
         Long userId=user.getId();
@@ -35,7 +35,7 @@ public class MapController {
         return CommonResponse.onSuccess(mapList);
     }
 
-    @ApiOperation(value = "04-02 스와이프 쇼룸 필터링 조회 🗺 API FRAME 2608429,2608430", notes = "하단 바 쇼룸 필터링 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회")
+    @ApiOperation(value = "04-02 하단 스와이프 쇼룸 필터링 조회 🗺 API FRAME 2608429,2608430", notes = "하단 바 쇼룸 필터링 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회")
     @PostMapping("/info")
     private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getStoreInfoFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap,
                                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,

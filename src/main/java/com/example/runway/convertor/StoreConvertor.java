@@ -4,6 +4,7 @@ import com.example.runway.domain.Store;
 import com.example.runway.domain.StoreReview;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.repository.OwnerBoardRepository;
 import com.example.runway.repository.StoreRepository;
 
 import java.util.List;
@@ -48,5 +49,20 @@ public class StoreConvertor {
                 .address(storeResult.getAddress())
                 .latitude(storeResult.getLatitude())
                 .longitude(storeResult.getLongitude()).build();
+    }
+
+    public static StoreRes.StoreBoard StoreBoard(OwnerBoardRepository.StoreBoard result, Long userId, List<String> categoryList) {
+        return StoreRes.StoreBoard.builder()
+                .myBoard(result.getUserId().equals(userId))
+                .bookmark(result.getBookmark())
+                .imgUrl(categoryList)
+                .boardId(result.getBoardId())
+                .title(result.getTitle())
+                .day(result.getDay())
+                .content(result.getContent())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .build();
     }
 }

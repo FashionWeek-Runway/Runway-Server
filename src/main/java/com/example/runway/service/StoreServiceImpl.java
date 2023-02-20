@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -101,8 +102,20 @@ public class StoreServiceImpl implements StoreService{
         return new PageResponse<>(storeBoardResult.isLast(),storeBoard);
     }
 
+    @Override
+    public StoreRes.StoreBoard getStoreBoardById(Long userId, Long boardId) {
+        OwnerBoardRepository.StoreBoard result = ownerBoardRepository.getStoreBoard(userId,boardId);
+        List<String> categoryList= new ArrayList<>();
+        if(result.getImgUrl()!=null){
+            categoryList= Stream.of(result.getImgUrl().split(",")).collect(Collectors.toList());
+        }
+        return StoreConvertor.StoreBoard(result,userId,categoryList);
+    }
+
     private List<String> getStoreImgList(Long storeId) {
-        List<StoreImg> storeImg=storeImgRepository.findByStoreId(storeId);
+        List<StoreImg> storeImg=storeImgRepository.findByStoreIdOrderBySequenceAsc(storeId);
+
+
 
         return storeImg.stream().map(StoreImg::getStoreImg).collect(Collectors.toList());
     }

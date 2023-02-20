@@ -112,7 +112,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-06 쇼룸 사장님 소식 조회🏬 API Response")
+    @ApiModel(value = "03-06 쇼룸 사장님 소식 조회🏬 FRAME 2608453 API Response")
     public static class StoreBoardList {
         @ApiModelProperty(notes="imgUrl",required = true,example = "소식 대표이미지")
         private String imgUrl;
@@ -128,10 +128,12 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-06 쇼룸 사장님 소식 조회🏬 API Response")
+    @ApiModel(value = "03-07 쇼룸 사장님 소식 조회🏬 FRAME 2608456,2608457 API Response")
     public static class StoreBoard {
         @ApiModelProperty(notes="소식 게시글 보유자 유무",required = true,example = "true")
         private boolean myBoard;
+        @ApiModelProperty(notes="소식 게시글 북마크 유무",required = true,example = "true")
+        private boolean bookmark;
         @ApiModelProperty(notes="imgUrl 리스트가 나옵니다",required = true,example = "[\"imgUrl\",\"imgUrl\",\"imgUrl\"]")
         private List<String> imgUrl;
         @ApiModelProperty(notes="소식 Id",required = true,example = "1")
@@ -146,5 +148,8 @@ public class StoreRes {
         private Long storeId;
         @ApiModelProperty(notes = "쇼룸 이름",required = true,example = "노드 아카이브")
         private String storeName;
+        @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
+        private String regionInfo;
     }
+
 }

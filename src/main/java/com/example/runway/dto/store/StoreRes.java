@@ -117,7 +117,7 @@ public class StoreRes {
         @ApiModelProperty(notes="imgUrl",required = true,example = "소식 대표이미지")
         private String imgUrl;
         @ApiModelProperty(notes="소식 Id",required = true,example = "1")
-        private Long boardId;
+        private Long feedId;
         @ApiModelProperty(notes="소식 제목",required = true,example = "소식 제목")
         private String title;
         @ApiModelProperty(notes="소식 게시 날짜",required = true,example = "MM.DD")
@@ -137,7 +137,7 @@ public class StoreRes {
         @ApiModelProperty(notes="imgUrl 리스트가 나옵니다",required = true,example = "[\"imgUrl\",\"imgUrl\",\"imgUrl\"]")
         private List<String> imgUrl;
         @ApiModelProperty(notes="소식 Id",required = true,example = "1")
-        private Long boardId;
+        private Long feedId;
         @ApiModelProperty(notes="소식 제목",required = true,example = "소식 제목")
         private String title;
         @ApiModelProperty(notes="소식 게시 날짜",required = true,example = "YYYY.MM.DD HH:MM")

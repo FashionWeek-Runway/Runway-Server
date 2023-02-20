@@ -1,10 +1,12 @@
 package com.example.runway.convertor;
 
+import com.example.runway.domain.Keep;
+import com.example.runway.domain.KeepOwnerFeed;
 import com.example.runway.domain.Store;
 import com.example.runway.domain.StoreReview;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.StoreRes;
-import com.example.runway.repository.OwnerBoardRepository;
+import com.example.runway.repository.OwnerFeedRepository;
 import com.example.runway.repository.StoreRepository;
 
 import java.util.List;
@@ -51,12 +53,12 @@ public class StoreConvertor {
                 .longitude(storeResult.getLongitude()).build();
     }
 
-    public static StoreRes.StoreBoard StoreBoard(OwnerBoardRepository.StoreBoard result, Long userId, List<String> categoryList) {
+    public static StoreRes.StoreBoard StoreBoard(OwnerFeedRepository.StoreBoard result, Long userId, List<String> categoryList) {
         return StoreRes.StoreBoard.builder()
                 .myBoard(result.getUserId().equals(userId))
                 .bookmark(result.getBookmark())
                 .imgUrl(categoryList)
-                .boardId(result.getBoardId())
+                .feedId(result.getFeedId())
                 .title(result.getTitle())
                 .day(result.getDay())
                 .content(result.getContent())
@@ -64,5 +66,13 @@ public class StoreConvertor {
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
                 .build();
+    }
+
+    public static Keep CheckBookMark(Long userId, Long storeId) {
+        return Keep.builder().userId(userId).storeId(storeId).build();
+    }
+
+    public static KeepOwnerFeed CheckBookMarkFeed(Long userId, Long feedId) {
+        return KeepOwnerFeed.builder().feedId(feedId).userId(userId).build();
     }
 }

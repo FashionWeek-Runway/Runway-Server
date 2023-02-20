@@ -29,7 +29,8 @@ public class StoreServiceImpl implements StoreService{
     private final StoreImgRepository storeImgRepository;
     private final StoreReviewRepository storeReviewRepository;
     private final AwsS3Service awsS3Service;
-    private final OwnerBoardRepository ownerBoardRepository;
+    private final OwnerFeedRepository ownerFeedRepository;
+    private final KeepOwnerFeedRepository keepOwnerFeedRepository;
 
     public StoreRes.HomeList getMainHome(Long userId) {
 
@@ -89,7 +90,7 @@ public class StoreServiceImpl implements StoreService{
     public PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size) {
         Pageable pageReq = PageRequest.of(page, size);
         List<StoreRes.StoreBoardList> storeBoard=new ArrayList<>();
-        Page<OwnerBoardRepository.StoreBoardList> storeBoardResult=ownerBoardRepository.getStoreBoardList(storeId,pageReq);
+        Page<OwnerFeedRepository.StoreBoardList> storeBoardResult= ownerFeedRepository.getStoreBoardList(storeId,pageReq);
 
         storeBoardResult.forEach(
             result->storeBoard.add(new StoreRes.StoreBoardList(
@@ -104,12 +105,44 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     public StoreRes.StoreBoard getStoreBoardById(Long userId, Long boardId) {
-        OwnerBoardRepository.StoreBoard result = ownerBoardRepository.getStoreBoard(userId,boardId);
+        OwnerFeedRepository.StoreBoard result = ownerFeedRepository.getStoreBoard(userId,boardId);
         List<String> categoryList= new ArrayList<>();
         if(result.getImgUrl()!=null){
             categoryList= Stream.of(result.getImgUrl().split(",")).collect(Collectors.toList());
         }
         return StoreConvertor.StoreBoard(result,userId,categoryList);
+    }
+
+    @Override
+    public boolean existsBookMark(Long id, Long storeId) {
+        return keepRepository.existsByUserIdAndStoreId(id,storeId);
+    }
+
+    @Override
+    public void unCheckBookMark(Long userId, Long storeId) {
+        keepRepository.deleteByUserIdAndStoreId(userId,storeId);
+    }
+
+    @Override
+    public void checkBookMark(Long userId, Long storeId) {
+        Keep keep = StoreConvertor.CheckBookMark(userId,storeId);
+        keepRepository.save(keep);
+    }
+
+    @Override
+    public boolean existsBookMarkFeed(Long userId, Long feedId) {
+        return keepOwnerFeedRepository.existsByUserIdAndFeedId(userId,feedId);
+    }
+
+    @Override
+    public void unCheckBookMarkFeed(Long userId, Long feedId) {
+        keepOwnerFeedRepository.deleteByUserIdAndFeedId(userId,feedId);
+    }
+
+    @Override
+    public void checkBookMarkFeed(Long userId, Long feedId) {
+        KeepOwnerFeed keepOwnerFeed = StoreConvertor.CheckBookMarkFeed(userId,feedId);
+        keepOwnerFeedRepository.save(keepOwnerFeed);
     }
 
     private List<String> getStoreImgList(Long storeId) {

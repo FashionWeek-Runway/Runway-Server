@@ -31,7 +31,20 @@ public class StoreController {
     private final StoreService storeService;
     private final CrawlingService crawlingService;
 
-
+    @ApiOperation(value = "03-01 쇼룸 북마크 🏬 API #FRAME MAPDETAIL_01",notes = "북마크 Check,UnCheck ")
+    @PostMapping("/{storeId}")
+    private CommonResponse<String> bookMarkStore(@AuthenticationPrincipal User user, @Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
+        Long userId= user.getId();
+        boolean checkBookmark=storeService.existsBookMark(userId,storeId);
+        if(checkBookmark){
+            storeService.unCheckBookMark(userId,storeId);
+            return CommonResponse.onSuccess("북마크 해제 성공");
+        }
+        else{
+            storeService.checkBookMark(userId,storeId);
+            return CommonResponse.onSuccess("북마크 성공");
+        }
+    }
     @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 🏬 API #FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/detail/{storeId}")
     private CommonResponse<StoreRes.StoreInfo> getStoreDetail(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
@@ -79,7 +92,7 @@ public class StoreController {
     }
 
     @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회🏬 #FRAME 2608453 API",notes = "쇼룸 사장님 소식 리스트 API")
-    @GetMapping("/board/{storeId}")
+    @GetMapping("/feed/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoardList(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                                   @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                                   @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size)  {
@@ -93,15 +106,29 @@ public class StoreController {
 
 
 
-
-    @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API #FRAME feed_01" ,notes = "쇼룸 사장님 소식 리스트 API")
-    @GetMapping("/board/info/{boardId}")
-    private CommonResponse<StoreRes.StoreBoard> getStoreBoard(@AuthenticationPrincipal User user, @Parameter(description = "boardId 소식 Id값") @PathVariable("boardId") Long boardId) {
+    @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API #FRAME FEED_01" ,notes = "쇼룸 사장님 소식 리스트 API")
+    @GetMapping("/feed/info/{feedId}")
+    private CommonResponse<StoreRes.StoreBoard> getStoreBoard(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId) {
         Long userId=user.getId();
 
 
-        StoreRes.StoreBoard storeBoard=storeService.getStoreBoardById(userId,boardId);
+        StoreRes.StoreBoard storeBoard=storeService.getStoreBoardById(userId,feedId);
         return CommonResponse.onSuccess(storeBoard);
+    }
+
+    @ApiOperation(value = "03-08 소식 북마크 🏬 API #FRAME FEED_01",notes = "북마크 Check,UnCheck ")
+    @PostMapping("/feed/{feedId}")
+    private CommonResponse<String> bookMarkFeed(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId){
+        Long userId= user.getId();
+        boolean checkBookmark=storeService.existsBookMarkFeed(userId,feedId);
+        if(checkBookmark){
+            storeService.unCheckBookMarkFeed(userId,feedId);
+            return CommonResponse.onSuccess("북마크 해제 성공");
+        }
+        else{
+            storeService.checkBookMarkFeed(userId,feedId);
+            return CommonResponse.onSuccess("북마크 성공");
+        }
     }
 
 

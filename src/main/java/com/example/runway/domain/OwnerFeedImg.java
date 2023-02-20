@@ -7,7 +7,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "OwnerBoardImg")
+@Table(name = "OwnerFeedImg")
 @Getter
 @Setter
 @Builder
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class OwnerBoardImg extends BaseEntity {
+public class OwnerFeedImg extends BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,11 @@ public class OwnerBoardImg extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
-    private OwnerBoard ownerBoard;
+    @JoinColumn(name = "feed_id", nullable = false,insertable=false, updatable=false)
+    private OwnerFeed ownerFeed;
 
-    @Column(name="board_id")
-    private Long boardId;
+    @Column(name= "feed_id")
+    private Long feedId;
 
     @Column(name="img_url")
     private String imgUrl;

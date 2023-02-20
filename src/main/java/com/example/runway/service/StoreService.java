@@ -26,4 +26,16 @@ public interface StoreService {
     PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size);
 
     StoreRes.StoreBoard getStoreBoardById(Long userId, Long boardId);
+
+    boolean existsBookMark(Long id, Long storeId);
+
+    void unCheckBookMark(Long userId, Long storeId);
+
+    void checkBookMark(Long userId, Long storeId);
+
+    boolean existsBookMarkFeed(Long userId, Long feedId);
+
+    void unCheckBookMarkFeed(Long userId, Long feedId);
+
+    void checkBookMarkFeed(Long userId, Long feedId);
 }

@@ -5,9 +5,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
 @Entity
-@Table(name = "KeepOwnerBoard")
+@Table(name = "OwnerFeed")
 @Getter
 @Setter
 @Builder
@@ -15,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @DynamicUpdate
 @DynamicInsert
-public class KeepOwnerBoard extends BaseEntity {
+public class OwnerFeed extends BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +28,16 @@ public class KeepOwnerBoard extends BaseEntity {
     private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false,insertable=false, updatable=false)
-    private OwnerBoard ownerBoard;
+    @JoinColumn(name = "store_id", nullable = false,insertable=false, updatable=false)
+    private Store store;
 
-    @Column(name="board_id")
-    private Long boardId;
+    @Column(name="store_id")
+    private Long storeId;
+
+    @Column(name="title")
+    private String title;
+
+    @Column(name="content")
+    private String content;
 
 }

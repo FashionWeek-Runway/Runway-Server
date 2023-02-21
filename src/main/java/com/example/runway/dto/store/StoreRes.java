@@ -84,7 +84,9 @@ public class StoreRes {
     @NoArgsConstructor
     @ApiModel(value = "03-03 쇼룸 사용자 후기 🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreReview {
+        @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
+        @ApiModelProperty(notes="imgUrl",required = true,example = "리뷰 이미지")
         private String imgUrl;
     }
 
@@ -112,11 +114,22 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-06 쇼룸 리뷰 조회 🏬 API Response")
+    @ApiModel(value = "03-09 쇼룸 리뷰 조회 🏬 API Response")
     public static class ReviewInfo {
+        @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        private String profileImgUrl;
+        @ApiModelProperty(notes = "닉네임",required = true,example = "이름")
+        private String nickname;
+        @ApiModelProperty(notes="imgUrl",required = true,example = "리뷰 이미지")
         private String imgUrl;
-        private String address;
+        @ApiModelProperty(notes="쇼룸 Id",required = true,example = "1")
+        private Long storeId;
+        @ApiModelProperty(notes = "쇼룸 이름",required = true,example = "노드 아카이브")
+        private String storeName;
+        @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
+        private String regionInfo;
     }
 
     @Getter
@@ -126,6 +139,7 @@ public class StoreRes {
     @NoArgsConstructor
     @ApiModel(value = "03-06 쇼룸 사장님 소식 조회 리스트🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreBoardList {
+
         @ApiModelProperty(notes="imgUrl",required = true,example = "소식 대표이미지")
         private String imgUrl;
         @ApiModelProperty(notes="소식 Id",required = true,example = "1")

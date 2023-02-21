@@ -8,6 +8,7 @@ import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.repository.OwnerFeedRepository;
 import com.example.runway.repository.StoreRepository;
+import com.example.runway.repository.StoreReviewRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,5 +75,17 @@ public class StoreConvertor {
 
     public static KeepOwnerFeed CheckBookMarkFeed(Long userId, Long feedId) {
         return KeepOwnerFeed.builder().feedId(feedId).userId(userId).build();
+    }
+
+    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result) {
+        return StoreRes.ReviewInfo.builder()
+                .reviewId(result.getReviewId())
+                .profileImgUrl(result.getProfileImgUrl())
+                .nickname(result.getNickname())
+                .imgUrl(result.getImgUrl())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .build();
     }
 }

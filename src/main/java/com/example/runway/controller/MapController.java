@@ -55,24 +55,24 @@ public class MapController {
 
     @ApiOperation(value = "04-04 지도 매장 단일 선택 하단 스와이프 조회 🗺 API FRAME MAP_07", notes = "지도 필터링 조회")
     @GetMapping("/info/{storeId}")
-    private CommonResponse<MapRes.StoreInfo> getStoreByStoreId(@AuthenticationPrincipal User user, @PathVariable Long storeId) {
+    private CommonResponse<MapRes.StoreInfo> getStoreByStoreId(@AuthenticationPrincipal User user,@Parameter(description = "storeId 값 보내주기", example = "0")  @PathVariable Long storeId) {
         MapRes.StoreInfo storeInfo = mapService.getStoreByStoreId(storeId);
         return CommonResponse.onSuccess(storeInfo);
     }
 
     //지역 마커
     @ApiOperation(value = "04-05 지도 쇼룸 검색 지역 마커용 🗺 API FRAME SEARCH_01", notes = "지역에 있는 모든 쇼룸 정보")
-    @GetMapping("/region")
-    private CommonResponse<List<MapRes.MapMarkerList>> getStoreByRegion(@AuthenticationPrincipal User user, @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @RequestParam(required = true) Long regionId) {
+    @GetMapping("/region/{regionId}")
+    private CommonResponse<List<MapRes.MapMarkerList>> getStoreByRegion(@AuthenticationPrincipal User user, @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @PathVariable("regionId") Long regionId) {
         List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreByRegion(regionId);
         return CommonResponse.onSuccess(storeSearchList);
     }
 
 
     @ApiOperation(value = "04-06 지도 쇼룸 검색 지역 스와이프용 🗺 API FRAME SEARCH_02", notes = "지도 검색 조회")
-    @GetMapping("/info/region")
+    @GetMapping("/info/region/{regionId}")
     private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getInfoByRegion(@AuthenticationPrincipal User user,
-                                                                           @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @RequestParam(required = true) Long regionId,
+                                                                           @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @PathVariable("regionId") Long regionId,
                                                                            @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                            @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size) {
         PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getInfoByRegion(regionId,page,size);
@@ -84,7 +84,7 @@ public class MapController {
     //쇼룸 마커
     @GetMapping("/{storeId}")
     @ApiOperation(value = "04-07 지도 쇼룸 검색 쇼룸 마커+하단 스와이프 조회 🗺 API FRAME SEARCH_03,04", notes = "검색 시 쇼룸 단일 조회  ")
-    private CommonResponse<MapRes.StorePositionAndInfo> getStorePositionAndInfo(@PathVariable Long storeId){
+    private CommonResponse<MapRes.StorePositionAndInfo> getStorePositionAndInfo(@Parameter(description = "storeId 값 보내주기", example = "0")  @PathVariable Long storeId){
         MapRes.StorePositionAndInfo storePositionAndInfo = mapService.getStorePositionAndInfo(storeId);
         return CommonResponse.onSuccess(storePositionAndInfo);
     }

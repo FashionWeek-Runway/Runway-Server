@@ -62,7 +62,7 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03 지도 쇼룸 검색 조회 검색용 🗺 API Response #FRAME SEARCH_07")
+    @ApiModel(value = "04-03 지도 쇼룸 검색 조회 검색용 🗺 API Response FRAME SEARCH_07")
     public static class SearchList {
         private List<RegionSearchList> regionSearchList;
         private List<StoreSearchList> storeSearchList;
@@ -115,7 +115,7 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03-02 지도 쇼룸 정보 검색 조회용 🗺 API Response #FRAME SEARCH_01")
+    @ApiModel(value = "04-03-02 지도 쇼룸 정보 검색 조회용 🗺 API Response FRAME SEARCH_01")
     public static class MapMarkerList {
 
         @ApiModelProperty(notes="쇼룸 ID", required = true,example = "1")
@@ -139,7 +139,7 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-07 지도 쇼룸 검색 조회용 🗺 API Response #FRAME SEARCH_03,04")
+    @ApiModel(value = "04-07 지도 쇼룸 검색 조회용 🗺 API Response FRAME SEARCH_03,04")
     public static class StorePositionAndInfo {
         @ApiModelProperty(notes="쇼룸 마커용", required = true,example = "")
         private MapMarkerList mapMarker;

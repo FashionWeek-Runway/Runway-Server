@@ -38,4 +38,6 @@ public interface StoreService {
     void unCheckBookMarkFeed(Long userId, Long feedId);
 
     void checkBookMarkFeed(Long userId, Long feedId);
+
+    StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId);
 }

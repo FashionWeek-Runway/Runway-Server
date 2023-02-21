@@ -104,23 +104,20 @@ public class StoreController {
         return CommonResponse.onSuccess(storeBoard);
     }
 
-    /*
-    @ApiOperation(value = "03-06 쇼룸 후기 조회  🏬 API",notes = "쇼룸 후기 작성 API")
-    @GetMapping("/review/{reviewId}")
-    private CommonResponse<StoreRes.ReviewInfo> getStoreReview(@AuthenticationPrincipal User user,
-                                                               @PathVariable("storeId") Long storeId,
-                                                               @PathVariable("reviewId") Long reviewId,
-                                                   @Parameter(description="img",example ="이미지") @RequestPart(value="img",required = true) MultipartFile multipartFile) throws IOException {
+
+    @ApiOperation(value = "03-09 쇼룸 후기 상세 조회  🏬 API",notes = "쇼룸 후기 작성 API")
+    @GetMapping("/review/detail/{reviewId}")
+    private CommonResponse<StoreRes.ReviewInfo> getStoreReviewByReviewId(@AuthenticationPrincipal User user,
+                                                                         @Parameter(description = "reviewId 값 보내주기", example = "0")   @PathVariable("reviewId") Long reviewId){
         Long userId=user.getId();
 
-        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 
-        storeService.postStoreReview(storeId,userId,multipartFile);
+        StoreRes.ReviewInfo reviewInfo=storeService.getStoreReviewByReviewId(reviewId);
 
-        return CommonResponse.onSuccess("리뷰 등록 성공");
+        return CommonResponse.onSuccess(reviewInfo);
     }
 
-     */
+
 
 
     @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API FRAME FEED_01" ,notes = "쇼룸 사장님 소식 리스트 API")

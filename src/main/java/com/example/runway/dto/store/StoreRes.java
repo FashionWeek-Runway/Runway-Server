@@ -43,7 +43,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-02 쇼룸 상단정보 🏬 API Response #FRAME MAPDETAIL_01")
+    @ApiModel(value = "03-02 쇼룸 상단정보 🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreInfo {
         @ApiModelProperty(notes ="쇼룸 Id", required = true, example = "1")
         private Long storeId;
@@ -82,7 +82,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-03 쇼룸 사용자 후기 🏬 API Response #FRAME MAPDETAIL_01")
+    @ApiModel(value = "03-03 쇼룸 사용자 후기 🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreReview {
         private Long reviewId;
         private String imgUrl;
@@ -93,7 +93,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-04 쇼룸 블로그 스크랩핑 🏬 API Response #FRAME MAPDETAIL_01")
+    @ApiModel(value = "03-04 쇼룸 블로그 스크랩핑 🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreBlog {
         @ApiModelProperty(notes="네이버 view 링크",required = true,example = "네이버 view 링크")
         private String webUrl;
@@ -112,7 +112,19 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-06 쇼룸 사장님 소식 조회 리스트🏬 API Response #FRAME MAPDETAIL_01")
+    @ApiModel(value = "03-06 쇼룸 리뷰 조회 🏬 API Response")
+    public static class ReviewInfo {
+        private Long reviewId;
+        private String imgUrl;
+        private String address;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "03-06 쇼룸 사장님 소식 조회 리스트🏬 API Response FRAME MAPDETAIL_01")
     public static class StoreBoardList {
         @ApiModelProperty(notes="imgUrl",required = true,example = "소식 대표이미지")
         private String imgUrl;
@@ -128,7 +140,7 @@ public class StoreRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "03-07 쇼룸 사장님 소식 조회🏬  API Response #FRAME feed_01")
+    @ApiModel(value = "03-07 쇼룸 사장님 소식 조회🏬  API Response FRAME feed_01")
     public static class StoreBoard {
         @ApiModelProperty(notes="소식 게시글 보유자 유무",required = true,example = "true")
         private boolean myBoard;

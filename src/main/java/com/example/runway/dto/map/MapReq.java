@@ -12,7 +12,7 @@ public class MapReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-02 지도 필터링 조회 🗺 API Response #FRAME MAP_03,04")
+    @ApiModel(value = "04-02 지도 필터링 조회 🗺 API Request FRAME MAP_03,04")
     public static class FilterMap {
         @ApiModelProperty(notes = "카테고리 리스트",required = true,example = "[\"스트릿\",\"미니멀\"]")
         private List<String> category;
@@ -29,7 +29,7 @@ public class MapReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-03,05 지도 쇼룸 검색 조회 🗺 API Response #FRAME SEARCH_07")
+    @ApiModel(value = "04-03,05 지도 쇼룸 검색 조회 🗺 API Request FRAME SEARCH_07")
     public static class SearchStore {
         @ApiModelProperty(notes = "검색어", required = true, example = "성수")
         private String content;

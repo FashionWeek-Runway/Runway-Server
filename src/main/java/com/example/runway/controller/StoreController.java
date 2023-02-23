@@ -31,7 +31,7 @@ public class StoreController {
     private final StoreService storeService;
     private final CrawlingService crawlingService;
 
-    @ApiOperation(value = "03-01 쇼룸 북마크 🏬 API #FRAME MAPDETAIL_01",notes = "북마크 Check,UnCheck ")
+    @ApiOperation(value = "03-01 쇼룸 북마크 🏬 API FRAME MAPDETAIL_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/{storeId}")
     private CommonResponse<String> bookMarkStore(@AuthenticationPrincipal User user, @Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
         Long userId= user.getId();
@@ -45,7 +45,7 @@ public class StoreController {
             return CommonResponse.onSuccess("북마크 성공");
         }
     }
-    @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 🏬 API #FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 🏬 API FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/detail/{storeId}")
     private CommonResponse<StoreRes.StoreInfo> getStoreDetail(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
@@ -53,7 +53,7 @@ public class StoreController {
         return CommonResponse.onSuccess(storeInfo);
     }
 
-    @ApiOperation(value = "03-03 쇼룸 사용자 후기 🏬 API #FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-03 쇼룸 사용자 후기 🏬 API FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/review/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreReview>>> getStoreReview(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -65,7 +65,7 @@ public class StoreController {
         return CommonResponse.onSuccess(storeReview);
     }
 
-    @ApiOperation(value = "03-04 쇼룸 웹 스크랩핑 🏬 API #FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
+    @ApiOperation(value = "03-04 쇼룸 웹 스크랩핑 🏬 API FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/blog/{storeId}")
     private CommonResponse<List<StoreRes.StoreBlog>> getStoreBlog(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                   @Parameter(description = "매장이름", example = "0") @RequestParam(required = true) String storeName)
@@ -78,7 +78,7 @@ public class StoreController {
     }
 
 
-    @ApiOperation(value = "03-05 쇼룸 후기작성 🏬 API #FRAME REVIEW_01",notes = "쇼룸 후기 작성 API")
+    @ApiOperation(value = "03-05 쇼룸 후기작성 🏬 API FRAME REVIEW_01",notes = "쇼룸 후기 작성 API")
     @PostMapping("/review/{storeId}")
     private CommonResponse<String> postStoreReview(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                    @Parameter(description="img",example ="이미지") @RequestPart(value="img",required = true) MultipartFile multipartFile) throws IOException {
@@ -91,7 +91,7 @@ public class StoreController {
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
-    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회🏬 #FRAME 2608453 API",notes = "쇼룸 사장님 소식 리스트 API")
+    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회🏬 FRAME 2608453 API",notes = "쇼룸 사장님 소식 리스트 API")
     @GetMapping("/feed/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoardList(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                                   @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -105,8 +105,22 @@ public class StoreController {
     }
 
 
+    @ApiOperation(value = "03-09 쇼룸 후기 상세 조회  🏬 API",notes = "쇼룸 후기 작성 API")
+    @GetMapping("/review/detail/{reviewId}")
+    private CommonResponse<StoreRes.ReviewInfo> getStoreReviewByReviewId(@AuthenticationPrincipal User user,
+                                                                         @Parameter(description = "reviewId 값 보내주기", example = "0")   @PathVariable("reviewId") Long reviewId){
+        Long userId=user.getId();
 
-    @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API #FRAME FEED_01" ,notes = "쇼룸 사장님 소식 리스트 API")
+
+        StoreRes.ReviewInfo reviewInfo=storeService.getStoreReviewByReviewId(reviewId);
+
+        return CommonResponse.onSuccess(reviewInfo);
+    }
+
+
+
+
+    @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API FRAME FEED_01" ,notes = "쇼룸 사장님 소식 리스트 API")
     @GetMapping("/feed/info/{feedId}")
     private CommonResponse<StoreRes.StoreBoard> getStoreBoard(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId) {
         Long userId=user.getId();
@@ -116,7 +130,7 @@ public class StoreController {
         return CommonResponse.onSuccess(storeBoard);
     }
 
-    @ApiOperation(value = "03-08 소식 북마크 🏬 API #FRAME FEED_01",notes = "북마크 Check,UnCheck ")
+    @ApiOperation(value = "03-08 소식 북마크 🏬 API FRAME FEED_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/feed/{feedId}")
     private CommonResponse<String> bookMarkFeed(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId){
         Long userId= user.getId();

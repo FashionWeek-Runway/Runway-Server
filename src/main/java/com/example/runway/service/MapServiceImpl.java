@@ -92,6 +92,7 @@ public class MapServiceImpl implements MapService {
         return new PageResponse<>(storeResult.isLast(),storeInfoList);
     }
 
+
     @Override
     public MapRes.SearchList getStoreBySearch(MapReq.SearchStore searchStore) {
 
@@ -189,5 +190,7 @@ public class MapServiceImpl implements MapService {
         );
         return new PageResponse<>(storeInfoResult.isLast(),storeInfoList);
     }
+
+
 
 }

@@ -148,6 +148,12 @@ public class StoreServiceImpl implements StoreService{
     }
 
 
+    @Override
+    public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId) {
+        StoreReviewRepository.GetStoreReview result=storeReviewRepository.getStoreReview(reviewId);
+        return StoreConvertor.StoreReview(result);
+    }
+
 
     private List<String> getStoreImgList(Long storeId) {
         List<StoreImg> storeImg=storeImgRepository.findByStoreIdOrderBySequenceAsc(storeId);

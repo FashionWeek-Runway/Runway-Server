@@ -41,4 +41,7 @@ public interface StoreService {
     void checkBookMarkFeed(Long userId, Long feedId);
 
     List<HomeRes.StoreInfo> recommendStore(Long userId);
+
+    StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId);
+
 }

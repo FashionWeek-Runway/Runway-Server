@@ -1,6 +1,7 @@
 package com.example.runway.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -39,5 +40,9 @@ public class OwnerFeed extends BaseEntity {
 
     @Column(name="content")
     private String content;
+
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
 
 }

@@ -2,6 +2,7 @@ package com.example.runway.service;
 
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface StoreService {
     StoreRes.HomeList getMainHome(Long userId);
 
-    List<String> getCategoryList();
+    List<String> getCategoryList(Long userId);
 
     StoreRes.StoreInfo getStoreDetail(User user, Long storeId);
 
@@ -39,5 +40,8 @@ public interface StoreService {
 
     void checkBookMarkFeed(Long userId, Long feedId);
 
+    List<HomeRes.StoreInfo> recommendStore(Long userId);
+
     StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId);
+
 }

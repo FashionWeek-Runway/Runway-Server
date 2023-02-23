@@ -83,6 +83,9 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="agree_info")
     private boolean agreeInfo=true;
 
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
 
 
     @ManyToMany

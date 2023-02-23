@@ -111,11 +111,7 @@ public class LoginServiceImpl implements LoginService {
 
         Long userId=userRepository.save(user).getId();
 
-
-        for(int i=0;i<socialSignUp.getCategoryList().size();i++){
-            UserCategory userCategory=UserConvertor.PostUserCategory(userId,socialSignUp.getCategoryList().get(i));
-            userCategoryRepository.save(userCategory);
-        }
+        saveUserCategoryList(userId,socialSignUp.getCategoryList());
 
         List<String> categoryList = getCategoryNameList(socialSignUp.getCategoryList());
 
@@ -149,11 +145,7 @@ public class LoginServiceImpl implements LoginService {
         Long userId=userRepository.save(user).getId();
 
 
-        for(int i=0;i<signupUser.getCategoryList().size();i++){
-            UserCategory userCategory=UserConvertor.PostUserCategory(userId,signupUser.getCategoryList().get(i));
-            userCategoryRepository.save(userCategory);
-        }
-
+        saveUserCategoryList(userId,signupUser.getCategoryList());
         List<String> categoryList = getCategoryNameList(signupUser.getCategoryList());
 
 
@@ -236,6 +228,22 @@ public class LoginServiceImpl implements LoginService {
         }
         return categoryNameList;
 
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void saveUserCategoryList(Long userId,List<Long> userCategoryList){
+        List<UserCategory> userCategoryArrayList=new ArrayList<>();
+        for(int i=1;i<7;i++){
+            UserCategory userCategory=UserCategory.builder().userId(userId).categoryId(Long.valueOf(i)).status(false).build();
+            userCategoryArrayList.add(userCategory);
+        }
+        userCategoryRepository.saveAll(userCategoryArrayList);
+
+        for(Long categoryId : userCategoryList){
+            Optional<UserCategory> userCategory=userCategoryRepository.findByUserIdAndCategoryId(userId,categoryId);
+            userCategory.get().modifyCategoryStatus(true);
+            userCategoryRepository.save(userCategory.get());
+        }
     }
 
 }

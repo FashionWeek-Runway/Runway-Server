@@ -1,6 +1,7 @@
 package com.example.runway.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -30,5 +31,9 @@ public class LeaveReason extends BaseEntity {
 
     @Column(name="reason")
     private String reason;
+
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
 
 }

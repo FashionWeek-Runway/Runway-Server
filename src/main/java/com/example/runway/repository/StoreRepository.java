@@ -24,7 +24,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findByRegionId(Long regionId);
 
-
     interface GetMapList{
         Long getStoreId();
         String getStoreName();
@@ -138,5 +137,28 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getAddress();
     }
 
-
+    @Query(nativeQuery = true,value = "select IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
+            "       S.id'storeId',store_img'storeImg' ,concat(R.region,', ',R.city)'regionInfo',S.name'storeName', " +
+            "       (select GROUP_CONCAT(C2.category SEPARATOR ',')" +
+            "        from Category C2" +
+            "                 join StoreCategory SC2 on SC2.category_id = C2.id" +
+            "                 join Store S2 on SC2.store_id = S2.id" +
+            "        where S2.id = S.id " +
+            "       )as 'storeCategory',(select count(*) from Keep K where K.store_id=S.id)'bookmarkCnt' " +
+            " from Store S " +
+            " join Region R on S.region_id = R.id " +
+            " join StoreCategory SC on S.id = SC.store_id " +
+            " join Category C on SC.category_id = C.id " +
+            " left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
+            " where C.category IN (:categoryList) group by S.id limit 10")
+    List<StoreRepository.RecommendStore> recommendStore(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList);
+    interface RecommendStore {
+        boolean getBookmark();
+        String getImgUrl();
+        Long getStoreId();
+        String getRegionInfo();
+        String getStoreName();
+        String getStoreCategory();
+        int getBookmarkCnt();
+    }
 }

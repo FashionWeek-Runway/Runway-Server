@@ -1,6 +1,7 @@
 package com.example.runway.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,11 +35,23 @@ public class UserCategory extends BaseEntity {
     @Column(name="category_id")
     private Long categoryId;
 
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
+
+    public void modifyCategoryStatus(boolean status) {
+        this.status=status;
+    }
+
+
+
     @Builder
-    public UserCategory(Long userId,Long categoryId){
+    public UserCategory(Long userId,Long categoryId,boolean status){
         this.categoryId=categoryId;
         this.userId=userId;
+        this.status=status;
     }
+
 
 
 }

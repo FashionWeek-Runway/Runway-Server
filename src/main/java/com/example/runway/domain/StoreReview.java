@@ -1,6 +1,7 @@
 package com.example.runway.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -37,4 +38,8 @@ public class StoreReview extends BaseEntity {
 
     @Column(name = "img_url")
     private String imgUrl;
+
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
 }

@@ -1,6 +1,7 @@
 package com.example.runway.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -22,4 +23,8 @@ public class Region extends BaseEntity{
 
     @Column(name= "address")
     private String address;
+
+    @Column(name="status")
+    @ColumnDefault("true")
+    private boolean status;
 }

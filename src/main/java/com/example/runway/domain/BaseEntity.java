@@ -29,8 +29,6 @@ public class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ColumnDefault("true")
-    private boolean status=true;
 }
 // test
 // test2

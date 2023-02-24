@@ -34,7 +34,8 @@ public class UserController {
     @ResponseBody
     @PostMapping("/refresh")
     public CommonResponse<UserRes.ReIssueToken> reIssueToken(){
-
+        log.info("reIssue-token");
+        log.info("api = reIssue-token 02-01");
         String refreshToken = tokenProvider.getRefreshToken();
 
         Long userId=tokenProvider.getUserIdByRefreshToken(refreshToken);
@@ -61,6 +62,8 @@ public class UserController {
     @GetMapping("/logout")
     public CommonResponse<String> logOut(@AuthenticationPrincipal User user){
 
+        log.info("logout");
+        log.info("api = logout 02-02");
         //탈취된 토큰인지 검증
         Long userId = user.getId();
 
@@ -81,6 +84,8 @@ public class UserController {
     @PostMapping("/location")
     public CommonResponse<String> postUserLocation(@AuthenticationPrincipal User user, @RequestBody UserReq.UserLocation userLocation){
 
+        log.info("post-location");
+        log.info("api = post-location 02-03");
         userService.postUserLocation(user,userLocation);
         return CommonResponse.onSuccess("위치 정보 저장 성공");
 

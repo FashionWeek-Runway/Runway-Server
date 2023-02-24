@@ -47,7 +47,7 @@ public class LoginController {
     @ApiOperation(value = "01-01 회원가입 🔑", notes = "회원가입 API 보내실 때 multipart/from-data 로 보내주시면 됩니다.")
     public CommonResponse<UserRes.SignUp> signup(@ModelAttribute UserReq.SignupUser signupUser) throws IOException {
         log.info("post-signup");
-        log.info("api = signup ");
+        log.info("api = signup 01-01");
 
         System.out.println(signupUser.getCategoryList());
 
@@ -70,8 +70,7 @@ public class LoginController {
     @PostMapping("")
     public CommonResponse<UserRes.Token> login( @Valid @RequestBody UserReq.LoginUserInfo loginUserInfo){
         log.info("post-logIn");
-        log.info("api = logIn ,username={}",loginUserInfo.getPhone());
-        log.info("login");
+        log.info("api = logIn 01-02 ,username={}",loginUserInfo.getPhone());
 
         if(loginUserInfo.getPhone()==null) throw new BaseException(USERS_EMPTY_USER_ID);
 
@@ -87,7 +86,7 @@ public class LoginController {
     @GetMapping("/check/nickname")
     public CommonResponse<String> checkNickName(@RequestParam("nickname") String nickName) {
         log.info("get-check-nickname");
-        log.info("api = check-nickname, nickname={}",nickName);
+        log.info("api = check-nickname 01-03, nickname={}",nickName);
         String result="";
         if(logInService.checkNickName(nickName)){
             throw new BaseException(USERS_EXISTS_NICKNAME);
@@ -102,7 +101,7 @@ public class LoginController {
     @GetMapping("/check/phone")
     public CommonResponse<String> checkuserId(@RequestParam("phone") String phone){
         log.info("get-check-phone");
-        log.info("api = check-phone, phonenumber={}",phone);
+        log.info("api = check-phone 01-04, phonenumber={}",phone);
         if(logInService.checkuserId(phone)) throw new BaseException(USERS_EXISTS_ID);
 
 
@@ -115,7 +114,7 @@ public class LoginController {
     @PostMapping("/phone")
     public CommonResponse<String> findPassword(@RequestBody UserReq.PostPassword postPassword){
         log.info("change-password-phone");
-        log.info("api = check-phone, phonenumber={}",postPassword.getPassword());
+        log.info("api = check-phone 01-05, phonenumber={}",postPassword.getPassword());
 
         if (!logInService.checkuserId(postPassword.getPhone())) throw new NotFoundException(NOT_EXIST_USER);
 
@@ -129,7 +128,7 @@ public class LoginController {
     @PostMapping("/send")
     public CommonResponse<String> sendSMS(@RequestBody UserReq.Message message) throws UnsupportedEncodingException, URISyntaxException, NoSuchAlgorithmException, InvalidKeyException, JsonProcessingException {
         log.info("send-sms");
-        log.info("api = send-sms, phonenumber={}",message.getTo());
+        log.info("api = send-sms 01-06, phonenumber={}",message.getTo());
 
         if(!ValidationRegex.validationPhoneNumber(message.getTo())) throw new ForbiddenException(NOT_CORRECT_PHONE_NUMBER_FORM);
 
@@ -146,7 +145,7 @@ public class LoginController {
     @PostMapping("/check")
     public CommonResponse<String> checkSMS(@RequestBody UserReq.MessageCheck message)  {
         log.info("send-sms");
-        log.info("api = check-sms, phonenumber={}",message.getTo());
+        log.info("api = check-sms 01-07, phonenumber={}",message.getTo());
         String confirmNum=smsService.getSmsConfirmNum(message.getTo());
 
         if(confirmNum==null)throw new BadRequestException(NOT_EXIST_CONFIRM_NUM);
@@ -173,9 +172,10 @@ public class LoginController {
     @ResponseBody
     @PostMapping("/kakao")
     public CommonResponse<UserRes.Token> kakaoLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
-
-            UserRes.Token tokenRes = authService.logInKakaoUser(SocialLogin);
-            return CommonResponse.onSuccess(tokenRes);
+        log.info("kakao-login");
+        log.info("api = kakao-login 01-08, kakaoAccesstoken={}",SocialLogin.getAccessToken());
+        UserRes.Token tokenRes = authService.logInKakaoUser(SocialLogin);
+        return CommonResponse.onSuccess(tokenRes);
 
     }
 
@@ -184,7 +184,8 @@ public class LoginController {
     @ResponseBody
     @PostMapping("/apple")
     public CommonResponse<UserRes.AppleLogin> appleLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
-
+        log.info("apple-login");
+        log.info("api = apple-login 01-09, kakaoAccesstoken={}",SocialLogin.getAccessToken());
         UserRes.AppleLogin tokenRes = authService.appleLogin(SocialLogin);
         return CommonResponse.onSuccess(tokenRes);
 
@@ -197,7 +198,8 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "/signup/kakao", consumes = {"multipart/form-data"},method = RequestMethod.POST)
     public CommonResponse<UserRes.SignUp> socialSignUp(@ModelAttribute UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {
-
+        log.info("post-social-signup");
+        log.info("api = social-signup 01-10");
         if(socialSignUp.getCategoryList()==null) throw new BadRequestException(CATEGORY_EMPTY_USERS);
         if(socialSignUp.getSocialId()==null) throw new BadRequestException(USERS_EMPTY_USER_ID);
         if(logInService.checkuserId(socialSignUp.getSocialId()))  throw new ForbiddenException(USERS_EXISTS_SOCIAL_ID);
@@ -215,7 +217,8 @@ public class LoginController {
     @ResponseBody
     @PostMapping("/refresh")
     public CommonResponse<UserRes.Token> checkRefreshToken(){
-
+        log.info("check-refresh-token");
+        log.info("api = check-refresh-token 01-11");
         String refreshToken=tokenProvider.getRefreshToken();
 
         Long userId = tokenProvider.getUserIdByRefreshToken(refreshToken);

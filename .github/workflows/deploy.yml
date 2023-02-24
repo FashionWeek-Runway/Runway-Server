@@ -35,7 +35,7 @@ jobs:
 
       - run: touch ./src/main/resources/runwayAccessKey.json
       - run: |
-          secret_key = $secrets.FCM_JSON
+          secret_key = ${{ secrets.FCM_JSON }}
           json_object = $(echo $secret_key | tr -d '\n' | sed -e 's/"/\\"/g' | jq -R '.')
       - run: echo $json_object > ./src/main/resources/runwayAccessKey.json
       - run: cat ./src/main/resources/runwayAccessKey.json

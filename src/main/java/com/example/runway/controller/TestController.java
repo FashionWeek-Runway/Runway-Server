@@ -31,7 +31,7 @@ public class TestController {
     @PostMapping("/img")
     public CommonResponse<String> imgUpload(@RequestParam("img") MultipartFile multipartFile) throws IOException {
 
-        String imgurl = awsS3Service.upload(multipartFile, "test");
+        String imgurl = awsS3Service.upload(multipartFile, "store");
         return CommonResponse.onSuccess(imgurl);
 
     }

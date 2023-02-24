@@ -37,7 +37,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
         //파일 형식 구하기
         String ext = s3FileName.split("\\.")[1];
-        String contentType = "";
+        String contentType = multipartFile.getContentType();
 
         switch (ext) {
             case "jpeg":
@@ -49,6 +49,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             case "jpg":
                 contentType = "image/jpg";
                 break;
+
         }
 
         objMeta.setContentType(contentType);

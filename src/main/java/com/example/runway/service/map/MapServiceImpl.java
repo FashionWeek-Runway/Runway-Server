@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.map;
 
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.Region;

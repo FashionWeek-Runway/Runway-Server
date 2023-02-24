@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.user;
 
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
@@ -7,6 +7,7 @@ import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.repository.UserRepository;
+import com.example.runway.service.util.RedisService;
 import com.google.gson.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

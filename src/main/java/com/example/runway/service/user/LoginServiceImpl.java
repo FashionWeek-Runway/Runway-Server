@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.user;
 
 import com.example.runway.domain.SmsUser;
 import com.example.runway.domain.UserCategory;
@@ -13,6 +13,8 @@ import com.example.runway.jwt.TokenProvider;
 import com.example.runway.repository.SmsUserRepository;
 import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
+import com.example.runway.service.util.RedisService;
+import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

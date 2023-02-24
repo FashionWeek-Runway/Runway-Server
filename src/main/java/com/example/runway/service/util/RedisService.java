@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.util;
 
 
 import java.time.Duration;

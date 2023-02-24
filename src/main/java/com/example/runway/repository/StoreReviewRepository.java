@@ -21,8 +21,11 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "         join User U on U.id = SR.user_id\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join Region R on R.id = S.region_id\n" +
-            "where SR.id=:reviewId")
+            "where SR.id=:reviewId and SR.status=true")
     StoreReviewRepository.GetStoreReview getStoreReview(@Param("reviewId")Long reviewId);
+
+    boolean existsByIdAndStatus(Long reviewId, boolean b);
+
     interface GetStoreReview {
         Long getReviewId();
         String getProfileImgUrl();

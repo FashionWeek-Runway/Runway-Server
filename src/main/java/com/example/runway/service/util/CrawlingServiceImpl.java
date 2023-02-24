@@ -1,11 +1,10 @@
-package com.example.runway.service;
+package com.example.runway.service.util;
 
 import com.example.runway.dto.store.StoreRes;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 

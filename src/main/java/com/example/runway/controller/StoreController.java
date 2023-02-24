@@ -5,8 +5,9 @@ import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.exception.NotFoundException;
-import com.example.runway.service.CrawlingService;
-import com.example.runway.service.StoreService;
+import com.example.runway.service.store.ReviewService;
+import com.example.runway.service.util.CrawlingService;
+import com.example.runway.service.store.StoreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.List;
 
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW;
 import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_STORE;
 
 @Api(tags = "03-쇼룸🏬")
@@ -30,6 +32,7 @@ import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_STORE;
 public class StoreController {
     private final StoreService storeService;
     private final CrawlingService crawlingService;
+    private final ReviewService reviewService;
 
     @ApiOperation(value = "03-01 쇼룸 북마크 🏬 API FRAME MAPDETAIL_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/{storeId}")
@@ -60,7 +63,7 @@ public class StoreController {
                                                                                     @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size
     ){
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
-        PageResponse<List<StoreRes.StoreReview>> storeReview=storeService.getStoreReview(storeId,page,size);
+        PageResponse<List<StoreRes.StoreReview>> storeReview=reviewService.getStoreReview(storeId,page,size);
 
         return CommonResponse.onSuccess(storeReview);
     }
@@ -86,12 +89,12 @@ public class StoreController {
 
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 
-        storeService.postStoreReview(storeId,userId,multipartFile);
+        reviewService.postStoreReview(storeId,userId,multipartFile);
 
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
-    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회🏬 FRAME 2608453 API",notes = "쇼룸 사장님 소식 리스트 API")
+    @ApiOperation(value = "03-06 쇼룸 사장님 소식 리스트 조회🏬 FRAME MAPDETAIL_01 API",notes = "쇼룸 사장님 소식 리스트 API")
     @GetMapping("/feed/{storeId}")
     private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoardList(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                                   @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -109,14 +112,16 @@ public class StoreController {
     @GetMapping("/review/detail/{reviewId}")
     private CommonResponse<StoreRes.ReviewInfo> getStoreReviewByReviewId(@AuthenticationPrincipal User user,
                                                                          @Parameter(description = "reviewId 값 보내주기", example = "0")   @PathVariable("reviewId") Long reviewId){
+
+        if(!reviewService.existsReview(reviewId)){
+            throw new NotFoundException(NOT_EXIST_REVIEW);
+        }
         Long userId=user.getId();
 
-
-        StoreRes.ReviewInfo reviewInfo=storeService.getStoreReviewByReviewId(reviewId);
+        StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId);
 
         return CommonResponse.onSuccess(reviewInfo);
     }
-
 
 
 

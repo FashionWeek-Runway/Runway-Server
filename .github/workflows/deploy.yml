@@ -33,8 +33,12 @@ jobs:
       - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
 
+      - name: Create JSON File
       - run: touch ./src/main/resources/runwayAccessKey.json
-      - run: echo "${{ secrets.FCM_JSON }}" > ./src/main/resources/runwayAccessKey.json
+      - run: |
+          secret_key = $secrets.FCM_JSON
+          json_object = $(echo $secret_key | tr -d '\n' | sed -e 's/"/\\"/g' | jq -R '.')
+          echo $json_object > ./src/main/resources/runwayAccessKey.json
       - run: cat ./src/main/resources/runwayAccessKey.json
 
 

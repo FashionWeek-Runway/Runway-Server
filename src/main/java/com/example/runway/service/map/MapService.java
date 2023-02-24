@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.map;
 
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.map.MapReq;

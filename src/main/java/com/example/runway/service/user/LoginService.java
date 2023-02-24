@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.user;
 
 import com.example.runway.exception.BaseException;
 import com.example.runway.dto.user.UserReq;

@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.store;
 
 import com.example.runway.convertor.ReviewConvertor;
 import com.example.runway.convertor.StoreConvertor;
@@ -7,6 +7,7 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.repository.*;
+import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +35,6 @@ public class StoreServiceImpl implements StoreService{
     private final KeepOwnerFeedRepository keepOwnerFeedRepository;
     private final UserCategoryRepository userCategoryRepository;
 
-    public StoreRes.HomeList getMainHome(Long userId) {
-
-        return null;
-    }
 
     public List<String> getCategoryList(Long userId){
         List<UserCategory> category=userCategoryRepository.findByUserIdAndStatus(userId,true);
@@ -56,22 +53,7 @@ public class StoreServiceImpl implements StoreService{
         return storeRepository.existsByIdAndStatus(storeId,true);
     }
 
-    @Override
-    public PageResponse<List<StoreRes.StoreReview>> getStoreReview(Long storeId, int page, int size) {
 
-        List<StoreRes.StoreReview> storeReviewList=new ArrayList<>();
-
-        Pageable pageReq = PageRequest.of(page, size);
-
-        Page<StoreReview> storeReview = storeReviewRepository.findByStoreIdAndStatusOrderByCreatedAtDesc(storeId, true, pageReq);
-
-        for (StoreReview review : storeReview) {
-            StoreRes.StoreReview storeReviewDto = StoreConvertor.StoreReviewBuilder(review);
-            storeReviewList.add(storeReviewDto);
-        }
-
-        return new PageResponse<>(storeReview.isLast(),storeReviewList);
-    }
 
     @Override
     public PageResponse<List<StoreRes.StoreBlog>> getStoreBlog(Long storeId, Integer page, Integer size) {
@@ -79,14 +61,7 @@ public class StoreServiceImpl implements StoreService{
         return null;
     }
 
-    @Override
-    public void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException {
-        String imgUrl = awsS3Service.upload(multipartFile,"review");
 
-        StoreReview storeReview = ReviewConvertor.UploadImg(storeId,userId,imgUrl);
-
-        storeReviewRepository.save(storeReview);
-    }
 
     @Override
     public PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size) {
@@ -148,11 +123,7 @@ public class StoreServiceImpl implements StoreService{
     }
 
 
-    @Override
-    public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId) {
-        StoreReviewRepository.GetStoreReview result=storeReviewRepository.getStoreReview(reviewId);
-        return StoreConvertor.StoreReview(result);
-    }
+
 
 
     private List<String> getStoreImgList(Long storeId) {

@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.store;
 
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface StoreService {
-    StoreRes.HomeList getMainHome(Long userId);
 
     List<String> getCategoryList(Long userId);
 
@@ -18,11 +17,7 @@ public interface StoreService {
 
     boolean checkStore(Long storeId);
 
-    PageResponse<List<StoreRes.StoreReview>> getStoreReview(Long storeId, int page,int size);
-
     PageResponse<List<StoreRes.StoreBlog>> getStoreBlog(Long storeId, Integer page, Integer size);
-
-    void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException;
 
     PageResponse<List<StoreRes.StoreBoardList>> getStoreBoard(Long userId, Long storeId, Integer page, Integer size);
 
@@ -41,7 +36,5 @@ public interface StoreService {
     void checkBookMarkFeed(Long userId, Long feedId);
 
     List<HomeRes.StoreInfo> recommendStore(Long userId);
-
-    StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId);
 
 }

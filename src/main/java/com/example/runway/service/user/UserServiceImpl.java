@@ -1,4 +1,4 @@
-package com.example.runway.service;
+package com.example.runway.service.user;
 
 import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface OwnerFeedRepository extends JpaRepository<OwnerFeed,Long> {
     @Query(nativeQuery = true,value = "select img_url'imgUrl',store_id'storeId',title,DATE_FORMAT(OB.created_at,'%m.%d')'day' from OwnerFeed OB" +
-            " left join OwnerFeedImg OBI on OB.id = OBI.feed_id where store_id=:storeId order by OB.created_at asc",countQuery = "select * from OwnerFeed where store_id=:storeId")
+            " left join OwnerFeedImg OBI on OB.id = OBI.feed_id where store_id=:storeId order by OB.created_at asc",countQuery = "select count(*) from OwnerFeed where store_id=:storeId")
     Page<OwnerFeedRepository.StoreBoardList> getStoreBoardList(@Param("storeId")Long storeId , Pageable pageReq);
     interface StoreBoardList {
         String getImgUrl();

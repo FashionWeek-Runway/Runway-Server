@@ -38,7 +38,7 @@ public class MapRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "04-02,04,06 하단 스와이프 쇼룸 필터링 조회 🗺 API 🗺 API Response FRAME MAP_03,04, MAP_07, SEARCH_02")
+    @ApiModel(value = "04-02,04,06 하단 스와이프 쇼룸 필터링 조회 🗺 API Response FRAME MAP_03,04, MAP_07, SEARCH_02")
     public static class StoreInfo {
 
         @ApiModelProperty(notes = "쇼룸 id", required = true, example = "1")

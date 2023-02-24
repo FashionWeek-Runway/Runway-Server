@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
 
 
@@ -77,6 +79,7 @@ public class UserController {
         return CommonResponse.onSuccess(result);
     }
 
+    /*
     // 토큰이 유효하다는 가정 하
     // 만약 토큰이 만료되었다면 재발급 요청
     @ApiOperation(value = "02-03 유저 위치 저장 👤", notes = "위치 저장 API")
@@ -90,6 +93,15 @@ public class UserController {
         return CommonResponse.onSuccess("위치 정보 저장 성공");
 
     }
+     */
+
+    @ApiOperation(value = "02-03 내가 작성한 리뷰 보기 👤 FRAME MY")
+    @GetMapping("/review")
+    public CommonResponse<List<UserRes.Review>> getMyReview(@AuthenticationPrincipal User user){
+        List<UserRes.Review> review=userService.getMyReview(user.getId());
+        return CommonResponse.onSuccess(review);
+    }
+
 
 
 }

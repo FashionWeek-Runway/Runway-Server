@@ -4,6 +4,8 @@ import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.user.UserReq;
+import com.example.runway.dto.user.UserRes;
+import com.example.runway.repository.StoreReviewRepository;
 import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserCategoryRepository userCategoryRepository;
+    private final StoreReviewRepository storeReviewRepository;
 
     @Override
     public void postUserLocation(User user, UserReq.UserLocation userLocation) {
@@ -54,5 +57,31 @@ public class UserServiceImpl implements UserService {
             userCategoryRepository.save(userCategory.get());
         }
 
+    }
+
+    @Override
+    public List<UserRes.Review> getMyReview(Long userId) {
+        List<String> monthResult=storeReviewRepository.findReviewDatesByUserId(userId);
+
+        List<UserRes.Review> review=new ArrayList<>();
+
+        for (String date : monthResult) {
+
+            List<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.GetReviewInfo(date,userId);
+            List<UserRes.ReviewDetail> reviewDetails=new ArrayList<>();
+            reviewResult.forEach(
+                    result->reviewDetails.add(
+                        new UserRes.ReviewDetail(
+                            result.getReviewId(),
+                            result.getImgUrl(),
+                            result.getRegionInfo()
+                        )
+                    )
+            );
+
+            review.add(new UserRes.Review(date,reviewDetails));
+
+        }
+        return review;
     }
 }

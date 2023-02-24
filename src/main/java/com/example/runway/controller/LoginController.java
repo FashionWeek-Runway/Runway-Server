@@ -1,7 +1,6 @@
 package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
-import com.example.runway.constants.Constants;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
@@ -9,10 +8,10 @@ import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.exception.NotFoundException;
 import com.example.runway.jwt.TokenProvider;
-import com.example.runway.service.AuthService;
-import com.example.runway.service.LoginService;
-import com.example.runway.service.RedisService;
-import com.example.runway.service.SmsService;
+import com.example.runway.service.user.AuthService;
+import com.example.runway.service.user.LoginService;
+import com.example.runway.service.util.RedisService;
+import com.example.runway.service.user.SmsService;
 import com.example.runway.util.ValidationRegex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;

@@ -2,8 +2,8 @@ package com.example.runway.jwt;
 
 import com.example.runway.domain.User;
 import com.example.runway.repository.UserRepository;
-import com.example.runway.service.CustomUserDetailsService;
-import com.example.runway.service.RedisService;
+import com.example.runway.service.user.CustomUserDetailsService;
+import com.example.runway.service.util.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

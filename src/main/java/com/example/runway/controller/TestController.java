@@ -2,23 +2,14 @@ package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
-import com.example.runway.dto.store.StoreRes;
-import com.example.runway.exception.BaseException;
-import com.example.runway.exception.ForbiddenException;
-import com.example.runway.exception.NotFoundException;
-import com.example.runway.service.AwsS3Service;
-import com.example.runway.service.CrawlingService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Parameter;
+import com.example.runway.service.util.AwsS3Service;
+import com.example.runway.service.util.CrawlingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-
-import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_STORE;
 
 
 @RequiredArgsConstructor

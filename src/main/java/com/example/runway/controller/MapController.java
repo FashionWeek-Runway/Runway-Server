@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Api(tags = "04-맵 🗺")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/maps")
 public class MapController {
     private final MapService mapService;
@@ -30,6 +32,8 @@ public class MapController {
     @ApiOperation(value = "04-01 메인 지도 조회 + 필터링 조회 마커용 🗺 API FRAME MAP_03,04 ", notes = "04-02 와 함께 조회해야합니다 지도 조회 API ArrayList 에 아무것도 입력 안할 시 전체 조회. example = category=[]")
     @PostMapping("/filter")
     private CommonResponse<List<MapRes.Map>> getMapFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap){
+        log.info("get-main-map");
+        log.info("api = get-main-map 04-01");
         Long userId=user.getId();
         List<MapRes.Map> mapList=mapService.getMapFilter(userId,filterMap);
         return CommonResponse.onSuccess(mapList);
@@ -40,6 +44,8 @@ public class MapController {
     private CommonResponse<PageResponse<List<MapRes.StoreInfo>>> getStoreInfoFilter(@AuthenticationPrincipal User user, @RequestBody MapReq.FilterMap filterMap,
                                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                                               @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size){
+        log.info("get-main-swipe");
+        log.info("api = get-main-swipe 04-02");
         Long userId=user.getId();
         PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getStoreInfoFilter(userId,filterMap,page,size);
         return CommonResponse.onSuccess(storeInfoList);
@@ -49,6 +55,8 @@ public class MapController {
     @ApiOperation(value = "04-03 지도 쇼룸 검색 지도 조회 검색용 🗺 API FRAME SEARCH_07", notes = "지도 검색 조회")
     @PostMapping("/search")
     private CommonResponse<MapRes.SearchList> getContentsBySearch(@AuthenticationPrincipal User user, @RequestBody MapReq.SearchStore searchStore) {
+        log.info("get-search");
+        log.info("api = get-search-by-content 04-03");
         MapRes.SearchList storeSearchList=mapService.getStoreBySearch(searchStore);
         return CommonResponse.onSuccess(storeSearchList);
     }
@@ -56,6 +64,8 @@ public class MapController {
     @ApiOperation(value = "04-04 지도 매장 단일 선택 하단 스와이프 조회 🗺 API FRAME MAP_07", notes = "지도 필터링 조회")
     @GetMapping("/info/{storeId}")
     private CommonResponse<MapRes.StoreInfo> getStoreByStoreId(@AuthenticationPrincipal User user,@Parameter(description = "storeId 값 보내주기", example = "0")  @PathVariable Long storeId) {
+        log.info("get-single-store");
+        log.info("api = get-single-store 04-04");
         MapRes.StoreInfo storeInfo = mapService.getStoreByStoreId(storeId);
         return CommonResponse.onSuccess(storeInfo);
     }
@@ -64,6 +74,8 @@ public class MapController {
     @ApiOperation(value = "04-05 지도 쇼룸 검색 지역 마커용 🗺 API FRAME SEARCH_01", notes = "지역에 있는 모든 쇼룸 정보")
     @GetMapping("/region/{regionId}")
     private CommonResponse<List<MapRes.MapMarkerList>> getStoreByRegion(@AuthenticationPrincipal User user, @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @PathVariable("regionId") Long regionId) {
+        log.info("get-region-marker");
+        log.info("api = get-region-marker 04-05");
         List<MapRes.MapMarkerList> storeSearchList=mapService.getStoreByRegion(regionId);
         return CommonResponse.onSuccess(storeSearchList);
     }
@@ -75,6 +87,8 @@ public class MapController {
                                                                            @Parameter(description = "지역 이름 보내주는 region 값 보내주기", example = "0") @PathVariable("regionId") Long regionId,
                                                                            @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                            @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size) {
+        log.info("get-region-swipe");
+        log.info("api = get-region-swipe 04-06");
         PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getInfoByRegion(regionId,page,size);
         return CommonResponse.onSuccess(storeInfoList);
     }
@@ -85,6 +99,8 @@ public class MapController {
     @GetMapping("/{storeId}")
     @ApiOperation(value = "04-07 지도 쇼룸 검색 쇼룸 마커+하단 스와이프 조회 🗺 API FRAME SEARCH_03,04", notes = "검색 시 쇼룸 단일 조회  ")
     private CommonResponse<MapRes.StorePositionAndInfo> getStorePositionAndInfo(@Parameter(description = "storeId 값 보내주기", example = "0")  @PathVariable Long storeId){
+        log.info("get-single-store");
+        log.info("api = get-single-store 04-07");
         MapRes.StorePositionAndInfo storePositionAndInfo = mapService.getStorePositionAndInfo(storeId);
         return CommonResponse.onSuccess(storePositionAndInfo);
     }

@@ -37,6 +37,8 @@ public class StoreController {
     @ApiOperation(value = "03-01 쇼룸 북마크 🏬 API FRAME MAPDETAIL_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/{storeId}")
     private CommonResponse<String> bookMarkStore(@AuthenticationPrincipal User user, @Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
+        log.info("store-bookmark");
+        log.info("api = store-bookmark 03-01");
         Long userId= user.getId();
         boolean checkBookmark=storeService.existsBookMark(userId,storeId);
         if(checkBookmark){
@@ -51,6 +53,9 @@ public class StoreController {
     @ApiOperation(value = "03-02 쇼룸 상세 페이지 상단 정보 🏬 API FRAME MAPDETAIL_01",notes = "지도에서 가게 상세 조회 API")
     @GetMapping("/detail/{storeId}")
     private CommonResponse<StoreRes.StoreInfo> getStoreDetail(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId){
+        log.info("get-store-detail");
+        log.info("api = get-store-detail 03-02,storeId = {}",storeId);
+
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
         StoreRes.StoreInfo storeInfo=storeService.getStoreDetail(user,storeId);
         return CommonResponse.onSuccess(storeInfo);
@@ -62,6 +67,8 @@ public class StoreController {
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                                     @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size
     ){
+        log.info("get-store-review");
+        log.info("api = get-store-review 03-03,storeId = {}",storeId);
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
         PageResponse<List<StoreRes.StoreReview>> storeReview=reviewService.getStoreReview(storeId,page,size);
 
@@ -73,6 +80,9 @@ public class StoreController {
     private CommonResponse<List<StoreRes.StoreBlog>> getStoreBlog(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                   @Parameter(description = "매장이름", example = "0") @RequestParam(required = true) String storeName)
     {
+        log.info("get-store-blog");
+        log.info("api = get-store-blog 03-04,storeId = {}",storeId);
+
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 
         List<StoreRes.StoreBlog> storeBlog=crawlingService.getStoreBlog(storeName);
@@ -85,6 +95,8 @@ public class StoreController {
     @PostMapping("/review/{storeId}")
     private CommonResponse<String> postStoreReview(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                    @Parameter(description="img",example ="이미지") @RequestPart(value="img",required = true) MultipartFile multipartFile) throws IOException {
+        log.info("post-store-review");
+        log.info("api = post-store-review 03-05,storeId = {}",storeId);
         Long userId=user.getId();
 
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
@@ -99,6 +111,8 @@ public class StoreController {
     private CommonResponse<PageResponse<List<StoreRes.StoreBoardList>>> getStoreBoardList(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
                                                                                   @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                                   @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size)  {
+        log.info("get-store-feed");
+        log.info("api = get-store-feed 03-06,storeId = {}",storeId);
         Long userId=user.getId();
 
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
@@ -112,6 +126,9 @@ public class StoreController {
     @GetMapping("/review/detail/{reviewId}")
     private CommonResponse<StoreRes.ReviewInfo> getStoreReviewByReviewId(@AuthenticationPrincipal User user,
                                                                          @Parameter(description = "reviewId 값 보내주기", example = "0")   @PathVariable("reviewId") Long reviewId){
+
+        log.info("get-store-review-detail");
+        log.info("api = get-store-review-detail 03-09,reviewId = {}",reviewId);
 
         if(!reviewService.existsReview(reviewId)){
             throw new NotFoundException(NOT_EXIST_REVIEW);
@@ -128,8 +145,11 @@ public class StoreController {
     @ApiOperation(value = "03-07 쇼룸 사장님 소식 조회 🏬 API FRAME FEED_01" ,notes = "쇼룸 사장님 소식 리스트 API")
     @GetMapping("/feed/info/{feedId}")
     private CommonResponse<StoreRes.StoreBoard> getStoreBoard(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId) {
-        Long userId=user.getId();
 
+        log.info("get-store-feed-detail");
+        log.info("api = get-store-feed-detail 03-09,feedId = {}",feedId);
+
+        Long userId=user.getId();
 
         StoreRes.StoreBoard storeBoard=storeService.getStoreBoardById(userId,feedId);
         return CommonResponse.onSuccess(storeBoard);
@@ -138,7 +158,11 @@ public class StoreController {
     @ApiOperation(value = "03-08 소식 북마크 🏬 API FRAME FEED_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/feed/{feedId}")
     private CommonResponse<String> bookMarkFeed(@AuthenticationPrincipal User user, @Parameter(description = "feedId 소식 Id값") @PathVariable("feedId") Long feedId){
+        log.info("feed-bookmark");
+        log.info("api = feed-bookmark,feedId = {}",feedId);
+
         Long userId= user.getId();
+
         boolean checkBookmark=storeService.existsBookMarkFeed(userId,feedId);
         if(checkBookmark){
             storeService.unCheckBookMarkFeed(userId,feedId);

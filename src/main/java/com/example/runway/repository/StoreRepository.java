@@ -24,6 +24,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findByRegionId(Long regionId);
 
+
+
     interface GetMapList{
         Long getStoreId();
         String getStoreName();
@@ -63,7 +65,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "        where S2.id = S.id)as 'storeCategory',latitude,longitude,address \n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
-                    "where S.region_id=:regionId and S.status=true",countQuery = "select * from Store where region_id=:regionId")
+                    "where S.region_id=:regionId and S.status=true",countQuery = "select count(*) from Store where region_id=:regionId")
     Page<StoreInfoList> getStoreInfoRegion(@Param("regionId") Long regionId, Pageable pageReq);
 
     @Query(value="select S.id 'storeId',\n" +
@@ -95,6 +97,23 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         double getLatitude();
         double getLongitude();
     }
+
+    @Query(value = "select S.id 'storeId',\n" +
+            "       S.name'storeName',\n" +
+            "       SI.store_img'storeImg',\n" +
+            "       (select GROUP_CONCAT(C2.category SEPARATOR ',')\n" +
+            "        from Category C2\n" +
+            "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
+            "                 join Store S2 on SC2.store_id = S2.id \n" +
+            "        where S2.id = S.id \n" +
+            "       )as 'storeCategory' \n" +
+            " from Store S join StoreCategory SC on S.id = SC.store_id\n" +
+            " join Category C on SC.category_id = C.id "  +
+            " left join StoreImg SI on S.id = SI.store_id and sequence=1" +
+            " join Keep K on S.id = K.store_id where S.status=true and K.user_id=:userId group by S.id ",
+            countQuery = "select count(*) from Store S join Keep K on S.id = K.store_id where K.user_id=:userId ",
+            nativeQuery = true)
+    Page<StoreInfoList> getMyBookMarkStore(@Param("userId") Long userId, Pageable pageReq);
 
     @Query(value = "select S.id             'storeId',\n" +
             "       S.name           'storeName',\n" +

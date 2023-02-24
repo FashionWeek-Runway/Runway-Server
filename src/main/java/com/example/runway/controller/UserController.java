@@ -2,6 +2,8 @@ package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
+import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
@@ -10,11 +12,13 @@ import com.example.runway.service.util.RedisService;
 import com.example.runway.service.user.UserService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
@@ -95,13 +99,64 @@ public class UserController {
     }
      */
 
-    @ApiOperation(value = "02-03 내가 작성한 리뷰 보기 👤 FRAME MY")
+    @ApiOperation(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 FRAME MY")
+    @GetMapping("/")
+    public CommonResponse<UserRes.UserInfo> getMyInfo(@AuthenticationPrincipal User user){
+        log.info("get-my-info");
+        log.info("api = get-my-info 02-03");
+
+        Long userId = user.getId();
+        UserRes.UserInfo userInfo = userService.getMyInfo(userId);
+        return CommonResponse.onSuccess(userInfo);
+    }
+
+
+    @ApiOperation(value = "02-04 프로필 편집을 위한 기존 데이터 GET 👤 FRAME MY")
+    @GetMapping("/profile")
+    public CommonResponse<UserRes.PatchUserInfo> getUserProfile(@AuthenticationPrincipal User user){
+        log.info("get-profile-info");
+        log.info("api = get-profile-info 02-04");
+
+        Long userId = user.getId();
+        UserRes.PatchUserInfo userInfo = userService.getUserProfile(userId);
+        return CommonResponse.onSuccess(userInfo);
+    }
+
+    /*
+    @ApiOperation(value = "02-05 프로필 편집  👤 FRAME MY")
+    @PatchMapping("/profile")
+    public CommonResponse<String> modifyUserProfile(@AuthenticationPrincipal User user){
+        return CommonResponse.onSuccess("변경 성공");
+    }
+     */
+
+    @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY")
     @GetMapping("/review")
     public CommonResponse<List<UserRes.Review>> getMyReview(@AuthenticationPrincipal User user){
+        log.info("get-review");
+        log.info("api = get-my-review 02-06");
         List<UserRes.Review> review=userService.getMyReview(user.getId());
         return CommonResponse.onSuccess(review);
     }
 
+
+    @ApiOperation(value = "02-07 내가 북마크한 쇼룸 리스트 보기 👤 FRAME MY")
+    @GetMapping("/store")
+    public CommonResponse<PageResponse<List<UserRes.StoreInfo>>> getMyBookMarkStore(@AuthenticationPrincipal User user,
+                                                                                    @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                                    @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size){
+        log.info("get-bookmark-store");
+        log.info("api = get-my-bookmark-store 02-06");
+        Long userId=user.getId();
+        PageResponse<List<UserRes.StoreInfo>> storeInfo=userService.getMyBookMarkStore(userId,page,size);
+
+        return CommonResponse.onSuccess(storeInfo);
+    }
+
+    //@ApiOperation(value = "02-07 내가 북마크한 사장님 소식 리스트 보기 👤 FRAME MY")
+
+
+    //@ApiOperation(value = "02-08 사장님인 경우 내가 쓴 글 조회 👤 FRAME MY")
 
 
 }

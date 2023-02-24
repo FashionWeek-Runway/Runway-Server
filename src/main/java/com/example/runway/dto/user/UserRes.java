@@ -30,7 +30,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01-09 유저 로그인 🔑 API Response")
+    @ApiModel(value = "01-09 유저 로그인 👤 API Response")
     public static class AppleLogin {
         @ApiModelProperty(notes = "애플 유저 회원가입 유무", required = true, example = "true")
         private boolean checkUser;
@@ -58,7 +58,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-01 토큰 재발급 🔑 API Response")
+    @ApiModel(value = "02-01 토큰 재발급 👤 API Response")
     public static class ReIssueToken {
         @ApiModelProperty(notes = "액세스 토큰", required = true, example = "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ-----")
         private String accessToken;
@@ -69,7 +69,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "01-01,10 회원가입 🔑 API Response")
+    @ApiModel(value = "01-01,10 회원가입 👤 API Response")
     public static class SignUp {
         @ApiModelProperty(notes = "user 인덱스", required = true, example = "1")
         private Long userId; //user 인덱스
@@ -127,7 +127,7 @@ public class UserRes {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-03 내가 작성한 리뷰 보기 🔑 API Response")
+    @ApiModel(value = "02-06 내가 작성한 리뷰 보기 👤 API Response")
     public static class Review {
         @ApiModelProperty(notes = "올린 년도/달", required = true, example = "2023/02")
         private String date;
@@ -139,7 +139,7 @@ public class UserRes {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-03 리뷰 상세 🔑 API Response")
+    @ApiModel(value = "02-06 리뷰 상세 👤 API Response")
     public static class ReviewDetail {
         @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
@@ -147,5 +147,54 @@ public class UserRes {
         private String imgUrl;
         @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
         private String regionInfo;
+    }
+
+    @Getter
+    @Builder
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 API Response")
+    public static class UserInfo {
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        private String imgUrl;
+        @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
+        private String nickname;
+        @ApiModelProperty(notes="유저 사장님 유무",required = true,example = "true")
+        private boolean ownerCheck;
+    }
+
+    @Getter
+    @Builder
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-04 프로필 편집을 위한 기존 데이터 GET 👤 API Response")
+    public static class PatchUserInfo {
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        private String imgUrl;
+        @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
+        private String nickname;
+    }
+
+    @Getter
+    @Builder
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-07 쇼룸 북마크 리스트 👤 API Response")
+    public static class StoreInfo {
+        @ApiModelProperty(notes = "쇼룸 id", required = true, example = "1")
+        private Long storeId;
+
+        @ApiModelProperty(notes = "쇼룸 썸네일 이미지",required = true,example = "이미지 url")
+        private String storeImg;
+
+
+        @ApiModelProperty(notes = "쇼룸 카테고리 리스트 ",required = true,example = "[\"스트릿\",\"미니멀\"]")
+        private List<String> category;
+
+        @ApiModelProperty(notes = "쇼룸 이름", required = true, example = "무신사 스탠다드")
+        private String storeName;
     }
 }

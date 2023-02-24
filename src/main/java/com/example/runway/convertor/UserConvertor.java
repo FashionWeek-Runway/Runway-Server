@@ -65,4 +65,18 @@ public class UserConvertor {
                 .build();
     }
 
+    public static UserRes.UserInfo UserInfo(User user) {
+        return UserRes.UserInfo.builder()
+                .imgUrl(user.getProfileImgUrl())
+                .nickname(user.getNickname())
+                .ownerCheck(user.isOwner())
+                .build();
+    }
+
+    public static UserRes.PatchUserInfo UserProfile(User user) {
+        return UserRes.PatchUserInfo.builder()
+                .imgUrl(user.getProfileImgUrl())
+                .nickname(user.getNickname())
+                .build();
+    }
 }

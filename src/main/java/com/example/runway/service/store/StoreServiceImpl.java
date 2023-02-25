@@ -1,6 +1,5 @@
 package com.example.runway.service.store;
 
-import com.example.runway.convertor.ReviewConvertor;
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.*;
 import com.example.runway.dto.PageResponse;
@@ -13,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,10 +142,16 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public List<HomeRes.StoreInfo> recommendStore(Long userId) {
+    public List<HomeRes.StoreInfo> recommendStore(Long userId, Integer type) {
         List<String> categoryList= getCategoryList(userId);
 
-        List<StoreRepository.RecommendStore> recommendStoreResult=storeRepository.recommendStore(userId,categoryList);
+        List<StoreRepository.RecommendStore> recommendStoreResult=null;
+
+        if(type==0){
+            recommendStoreResult=storeRepository.recommendStore(userId,categoryList,10);
+        }else{
+            recommendStoreResult=storeRepository.recommendStore(userId,categoryList,30);
+        }
         List<HomeRes.StoreInfo> storeInfo=new ArrayList<>();
 
         recommendStoreResult.forEach(

@@ -133,6 +133,7 @@ public class StoreController {
         if(!reviewService.existsReview(reviewId)){
             throw new NotFoundException(NOT_EXIST_REVIEW);
         }
+
         Long userId=user.getId();
 
         StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId);

@@ -1,6 +1,7 @@
 package com.example.runway.service.store;
 
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +17,6 @@ public interface ReviewService {
     StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId);
 
     boolean existsReview(Long reviewId);
+
+    PageResponse<List<HomeRes.ReviewList>> recommendReview(Long userId, Integer page, Integer size);
 }

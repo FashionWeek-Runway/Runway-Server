@@ -29,4 +29,32 @@ public class HomeRes {
         @ApiModelProperty(notes = "북마크 갯수",required = true,example = "2")
         private int bookmarkCnt;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "05-04 홈화면 리뷰 조회 🏠 API Response")
+    public static class Review {
+        @ApiModelProperty(notes="reviewId",required = true,example = "1")
+        private Long reviewId;
+        @ApiModelProperty(notes="imgUrl",required = true,example = "리뷰 이미지")
+        private String imgUrl;
+        @ApiModelProperty(notes="리뷰 지역정보",required = true,example = "성수, 서울")
+        private String regionInfo;
+        @ApiModelProperty(notes="리뷰 읽음 유무",required = true,example = "true")
+        private boolean isRead;
+    }
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReviewList {
+        @ApiModelProperty(notes="읽지 않은 리뷰",required = true,example = "읽지 않은 리뷰가 나옵니다.")
+        private List<Review> unReadReview;
+        @ApiModelProperty(notes="읽은 리뷰",required = true,example = "읽은 리뷰 리스트")
+        private List<Review> readReview;
+    }
 }

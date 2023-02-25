@@ -1,7 +1,6 @@
 package com.example.runway.repository;
 
 import com.example.runway.domain.Store;
-import com.example.runway.dto.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -169,8 +168,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             " join StoreCategory SC on S.id = SC.store_id " +
             " join Category C on SC.category_id = C.id " +
             " left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
-            " where C.category IN (:categoryList) and S.status=true group by S.id limit 10")
-    List<StoreRepository.RecommendStore> recommendStore(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList);
+            " where C.category IN (:categoryList) and S.status=true group by S.id limit :limit")
+    List<StoreRepository.RecommendStore> recommendStore(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList,@Param("limit") int limit);
     interface RecommendStore {
         boolean getBookmark();
         String getImgUrl();

@@ -174,6 +174,7 @@ public class LoginController {
     public CommonResponse<UserRes.Token> kakaoLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
         log.info("kakao-login");
         log.info("api = kakao-login 01-08, kakaoAccesstoken={}",SocialLogin.getAccessToken());
+
         UserRes.Token tokenRes = authService.logInKakaoUser(SocialLogin);
         return CommonResponse.onSuccess(tokenRes);
 
@@ -186,6 +187,7 @@ public class LoginController {
     public CommonResponse<UserRes.AppleLogin> appleLogin(@RequestBody UserReq.SocialLogin SocialLogin) throws BaseException{
         log.info("apple-login");
         log.info("api = apple-login 01-09, kakaoAccesstoken={}",SocialLogin.getAccessToken());
+
         UserRes.AppleLogin tokenRes = authService.appleLogin(SocialLogin);
         return CommonResponse.onSuccess(tokenRes);
 
@@ -200,6 +202,7 @@ public class LoginController {
     public CommonResponse<UserRes.SignUp> socialSignUp(@ModelAttribute UserReq.SocialSignUp socialSignUp) throws BaseException, IOException {
         log.info("post-social-signup");
         log.info("api = social-signup 01-10");
+
         if(socialSignUp.getCategoryList()==null) throw new BadRequestException(CATEGORY_EMPTY_USERS);
         if(socialSignUp.getSocialId()==null) throw new BadRequestException(USERS_EMPTY_USER_ID);
         if(logInService.checkuserId(socialSignUp.getSocialId()))  throw new ForbiddenException(USERS_EXISTS_SOCIAL_ID);
@@ -219,6 +222,7 @@ public class LoginController {
     public CommonResponse<UserRes.Token> checkRefreshToken(){
         log.info("check-refresh-token");
         log.info("api = check-refresh-token 01-11");
+
         String refreshToken=tokenProvider.getRefreshToken();
 
         Long userId = tokenProvider.getUserIdByRefreshToken(refreshToken);

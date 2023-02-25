@@ -2,19 +2,23 @@ package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
+import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.home.HomeRes;
+import com.example.runway.service.store.ReviewService;
 import com.example.runway.service.store.StoreService;
 import com.example.runway.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/home")
@@ -24,6 +28,7 @@ import java.util.List;
 public class HomeController {
     private final StoreService storeService;
     private final UserService userService;
+    private final ReviewService reviewService;
 
     @ApiOperation(value = "05-02 홈화면 카테고리 선택 🏠 API FRAME HOME_01", notes = "")
     @PatchMapping("/categories")
@@ -51,11 +56,30 @@ public class HomeController {
 
     @ApiOperation(value = "05-03 홈화면 쇼룸 조회 🏠 API FRAME HOME_01", notes = "카테고리 기반으로 쇼룸을 보여주는 API 카테고리 재선택시 해당 API 로 재조회 하면 됩니다.")
     @GetMapping("")
-    public CommonResponse<List<HomeRes.StoreInfo>> getStoreInfo(@AuthenticationPrincipal User user){
+    public CommonResponse<List<HomeRes.StoreInfo>> getStoreInfo(@AuthenticationPrincipal User user,@Parameter(description = "홈화면 조회 시 0 전체보기 조회 시 1 입니다. 홈화면은 10개, 전체는 30개 입니다", example = "0") @RequestParam(required = true) Integer type){
         log.info("get-recommend-store");
         log.info("api = get-recommend-store 05-03");
+
         Long userId = user.getId();
-        List<HomeRes.StoreInfo> storeInfo=storeService.recommendStore(userId);
+
+        List<HomeRes.StoreInfo> storeInfo=storeService.recommendStore(userId,type);
         return CommonResponse.onSuccess(storeInfo);
     }
+
+    /*
+    @ApiOperation(value = "05-04 홈화면 리뷰 조회 🏠 API FRAME HOME_01", notes = "카테고리 기반으로 쇼룸을 보여주는 API 카테고리 재선택시 해당 API 로 재조회 하면 됩니다.")
+    @GetMapping("/review")
+    public CommonResponse<PageResponse<List<HomeRes.ReviewList>>> getReviewList(@AuthenticationPrincipal User user,
+                                                                           @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                           @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size){
+        log.info("get-recommend-review");
+        log.info("api = get-recommend-review 05-04");
+
+        Long userId = user.getId();
+        PageResponse<List<HomeRes.ReviewList>> review= reviewService.recommendReview(userId,page,size);
+
+       return CommonResponse.onSuccess(review);
+    }
+
+     */
 }

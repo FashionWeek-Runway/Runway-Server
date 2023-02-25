@@ -77,7 +77,7 @@ public class StoreConvertor {
         return KeepOwnerFeed.builder().feedId(feedId).userId(userId).build();
     }
 
-    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result) {
+    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId) {
         return StoreRes.ReviewInfo.builder()
                 .reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
@@ -86,6 +86,7 @@ public class StoreConvertor {
                 .storeId(result.getStoreId())
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
+                .reviewInquiry(new StoreRes.ReviewInquiry(prevReviewId,nextReviewId))
                 .build();
     }
 }

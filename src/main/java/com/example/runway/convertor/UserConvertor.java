@@ -29,6 +29,7 @@ public class UserConvertor {
                 .activated(true)
                 .agreeInfo(true)
                 .alarm(true)
+                .status(true)
                 .loginDate(LocalDateTime.now())
                 .build();
     }
@@ -61,6 +62,7 @@ public class UserConvertor {
                 .activated(true)
                 .agreeInfo(true)
                 .alarm(true)
+                .status(true)
                 .loginDate(LocalDateTime.now())
                 .build();
     }

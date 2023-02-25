@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
-    Page<StoreReview> findByStoreIdAndStatusOrderByCreatedAtDesc(Long storeId,  boolean b,Pageable pageReq);
+    Page<StoreReview> findByStoreIdAndStatusOrderByCreatedAtDescIdAsc(Long storeId,  boolean b,Pageable pageReq);
 
     @Query(nativeQuery = true,value="select SR.id         'reviewId',\n" +
             "       U.profile_url 'profileImgUrl',\n" +
@@ -19,7 +20,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "       SR.img_url    'imgUrl',\n" +
             "       SR.store_id   'storeId',\n" +
             "       S.name        'storeName',\n" +
-            "       concat(R.region,', ',R.city)'regionInfo'\n" +
+            "       concat(R.region,', ',R.city)'regionInfo'," +
+            "       SR.created_at'createdAt'\n" +
             "from StoreReview SR\n" +
             "         join User U on U.id = SR.user_id\n" +
             "         join Store S on S.id = SR.store_id\n" +
@@ -29,6 +31,30 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     boolean existsByIdAndStatus(Long reviewId, boolean b);
 
+    @Query(value = "select count(*)'size' from Store S join StoreCategory SC on S.id = SC.store_id " +
+            "join Category C on SC.category_id = C.id join StoreReview SR on S.id = SR.store_id where C.category IN (:categoryList)",nativeQuery = true)
+    StoreReviewRepository.GetCountAllReview CountReview(@Param(("categoryList")) List<String> categoryList);
+    interface GetCountAllReview {
+        int getSize();
+    }
+    @Query(value = "select SR.id \n" +
+                "from StoreReview SR\n" +
+                "where SR.store_id = :storeId\n" +
+                "  and SR.created_at > :createdAt\n" +
+                "   or (created_at = :createdAt AND id<:reviewId)\n" +
+                "    and SR.id != :reviewId\n" +
+                "order by created_at asc, SR.id desc limit 1",nativeQuery = true)
+    StoreReviewRepository.GetReviewId findPrevReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("storeId") Long storeId,@Param("reviewId") Long reviewId);
+
+
+    @Query(value = "select SR.id\n" +
+            "from StoreReview SR\n" +
+            "where SR.store_id = :storeId\n" +
+            "  and SR.created_at < :createdAt\n" +
+            "   or (created_at = :createdAt AND id > :reviewId)\n" +
+            "  and SR.id != :reviewId\n" +
+            "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
+    StoreReviewRepository.GetReviewId findNextReviewId(@Param("createdAt") LocalDateTime createdAt, @Param("storeId") Long storeId, @Param("reviewId") Long reviewId);
 
     interface GetStoreReview {
         Long getReviewId();
@@ -38,6 +64,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
         Long getStoreId();
         String getStoreName();
         String getRegionInfo();
+        LocalDateTime getCreatedAt();
     }
 
     @Query("SELECT DATE_FORMAT (SR.createdAt, '%Y/%m') AS date FROM StoreReview SR WHERE SR.user.id = :userId GROUP BY date order by date desc")
@@ -54,5 +81,10 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
         Long getReviewId();
         String getImgUrl();
         String getRegionInfo();
+    }
+
+
+    interface GetReviewId{
+        Long getId();
     }
 }

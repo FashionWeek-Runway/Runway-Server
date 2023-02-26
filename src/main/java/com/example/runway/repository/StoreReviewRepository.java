@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +33,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     @Query(value = "select count(*)'size' from Store S join StoreCategory SC on S.id = SC.store_id " +
             "join Category C on SC.category_id = C.id join StoreReview SR on S.id = SR.store_id where C.category IN (:categoryList)",nativeQuery = true)
     StoreReviewRepository.GetCountAllReview CountReview(@Param(("categoryList")) List<String> categoryList);
+
+
     interface GetCountAllReview {
         int getSize();
     }
@@ -86,5 +87,33 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     interface GetReviewId{
         Long getId();
+    }
+
+    @Query(value =
+            "select SR.id                          'reviewId',\n" +
+                    "       SR.img_url                     'imgUrl',\n" +
+                    "       concat(R.region, ', ', R.city) 'regionInfo',\n" +
+                    "       IF((select exists(select * from ReviewRead where ReviewRead.user_id = :userId and ReviewRead.review_id = SR.id)),\n" +
+                    "          'true', 'false')            'isRead',\n" +
+                    "       count(K.user_id)'bookmarkCnt',S.name,\n" +
+                    "       SUM(CASE WHEN C.category IN (:categoryList) THEN 1 ELSE 0 END) AS categoryScore\n" +
+                    "from Store S\n" +
+                    "         join StoreCategory SC on S.id = SC.store_id\n" +
+                    "         join Category C on SC.category_id = C.id\n" +
+                    "         join StoreReview SR on S.id = SR.store_id\n" +
+                    "         join Region R on S.region_id = R.id\n" +
+                    "         left join Keep K on S.id = K.store_id\n" +
+                    "where C.category IN (:categoryList) and SR.status=true\n" +
+                    "group by SR.id order by categoryScore DESC,bookmarkCnt DESC,SR.id asc",
+            countQuery = "select count(DISTINCT StoreReview.id) from StoreReview join Store S on StoreReview.store_id = S.id" +
+                        " join StoreCategory SC on S.id = SC.store_id join Category C on SC.category_id = C.id" +
+                        " where C.category IN(:categoryList) ",
+            nativeQuery = true)
+    Page<GetReview> RecommendReview(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList, Pageable pageReq);
+    interface GetReview {
+        Long getReviewId();
+        String getImgUrl();
+        String getRegionInfo();
+        Boolean getIsRead();
     }
 }

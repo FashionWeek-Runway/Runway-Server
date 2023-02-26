@@ -34,7 +34,7 @@ public class StoreServiceImpl implements StoreService{
 
 
     public List<String> getCategoryList(Long userId){
-        List<UserCategory> category=userCategoryRepository.findByUserIdAndStatus(userId,true);
+        List<UserCategory> category=userCategoryRepository.findByIdUserIdAndStatus(userId,true);
         return category.stream().map(e-> e.getCategory().getCategory()).collect(Collectors.toList());
     }
 

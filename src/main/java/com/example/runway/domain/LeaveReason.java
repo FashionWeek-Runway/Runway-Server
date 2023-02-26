@@ -32,8 +32,8 @@ public class LeaveReason extends BaseEntity {
     @Column(name="reason")
     private String reason;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 }

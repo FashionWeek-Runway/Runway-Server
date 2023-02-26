@@ -39,7 +39,7 @@ public class StoreReview extends BaseEntity {
     @Column(name = "img_url")
     private String imgUrl;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 }

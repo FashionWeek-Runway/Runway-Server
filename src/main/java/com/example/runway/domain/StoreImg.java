@@ -35,8 +35,8 @@ public class StoreImg extends BaseEntity {
     @Column(name="sequence")
     private int sequence;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 }

@@ -30,8 +30,8 @@ public class Notification extends BaseEntity {
     @Column(name="user_id")
     private Long userId;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 }

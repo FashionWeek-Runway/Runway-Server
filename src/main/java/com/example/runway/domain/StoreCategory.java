@@ -35,7 +35,7 @@ public class StoreCategory extends BaseEntity {
     @Column(name="category_id")
     private Long categoryId;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 }

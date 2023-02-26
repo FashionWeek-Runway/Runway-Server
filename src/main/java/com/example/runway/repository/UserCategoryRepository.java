@@ -8,14 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
-    List<UserCategory> findByUserIdAndStatus(Long userId,boolean status);
-
-    boolean existsByUserIdAndCategoryId(Long userId, Long categoryId);
-
-    Optional<UserCategory> findByUserIdAndCategoryId(Long userId, Long aLong);
+    List<UserCategory> findByIdUserIdAndStatus(Long userId,boolean status);
 
     @Transactional
-    void deleteByUserId(Long userId);
+    void deleteByIdUserId(Long userId);
 
-    List<UserCategory> findByUserId(Long userId);
 }

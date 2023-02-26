@@ -24,7 +24,7 @@ public class Region extends BaseEntity{
     @Column(name= "address")
     private String address;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 }

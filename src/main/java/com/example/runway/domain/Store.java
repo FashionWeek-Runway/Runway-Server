@@ -69,8 +69,8 @@ public class Store extends BaseEntity {
     @Column(name="longitude")
     private double longitude;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 

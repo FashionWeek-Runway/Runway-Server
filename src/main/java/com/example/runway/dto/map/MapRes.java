@@ -54,6 +54,8 @@ public class MapRes {
         @ApiModelProperty(notes = "쇼룸 이름", required = true, example = "무신사 스탠다드")
         private String storeName;
 
+        private Double distance;
+
 
     }
 
@@ -84,6 +86,7 @@ public class MapRes {
 
         @ApiModelProperty(notes="주소",required = true,example = "서울특별시 성동구 성수동1가")
         private String address;
+
     }
 
 
@@ -105,6 +108,8 @@ public class MapRes {
 
         @ApiModelProperty(notes="쇼룸 주소",required = true,example = "서울시 성동구 ~~")
         private String address;
+
+        private Double distance;
 
 
 

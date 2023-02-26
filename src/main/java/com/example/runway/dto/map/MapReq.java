@@ -34,10 +34,10 @@ public class MapReq {
         @ApiModelProperty(notes = "검색어", required = true, example = "성수")
         private String content;
 
-        @ApiModelProperty(notes = "지도 중심의 위도", required = true, example = "37.56653588195168")
+        @ApiModelProperty(notes = "유저의 위도", required = true, example = "37.56653588195168")
         private double latitude;
 
-        @ApiModelProperty(notes = "지도 중심의 경도", required = true, example = "126.97864102209026")
+        @ApiModelProperty(notes = "유저의 경도", required = true, example = "126.97864102209026")
         private double longitude;
     }
 }

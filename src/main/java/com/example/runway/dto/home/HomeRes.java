@@ -46,15 +46,5 @@ public class HomeRes {
         @ApiModelProperty(notes="리뷰 읽음 유무",required = true,example = "true")
         private boolean isRead;
     }
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ReviewList {
-        @ApiModelProperty(notes="읽지 않은 리뷰",required = true,example = "읽지 않은 리뷰가 나옵니다.")
-        private List<Review> unReadReview;
-        @ApiModelProperty(notes="읽은 리뷰",required = true,example = "읽은 리뷰 리스트")
-        private List<Review> readReview;
-    }
+
 }

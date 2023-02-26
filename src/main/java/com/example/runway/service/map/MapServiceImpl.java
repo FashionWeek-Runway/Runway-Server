@@ -73,17 +73,13 @@ public class MapServiceImpl implements MapService {
         }
 
 
-        System.out.println(storeResult.getTotalElements());
-
-
-
-
         storeResult.forEach(
                 result-> storeInfoList.add(new MapRes.StoreInfo(
                         result.getStoreId(),
                         result.getStoreImg(),
                         Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
-                        result.getStoreName()
+                        result.getStoreName(),
+                        result.getDistance()
                 ))
         );
 
@@ -111,21 +107,25 @@ public class MapServiceImpl implements MapService {
                 }
         );
 
-        List<StoreRepository.StoreSearch> storeSearchListResult=storeRepository.getStoreSearch(searchStore.getContent(),searchStore.getLatitude(),searchStore.getLatitude());
+
+        List<StoreRepository.StoreInfoList> storeSearchListResult=storeRepository.getStoreSearch(searchStore.getLatitude(),searchStore.getLongitude(),searchStore.getContent());
         List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
 
-        System.out.println(storeSearchListResult.size() );
         storeSearchListResult.forEach(
                 result->{
                     storeSearchList.add(
                             new MapRes.StoreSearchList(
-                                    result.getId(),
-                                    result.getName(),
-                                    result.getAddress()
+                                    result.getStoreId(),
+                                    result.getStoreName(),
+                                    result.getAddress(),
+                                    result.getDistance()
                             )
                     );
                 }
         );
+
+
+        //List<MapRes.StoreSearchList> storeSearchList=jdbcQuery.getStoreBySearch(searchStore);
 
 
         return new MapRes.SearchList(searchList,storeSearchList);
@@ -183,7 +183,8 @@ public class MapServiceImpl implements MapService {
                                 result.getStoreId(),
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
-                                result.getStoreName()
+                                result.getStoreName(),
+                                result.getDistance()
                         ));
                 }
 

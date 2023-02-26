@@ -2,11 +2,14 @@ package com.example.runway.service.store;
 
 import com.example.runway.convertor.ReviewConvertor;
 import com.example.runway.convertor.StoreConvertor;
+import com.example.runway.domain.ReviewRead;
 import com.example.runway.domain.Store;
 import com.example.runway.domain.StoreReview;
+import com.example.runway.domain.pk.ReviewReadPk;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.repository.ReviewReadRepository;
 import com.example.runway.repository.StoreReviewRepository;
 import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +32,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final AwsS3Service awsS3Service;
     private final StoreReviewRepository storeReviewRepository;
     private final StoreService storeService;
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final ReviewReadRepository reviewReadRepository;
 
     @Override
     public void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException {
@@ -60,7 +62,6 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId) {
-        entityManager.clear();
         StoreReviewRepository.GetStoreReview result=storeReviewRepository.getStoreReview(reviewId);
         Long prevReviewId=getPrevReviewId(result.getStoreId(), result.getCreatedAt(),result.getReviewId());
         Long nextReviewId=getNextReviewId(result.getStoreId(), result.getCreatedAt(),result.getReviewId());
@@ -108,6 +109,16 @@ public class ReviewServiceImpl implements ReviewService{
         List<HomeRes.ReviewList> unReadReviews=new ArrayList<>();
 
         return null;
+    }
+
+    @Override
+    public void readReview(Long reviewId, Long userId) {
+        ReviewReadPk reviewReadPk=ReviewReadPk.builder().reviewId(reviewId).userId(userId).build();
+
+        if(!reviewReadRepository.existsByIdReviewIdAndIdUserId(reviewId,userId)){
+            ReviewRead reviewRead = ReviewRead.builder().id(reviewReadPk).build();
+            reviewReadRepository.save(reviewRead);
+        }
     }
 
 

@@ -137,6 +137,7 @@ public class StoreController {
         Long userId=user.getId();
 
         StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId);
+        reviewService.readReview(reviewId,userId);
 
         return CommonResponse.onSuccess(reviewInfo);
     }

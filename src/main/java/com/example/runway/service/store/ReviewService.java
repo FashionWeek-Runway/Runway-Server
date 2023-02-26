@@ -19,4 +19,6 @@ public interface ReviewService {
     boolean existsReview(Long reviewId);
 
     PageResponse<List<HomeRes.ReviewList>> recommendReview(Long userId, Integer page, Integer size);
+
+    void readReview(Long reviewId, Long userId);
 }

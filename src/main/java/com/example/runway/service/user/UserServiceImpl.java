@@ -3,6 +3,7 @@ package com.example.runway.service.user;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
+import com.example.runway.domain.pk.UserCategoryPk;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.user.UserReq;
@@ -16,7 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private final UserCategoryRepository userCategoryRepository;
     private final StoreReviewRepository storeReviewRepository;
     private final StoreRepository storeRepository;
+    private final LoginService loginService;
+
     @Override
     public void postUserLocation(User user, UserReq.UserLocation userLocation) {
         user.updateUserLocation(userLocation);
@@ -38,32 +43,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void postUserCategory(Long userId, HomeReq.PostUserCategory postUserCategory) {
-        List<UserCategory> userCategoryList = userCategoryRepository.findByUserId(userId);
 
-        List<Integer> oldCategoryList=new ArrayList<>();
-        oldCategoryList.add(1);
-        oldCategoryList.add(2);
-        oldCategoryList.add(3);
-        oldCategoryList.add(4);
-        oldCategoryList.add(5);
-        oldCategoryList.add(6);
-
-
-        for (UserCategory category : userCategoryList) {
-            for (int j = 0; j < postUserCategory.getCategoryList().size(); j++) {
-                if (category.getCategoryId().equals(postUserCategory.getCategoryList().get(j))) {
-                    category.modifyCategoryStatus(true);
-                    userCategoryRepository.save(category);
-                    oldCategoryList.remove(Integer.valueOf(String.valueOf(postUserCategory.getCategoryList().get(j))));
-                }
-            }
-        }
-
-        for (Integer integer : oldCategoryList) {
-            Optional<UserCategory> userCategory = userCategoryRepository.findByUserIdAndCategoryId(userId, Long.valueOf(integer));
-            userCategory.get().modifyCategoryStatus(false);
-            userCategoryRepository.save(userCategory.get());
-        }
+        userCategoryRepository.deleteByIdUserId(userId);
+        saveUserCategoryList(userId,postUserCategory.getCategoryList());
 
     }
 
@@ -125,5 +107,16 @@ public class UserServiceImpl implements UserService {
         );
 
         return new PageResponse<>(storeResult.isLast(),storeInfo);
+    }
+
+    public void saveUserCategoryList(Long userId,List<Long> userCategoryList) {
+
+        List<UserCategory> userCategoryArrayList = new ArrayList<>();
+        for (Long categoryId : userCategoryList) {
+            UserCategory userCategory = UserCategory.builder().id(new UserCategoryPk(userId,categoryId)).build();
+            userCategoryArrayList.add(userCategory);
+        }
+
+        userCategoryRepository.saveAll(userCategoryArrayList);
     }
 }

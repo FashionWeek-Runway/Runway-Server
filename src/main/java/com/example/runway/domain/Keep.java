@@ -1,5 +1,6 @@
 package com.example.runway.domain;
 
+import com.example.runway.domain.pk.KeepPk;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -17,26 +18,21 @@ import javax.persistence.*;
 @DynamicUpdate
 @DynamicInsert
 public class Keep extends BaseEntity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private KeepPk id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,insertable=false, updatable=false)
     private User user;
 
-    @Column(name="user_id")
-    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false,insertable=false, updatable=false)
     private Store store;
 
-    @Column(name="store_id")
-    private Long storeId;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 }

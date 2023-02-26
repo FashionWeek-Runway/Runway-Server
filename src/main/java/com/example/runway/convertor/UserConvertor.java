@@ -35,9 +35,6 @@ public class UserConvertor {
     }
 
 
-    public static UserCategory PostUserCategory(Long userId, Long categoryId) {
-        return UserCategory.builder().categoryId(categoryId).userId(userId).build();
-    }
 
 
     public static UserRes.SignUp SignUpUserRes(UserRes.GenerateToken token, User user, List<String> categoryList) {

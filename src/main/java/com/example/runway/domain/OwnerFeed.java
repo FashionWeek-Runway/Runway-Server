@@ -41,8 +41,8 @@ public class OwnerFeed extends BaseEntity {
     @Column(name="content")
     private String content;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 }

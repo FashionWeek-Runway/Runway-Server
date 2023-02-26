@@ -1,5 +1,7 @@
 package com.example.runway.domain;
 
+import com.example.runway.domain.pk.UserCategoryPk;
+import io.grpc.netty.shaded.io.netty.handler.codec.socksx.v4.Socks4CommandRequest;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,44 +15,25 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @DynamicUpdate
 @DynamicInsert
 public class UserCategory extends BaseEntity {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private UserCategoryPk id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,insertable=false, updatable=false)
     private User user;
 
-    @Column(name="user_id")
-    private Long userId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false,insertable=false, updatable=false)
     private Category category;
 
-    @Column(name="category_id")
-    private Long categoryId;
-
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
-
-    public void modifyCategoryStatus(boolean status) {
-        this.status=status;
-    }
-
-
-
-    @Builder
-    public UserCategory(Long userId,Long categoryId,boolean status){
-        this.categoryId=categoryId;
-        this.userId=userId;
-        this.status=status;
-    }
 
 
 

@@ -36,8 +36,8 @@ public class KeepOwnerFeed extends BaseEntity {
     @Column(name= "feed_id")
     private Long feedId;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 }

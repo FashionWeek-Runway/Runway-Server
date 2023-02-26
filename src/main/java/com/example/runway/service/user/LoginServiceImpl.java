@@ -2,6 +2,7 @@ package com.example.runway.service.user;
 
 import com.example.runway.domain.SmsUser;
 import com.example.runway.domain.UserCategory;
+import com.example.runway.domain.pk.UserCategoryPk;
 import com.example.runway.exception.BaseException;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.Authority;
@@ -234,18 +235,24 @@ public class LoginServiceImpl implements LoginService {
 
     @Transactional(rollbackFor = SQLException.class)
     public void saveUserCategoryList(Long userId,List<Long> userCategoryList){
+
         List<UserCategory> userCategoryArrayList=new ArrayList<>();
-        for(int i=1;i<7;i++){
-            UserCategory userCategory=UserCategory.builder().userId(userId).categoryId(Long.valueOf(i)).status(false).build();
+
+        for(Long categoryId : userCategoryList){
+            UserCategory userCategory=UserCategory.builder().id(new UserCategoryPk(userId,categoryId)).build();
             userCategoryArrayList.add(userCategory);
         }
+
         userCategoryRepository.saveAll(userCategoryArrayList);
 
+        /*
         for(Long categoryId : userCategoryList){
             Optional<UserCategory> userCategory=userCategoryRepository.findByUserIdAndCategoryId(userId,categoryId);
             userCategory.get().modifyCategoryStatus(true);
             userCategoryRepository.save(userCategory.get());
         }
+
+         */
     }
 
 }

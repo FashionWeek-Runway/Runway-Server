@@ -78,12 +78,12 @@ public class User extends BaseEntity implements UserDetails{
     @Builder.Default
     private boolean owner=false;
 
-    @ColumnDefault("true")
+    @ColumnDefault(value="true")
     @Column(name="agree_info")
     private boolean agreeInfo=true;
 
-    @Column(name="status")
-    @ColumnDefault("true")
+    @Column(name="status",insertable = false)
+    @ColumnDefault(value="true")
     private boolean status;
 
 

@@ -4,6 +4,7 @@ import com.example.runway.domain.Keep;
 import com.example.runway.domain.KeepOwnerFeed;
 import com.example.runway.domain.Store;
 import com.example.runway.domain.StoreReview;
+import com.example.runway.domain.pk.KeepPk;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.repository.OwnerFeedRepository;
@@ -70,7 +71,8 @@ public class StoreConvertor {
     }
 
     public static Keep CheckBookMark(Long userId, Long storeId) {
-        return Keep.builder().userId(userId).storeId(storeId).build();
+        KeepPk keepPk = KeepPk.builder().storeId(storeId).userId(userId).build();
+        return Keep.builder().id(keepPk).build();
     }
 
     public static KeepOwnerFeed CheckBookMarkFeed(Long userId, Long feedId) {

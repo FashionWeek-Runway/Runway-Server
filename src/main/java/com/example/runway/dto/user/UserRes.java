@@ -1,5 +1,6 @@
 package com.example.runway.dto.user;
 
+import com.example.runway.dto.store.StoreRes;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -184,7 +185,7 @@ public class UserRes {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-07 쇼룸 북마크 리스트 👤 API Response")
+    @ApiModel(value = "02-08 쇼룸 북마크 리스트 👤 API Response")
     public static class StoreInfo {
         @ApiModelProperty(notes = "쇼룸 id", required = true, example = "1")
         private Long storeId;
@@ -199,4 +200,48 @@ public class UserRes {
         @ApiModelProperty(notes = "쇼룸 이름", required = true, example = "무신사 스탠다드")
         private String storeName;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-07 내 리뷰 조회 🏬 API Response")
+    public static class ReviewInfo {
+        @ApiModelProperty(notes="reviewId",required = true,example = "1")
+        private Long reviewId;
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        private String profileImgUrl;
+        @ApiModelProperty(notes = "닉네임",required = true,example = "이름")
+        private String nickname;
+        @ApiModelProperty(notes="imgUrl",required = true,example = "리뷰 이미지")
+        private String imgUrl;
+        @ApiModelProperty(notes="쇼룸 Id",required = true,example = "1")
+        private Long storeId;
+        @ApiModelProperty(notes = "쇼룸 이름",required = true,example = "노드 아카이브")
+        private String storeName;
+        @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
+        private String regionInfo;
+        @ApiModelProperty(notes = "리뷰 북마크 갯수",required = true,example = "false")
+        private int bookmarkCnt;
+        @ApiModelProperty(notes = "리뷰 내 게시글 유무",required = true,example = "false")
+        private boolean isMy;
+        @ApiModelProperty(notes="쇼룸 리뷰 이전 id, 다음 id",example = "이전 id, 다음 id")
+        private ReviewInquiry reviewInquiry;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-07 리뷰 이전 id, 다음 id 🏬 API Response")
+    public static class ReviewInquiry{
+        @ApiModelProperty(notes="이전 리뷰 ID",required = true,example = "1")
+        private Long prevReviewId;
+        @ApiModelProperty(notes="다음 리뷰 ID",required = true,example = "1")
+        private Long nextReviewId;
+    }
+
+
 }

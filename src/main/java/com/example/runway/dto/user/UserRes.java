@@ -129,10 +129,12 @@ public class UserRes {
     @NoArgsConstructor
     @ApiModel(value = "02-06 내가 작성한 리뷰 보기 👤 API Response")
     public static class Review {
-        @ApiModelProperty(notes = "올린 년도/달", required = true, example = "2023/02")
-        private String date;
-        @ApiModelProperty(notes = "해당 달에 올린 review 상세 리스트", required = true, example = "")
-        private List<ReviewDetail> reviewDetail;
+        @ApiModelProperty(notes="reviewId",required = true,example = "1")
+        private Long reviewId;
+        @ApiModelProperty(notes="imgUrl",required = true,example = "리뷰 이미지")
+        private String imgUrl;
+        @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
+        private String regionInfo;
     }
     @Getter
     @Builder

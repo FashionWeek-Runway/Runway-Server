@@ -51,27 +51,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserRes.Review> getMyReview(Long userId) {
-        List<String> monthResult=storeReviewRepository.findReviewDatesByUserId(userId);
 
         List<UserRes.Review> review=new ArrayList<>();
 
-        for (String date : monthResult) {
 
-            List<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.GetReviewInfo(date,userId);
-            List<UserRes.ReviewDetail> reviewDetails=new ArrayList<>();
-            reviewResult.forEach(
-                    result->reviewDetails.add(
-                        new UserRes.ReviewDetail(
-                            result.getReviewId(),
-                            result.getImgUrl(),
-                            result.getRegionInfo()
-                        )
-                    )
-            );
+        List<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.GetReviewInfo(userId);
 
-            review.add(new UserRes.Review(date,reviewDetails));
-
-        }
         return review;
     }
 
@@ -116,6 +101,8 @@ public class UserServiceImpl implements UserService {
             UserCategory userCategory = UserCategory.builder().id(new UserCategoryPk(userId,categoryId)).build();
             userCategoryArrayList.add(userCategory);
         }
+
+
 
         userCategoryRepository.saveAll(userCategoryArrayList);
     }

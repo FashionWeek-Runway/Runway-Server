@@ -80,9 +80,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "from StoreReview SR\n" +
             "join Store S on SR.store_id = S.id\n" +
             "join Region R on S.region_id = R.id\n" +
-            "where DATE_FORMAT (SR.created_at, '%Y/%m') = :date \n" +
-            "  and SR.user_id = :userId",nativeQuery = true)
-    List<StoreReviewRepository.GetReviewInfo> GetReviewInfo(@Param("date") String date,@Param("userId") Long userId);
+            "where SR.user_id = :userId order by SR.created_at desc",nativeQuery = true)
+    List<StoreReviewRepository.GetReviewInfo> GetReviewInfo(@Param("userId") Long userId);
     interface GetReviewInfo {
         Long getReviewId();
         String getImgUrl();

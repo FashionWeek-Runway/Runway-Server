@@ -35,4 +35,9 @@ public interface StoreService {
 
     List<HomeRes.StoreInfo> recommendStore(Long userId, Integer type);
 
+    boolean existsBookMarkReview(Long userId, Long reviewId);
+
+    void unCheckBookMarkReview(Long userId, Long reviewId);
+
+    void checkBookMarkReview(Long userId, Long reviewId);
 }

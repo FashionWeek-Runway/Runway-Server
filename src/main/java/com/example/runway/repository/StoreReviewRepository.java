@@ -20,13 +20,16 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "       SR.store_id   'storeId',\n" +
             "       S.name        'storeName',\n" +
             "       concat(R.region,', ',R.city)'regionInfo'," +
-            "       SR.created_at'createdAt'\n" +
+            "       SR.created_at'createdAt'," +
+            "       IF((select exists(select * from ReviewKeep RK where RK.review_id=:reviewId and RK.user_id=:userId)),'true','false')'bookmark'," +
+            "       count(K.review_id)'bookmarkCnt'\n" +
             "from StoreReview SR\n" +
             "         join User U on U.id = SR.user_id\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join Region R on R.id = S.region_id\n" +
+            "         join ReviewKeep K on K.review_id=:reviewId " +
             "where SR.id=:reviewId and SR.status=true")
-    StoreReviewRepository.GetStoreReview getStoreReview(@Param("reviewId")Long reviewId);
+    StoreReviewRepository.GetStoreReview getStoreReview(@Param("reviewId") Long reviewId, @Param("userId") Long userId);
 
     boolean existsByIdAndStatus(Long reviewId, boolean b);
 
@@ -66,6 +69,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
         String getStoreName();
         String getRegionInfo();
         LocalDateTime getCreatedAt();
+        boolean getBookMark();
+        int getBookmarkCnt();
     }
 
     @Query("SELECT DATE_FORMAT (SR.createdAt, '%Y/%m') AS date FROM StoreReview SR WHERE SR.user.id = :userId GROUP BY date order by date desc")

@@ -3,21 +3,22 @@ package com.example.runway.service.store;
 import com.example.runway.convertor.ReviewConvertor;
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.ReviewRead;
+import com.example.runway.domain.ReviewReport;
 import com.example.runway.domain.StoreReview;
 import com.example.runway.domain.pk.ReviewReadPk;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
+import com.example.runway.dto.store.ReviewReq;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.repository.ReviewReadRepository;
+import com.example.runway.repository.ReviewReportRepository;
 import com.example.runway.repository.StoreReviewRepository;
 import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,10 +32,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final StoreReviewRepository storeReviewRepository;
     private final StoreService storeService;
     private final ReviewReadRepository reviewReadRepository;
+    private final ReviewReportRepository reviewReportRepository;
 
     @Override
-    public void postStoreReview(Long storeId, Long userId, MultipartFile multipartFile) throws IOException {
-        String imgUrl = awsS3Service.upload(multipartFile, "review");
+    public void postStoreReview(Long storeId, Long userId, byte[] bytes) throws IOException {
+        String imgUrl = awsS3Service.uploadByteCode(bytes, "review");
 
         StoreReview storeReview = ReviewConvertor.UploadImg(storeId, userId, imgUrl);
 
@@ -59,8 +61,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId) {
-        StoreReviewRepository.GetStoreReview result = storeReviewRepository.getStoreReview(reviewId);
+    public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId, Long userId) {
+        StoreReviewRepository.GetStoreReview result = storeReviewRepository.getStoreReview(reviewId,userId);
         Long prevReviewId = getPrevReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
         Long nextReviewId = getNextReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
         System.out.println(result.getCreatedAt());
@@ -127,6 +129,12 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewRead reviewRead = ReviewRead.builder().id(reviewReadPk).build();
             reviewReadRepository.save(reviewRead);
         }
+    }
+
+    @Override
+    public void reportReview(Long userId, ReviewReq.ReportReview reportReview) {
+        ReviewReport reviewReport = ReviewConvertor.ReportReview(userId,reportReview);
+        reviewReportRepository.save(reviewReport);
     }
 
 

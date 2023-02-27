@@ -90,6 +90,8 @@ public class StoreConvertor {
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
                 .reviewInquiry(new StoreRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .bookmark(result.getBookMark())
+                .bookmarkCnt(result.getBookmarkCnt())
                 .build();
     }
 }

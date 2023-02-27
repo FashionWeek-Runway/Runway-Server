@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -60,6 +59,20 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         return amazonS3.getUrl(bucket, s3FileName).toString();
     }
 
+
+    @Override
+    public String uploadByteCode(byte[] bytes, String review) {
+        String s3FileName=review+"/"+UUID.randomUUID().toString()+".jpg";
+        ObjectMetadata metadata = new ObjectMetadata();
+
+        metadata.setContentLength(bytes.length);
+        metadata.setContentType("image/jpeg");
+
+        amazonS3.putObject(new PutObjectRequest(bucket,s3FileName,new ByteArrayInputStream(bytes),metadata));
+
+        return amazonS3.getUrl(bucket,s3FileName).toString();
+    }
+
     public List<String> uploadImage(List<MultipartFile> multipartFile){
         List<String> fileNameList = new ArrayList<>();
 
@@ -105,5 +118,13 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         } catch (StringIndexOutOfBoundsException e) {
             throw new ForbiddenException(WRONG_FORMAT_FILE);
         }
+    }
+
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
+        File convertedFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convertedFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convertedFile;
     }
 }

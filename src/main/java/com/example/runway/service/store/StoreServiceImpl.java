@@ -2,6 +2,7 @@ package com.example.runway.service.store;
 
 import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.*;
+import com.example.runway.domain.pk.ReviewKeepPk;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
@@ -22,15 +23,13 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService{
 
-    private final CategoryRepository categoryRepository;
     private final StoreRepository storeRepository;
     private final KeepRepository keepRepository;
     private final StoreImgRepository storeImgRepository;
-    private final StoreReviewRepository storeReviewRepository;
-    private final AwsS3Service awsS3Service;
     private final OwnerFeedRepository ownerFeedRepository;
     private final KeepOwnerFeedRepository keepOwnerFeedRepository;
     private final UserCategoryRepository userCategoryRepository;
+    private final ReviewKeepRepository reviewKeepRepository;
 
 
     public List<String> getCategoryList(Long userId){
@@ -119,6 +118,22 @@ public class StoreServiceImpl implements StoreService{
         keepOwnerFeedRepository.save(keepOwnerFeed);
     }
 
+    @Override
+    public boolean existsBookMarkReview(Long userId, Long reviewId) {
+        return reviewKeepRepository.existsByIdUserIdAndIdReviewId(userId,reviewId);
+    }
+
+    @Override
+    public void unCheckBookMarkReview(Long userId, Long reviewId) {
+        reviewKeepRepository.deleteByIdUserIdAndIdReviewId(userId,reviewId);
+    }
+
+    @Override
+    public void checkBookMarkReview(Long userId, Long reviewId) {
+        ReviewKeep reviewKeep = ReviewKeep.builder().id(new ReviewKeepPk(userId,reviewId)).build();
+        reviewKeepRepository.save(reviewKeep);
+    }
+
 
 
 
@@ -170,6 +185,8 @@ public class StoreServiceImpl implements StoreService{
 
         return getRecommendedShowrooms(categoryList,storeInfo);
     }
+
+
 
     public List<HomeRes.StoreInfo> getRecommendedShowrooms(List<String> userCategory, List<HomeRes.StoreInfo> storeInfo) {
         return sortShowroomsByMatchingScore(userCategory, storeInfo);

@@ -12,4 +12,7 @@ public interface AwsS3Service {
     String createFileName(String fileName) throws ForbiddenException;
     String getFileExtension(String fileName) throws ForbiddenException;
     String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException;
+
+
+    String uploadByteCode(byte[] bytes, String review);
 }

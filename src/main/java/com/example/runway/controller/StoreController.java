@@ -3,6 +3,7 @@ package com.example.runway.controller;
 import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.store.ReviewReq;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.exception.NotFoundException;
 import com.example.runway.service.store.ReviewService;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW;
@@ -94,14 +96,14 @@ public class StoreController {
     @ApiOperation(value = "03-05 쇼룸 후기작성 🏬 API FRAME REVIEW_01",notes = "쇼룸 후기 작성 API")
     @PostMapping("/review/{storeId}")
     private CommonResponse<String> postStoreReview(@AuthenticationPrincipal User user,@Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId,
-                                                   @Parameter(description="img",example ="이미지") @RequestPart(value="img",required = true) MultipartFile multipartFile) throws IOException {
+                                                   @RequestBody byte[] bytes) throws IOException {
         log.info("post-store-review");
         log.info("api = post-store-review 03-05,storeId = {}",storeId);
         Long userId=user.getId();
 
         if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 
-        reviewService.postStoreReview(storeId,userId,multipartFile);
+        reviewService.postStoreReview(storeId,userId,bytes);
 
         return CommonResponse.onSuccess("리뷰 등록 성공");
     }
@@ -136,7 +138,7 @@ public class StoreController {
 
         Long userId=user.getId();
 
-        StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId);
+        StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId,userId);
         reviewService.readReview(reviewId,userId);
 
         return CommonResponse.onSuccess(reviewInfo);
@@ -174,6 +176,43 @@ public class StoreController {
             storeService.checkBookMarkFeed(userId,feedId);
             return CommonResponse.onSuccess("북마크 성공");
         }
+    }
+
+    @ApiOperation(value = "03-09 리뷰 북마크 🏬 API FRAME REVIEW_01",notes = "북마크 Check,UnCheck ")
+    @PostMapping("/review/bookmark/{reviewId}")
+    private CommonResponse<String> bookMarkReview(@AuthenticationPrincipal User user, @Parameter(description = "reviewId 리뷰 Id값") @PathVariable("reviewId") Long reviewId){
+        log.info("review-bookmark");
+        log.info("api = review-bookmark,reviewID = {}",reviewId);
+
+        Long userId= user.getId();
+
+        if(!reviewService.existsReview(reviewId)){
+            throw new NotFoundException(NOT_EXIST_REVIEW);
+        }
+
+        boolean checkBookmark=storeService.existsBookMarkReview(userId,reviewId);
+        if(checkBookmark){
+            storeService.unCheckBookMarkReview(userId,reviewId);
+            return CommonResponse.onSuccess("북마크 해제 성공");
+        }
+        else{
+            storeService.checkBookMarkReview(userId,reviewId);
+            return CommonResponse.onSuccess("북마크 성공");
+        }
+    }
+
+
+    @ApiOperation(value = "03-10 리뷰 신고 🏬 API FRAME REPORT",notes = "리뷰 신고")
+    @PostMapping("/review/report")
+    private CommonResponse<String> reportReview(@AuthenticationPrincipal User user, @RequestBody ReviewReq.ReportReview reportReview){
+        log.info("review-report");
+        log.info("api = review-report,reviewID = {}",reportReview.getReviewId());
+
+        Long userId= user.getId();
+
+        reviewService.reportReview(userId,reportReview);
+        return CommonResponse.onSuccess("리뷰 신고 성공");
+
     }
 
 

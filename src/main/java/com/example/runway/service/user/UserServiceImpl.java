@@ -17,9 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,14 +49,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserRes.Review> getMyReview(Long userId) {
+    public PageResponse<List<UserRes.Review>> getMyReview(Long userId, Integer page, Integer size) {
 
         List<UserRes.Review> review=new ArrayList<>();
 
+        Pageable pageReq = PageRequest.of(page, size);
 
-        List<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.GetReviewInfo(userId);
+        Page<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.GetReviewInfo(userId,pageReq);
 
-        return review;
+        reviewResult.forEach(
+                result->review.add(
+                        new UserRes.Review(
+                                result.getReviewId(),
+                                result.getImgUrl(),
+                                result.getRegionInfo()
+                        )
+                )
+        );
+
+        return new PageResponse<>(reviewResult.isLast(),review);
     }
 
     @Override
@@ -92,6 +102,86 @@ public class UserServiceImpl implements UserService {
         );
 
         return new PageResponse<>(storeResult.isLast(),storeInfo);
+    }
+
+    @Override
+    public UserRes.ReviewInfo getMyReviewDetail(Long userId, Long reviewId) {
+        StoreReviewRepository.GetStoreReview result=storeReviewRepository.getMyReview(reviewId);
+
+        Long prevReviewId = getPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        Long nextReviewId = getNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
+    }
+
+    @Override
+    public PageResponse<List<UserRes.Review>> getMyBookMarkReview(Long userId, Integer page, Integer size) {
+        Pageable pageReq = PageRequest.of(page, size);
+
+        Page<StoreReviewRepository.GetReviewInfo> reviewResult=storeReviewRepository.getMyBookMarkReview(userId,pageReq);
+        List<UserRes.Review> review=new ArrayList<>();
+
+
+        reviewResult.forEach(
+                result->review.add(
+                        new UserRes.Review(
+                                result.getReviewId(),
+                                result.getImgUrl(),
+                                result.getRegionInfo()
+                        )
+                )
+        );
+
+        return new PageResponse<>(reviewResult.isLast(),review);
+
+
+
+    }
+
+    @Override
+    public UserRes.ReviewInfo getMyBookMarkReviewDetail(Long userId, Long reviewId) {
+
+        StoreReviewRepository.GetStoreReview result=storeReviewRepository.getMyBookmarkReview(reviewId,userId);
+
+        Long prevReviewId = getBookMarkPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        Long nextReviewId = getBookMarkNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
+
+        return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
+    }
+
+    private Long getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextBookMarkReviewId(createdAt,userId, reviewId);
+        Long nextId = null;
+        if (result != null) {
+            nextId = result.getId();
+        }
+        return nextId;
+    }
+
+    private Long getBookMarkPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevBookMarkReviewId(createdAt, userId, reviewId);
+        Long prevId = null;
+        if (result != null) {
+            prevId = result.getId();
+        }
+        return prevId;
+    }
+
+    private Long getNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextMyReviewId(createdAt,userId, reviewId);
+        Long nextId = null;
+        if (result != null) {
+            nextId = result.getId();
+        }
+        return nextId;
+    }
+
+    private Long getPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevMuReviewId(createdAt, userId, reviewId);
+        Long prevId = null;
+        if (result != null) {
+            prevId = result.getId();
+        }
+        return prevId;
     }
 
     public void saveUserCategoryList(Long userId,List<Long> userCategoryList) {

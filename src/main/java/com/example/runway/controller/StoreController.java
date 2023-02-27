@@ -178,7 +178,7 @@ public class StoreController {
         }
     }
 
-    @ApiOperation(value = "03-09 리뷰 북마크 🏬 API FRAME REVIEW_01",notes = "북마크 Check,UnCheck ")
+    @ApiOperation(value = "03-11 리뷰 북마크 🏬 API FRAME REVIEW_01",notes = "북마크 Check,UnCheck ")
     @PostMapping("/review/bookmark/{reviewId}")
     private CommonResponse<String> bookMarkReview(@AuthenticationPrincipal User user, @Parameter(description = "reviewId 리뷰 Id값") @PathVariable("reviewId") Long reviewId){
         log.info("review-bookmark");

@@ -5,6 +5,7 @@ import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.repository.StoreReviewRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -76,6 +77,20 @@ public class UserConvertor {
         return UserRes.PatchUserInfo.builder()
                 .imgUrl(user.getProfileImgUrl())
                 .nickname(user.getNickname())
+                .build();
+    }
+
+    public static UserRes.ReviewInfo MyReviewDetail(StoreReviewRepository.GetStoreReview result, UserRes.ReviewInquiry reviewInquiry,Long userId) {
+        return UserRes.ReviewInfo.builder().reviewId(result.getReviewId())
+                .profileImgUrl(result.getProfileImgUrl())
+                .nickname(result.getNickname())
+                .imgUrl(result.getImgUrl())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .bookmarkCnt(result.getBookmarkCnt())
+                .reviewInquiry(reviewInquiry)
+                .isMy(userId.equals(result.getUserId()))
                 .build();
     }
 }

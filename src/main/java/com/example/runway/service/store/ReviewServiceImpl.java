@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
         System.out.println("prevReviewID:" + prevReviewId);
         System.out.println("nextReviewId:" + nextReviewId);
 
-        return StoreConvertor.StoreReview(result, prevReviewId, nextReviewId);
+        return StoreConvertor.StoreReview(result, prevReviewId, nextReviewId,userId);
     }
 
     private Long getNextReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {

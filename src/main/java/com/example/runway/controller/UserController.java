@@ -132,25 +132,59 @@ public class UserController {
 
     @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY")
     @GetMapping("/review")
-    public CommonResponse<List<UserRes.Review>> getMyReview(@AuthenticationPrincipal User user){
+    public CommonResponse<PageResponse<List<UserRes.Review>>> getMyReview(@AuthenticationPrincipal User user,
+                                                            @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                            @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size){
         log.info("get-review");
         log.info("api = get-my-review 02-06");
-        List<UserRes.Review> review=userService.getMyReview(user.getId());
+        PageResponse<List<UserRes.Review>> review=userService.getMyReview(user.getId(),page,size);
+        return CommonResponse.onSuccess(review);
+    }
+
+    @ApiOperation(value = "02-07 내가 작성한 리뷰 상세 조회 👤 FRAME MY_REVIEW")
+    @GetMapping("/review/detail/{reviewId}")
+    public CommonResponse<UserRes.ReviewInfo> getMyReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
+        log.info("get-review-detail");
+        log.info("api = get-my-review-detail 02-07");
+        UserRes.ReviewInfo review=userService.getMyReviewDetail(user.getId(),reviewId);
         return CommonResponse.onSuccess(review);
     }
 
 
-    @ApiOperation(value = "02-07 내가 북마크한 쇼룸 리스트 보기 👤 FRAME MY")
+    @ApiOperation(value = "02-08 내가 북마크한 쇼룸 리스트 보기 👤 FRAME MY")
     @GetMapping("/store")
     public CommonResponse<PageResponse<List<UserRes.StoreInfo>>> getMyBookMarkStore(@AuthenticationPrincipal User user,
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
                                                                                     @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size){
         log.info("get-bookmark-store");
-        log.info("api = get-my-bookmark-store 02-06");
+        log.info("api = get-my-bookmark-store 02-08");
         Long userId=user.getId();
         PageResponse<List<UserRes.StoreInfo>> storeInfo=userService.getMyBookMarkStore(userId,page,size);
 
         return CommonResponse.onSuccess(storeInfo);
+    }
+
+
+    @ApiOperation(value = "02-09 내가 북마크한 리뷰 리스트 보기 👤 FRAME MY")
+    @GetMapping("/bookmark/review")
+    public CommonResponse<PageResponse<List<UserRes.Review>>> getMyBookMarkReview(@AuthenticationPrincipal User user,
+                                                                                    @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
+                                                                                    @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size){
+        log.info("get-bookmark-store");
+        log.info("api = get-my-bookmark-store 02-08");
+        Long userId=user.getId();
+        PageResponse<List<UserRes.Review>> review=userService.getMyBookMarkReview(userId,page,size);
+
+        return CommonResponse.onSuccess(review);
+    }
+
+    @ApiOperation(value = "02-10 내가 북마크한 리뷰 상세 조회 👤 FRAME MY_REVIEW")
+    @GetMapping("/bookmark/review/detail/{reviewId}")
+    public CommonResponse<UserRes.ReviewInfo> getMyBookMarkReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
+        log.info("get-review-detail");
+        log.info("api = get-my-review-detail 02-07");
+        UserRes.ReviewInfo review=userService.getMyBookMarkReviewDetail(user.getId(),reviewId);
+        return CommonResponse.onSuccess(review);
     }
 
     //@ApiOperation(value = "02-07 내가 북마크한 사장님 소식 리스트 보기 👤 FRAME MY")

@@ -13,11 +13,17 @@ public interface UserService {
 
     void postUserCategory(Long userId, HomeReq.PostUserCategory postUserCategory);
 
-    List<UserRes.Review> getMyReview(Long id);
+    PageResponse<List<UserRes.Review>> getMyReview(Long id, Integer page, Integer size);
 
     UserRes.UserInfo getMyInfo(Long userId);
 
     UserRes.PatchUserInfo getUserProfile(Long userId);
 
     PageResponse<List<UserRes.StoreInfo>> getMyBookMarkStore(Long userId, Integer page, Integer size);
+
+    UserRes.ReviewInfo getMyReviewDetail(Long id, Long reviewId);
+
+    PageResponse<List<UserRes.Review>> getMyBookMarkReview(Long userId, Integer page, Integer size);
+
+    UserRes.ReviewInfo getMyBookMarkReviewDetail(Long id, Long reviewId);
 }

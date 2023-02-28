@@ -28,4 +28,6 @@ public interface UserService {
     UserRes.ReviewInfo getMyBookMarkReviewDetail(Long id, Long reviewId);
 
     UserRes.SettingInfo getUserInfo(User user);
+
+    boolean checkSocialUser(Long userId, String social);
 }

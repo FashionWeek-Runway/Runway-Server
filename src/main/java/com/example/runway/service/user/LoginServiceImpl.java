@@ -245,14 +245,6 @@ public class LoginServiceImpl implements LoginService {
 
         userCategoryRepository.saveAll(userCategoryArrayList);
 
-        /*
-        for(Long categoryId : userCategoryList){
-            Optional<UserCategory> userCategory=userCategoryRepository.findByUserIdAndCategoryId(userId,categoryId);
-            userCategory.get().modifyCategoryStatus(true);
-            userCategoryRepository.save(userCategory.get());
-        }
-
-         */
     }
 
 

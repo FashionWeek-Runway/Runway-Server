@@ -1,6 +1,7 @@
 package com.example.runway.controller;
 
 import com.example.runway.common.CommonResponse;
+import com.example.runway.constants.Constants;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.store.StoreRes;
@@ -23,6 +24,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_SOCIAL;
 
 
 @Api(tags = "02-사용자 👤")
@@ -101,7 +103,7 @@ public class UserController {
     }
      */
 
-    @ApiOperation(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 FRAME MY")
+    @ApiOperation(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 FRAME MY",notes = "마이페이지 조회")
     @GetMapping("/")
     public CommonResponse<UserRes.UserInfo> getMyInfo(@AuthenticationPrincipal User user){
         log.info("get-my-info");
@@ -113,7 +115,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "02-04 프로필 편집을 위한 기존 데이터 GET 👤 FRAME MY")
+    @ApiOperation(value = "02-04 프로필 편집을 위한 기존 데이터 GET 👤 FRAME MY",notes = "프로필 편집 데이터 조회")
     @GetMapping("/profile")
     public CommonResponse<UserRes.PatchUserInfo> getUserProfile(@AuthenticationPrincipal User user){
         log.info("get-profile-info");
@@ -132,7 +134,7 @@ public class UserController {
     }
      */
 
-    @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY")
+    @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY",notes = "내가 작성한 리뷰 모아보기")
     @GetMapping("/review")
     public CommonResponse<PageResponse<List<UserRes.Review>>> getMyReview(@AuthenticationPrincipal User user,
                                                             @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -143,7 +145,7 @@ public class UserController {
         return CommonResponse.onSuccess(review);
     }
 
-    @ApiOperation(value = "02-07 내가 작성한 리뷰 상세 조회 👤 FRAME MY_REVIEW")
+    @ApiOperation(value = "02-07 내가 작성한 리뷰 상세 조회 👤 FRAME MY_REVIEW",notes = "내가 작성한 리뷰 상세 조회 prev,next Id")
     @GetMapping("/review/detail/{reviewId}")
     public CommonResponse<UserRes.ReviewInfo> getMyReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
         log.info("get-review-detail");
@@ -153,7 +155,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "02-08 내가 북마크한 쇼룸 리스트 보기 👤 FRAME MY")
+    @ApiOperation(value = "02-08 내가 북마크한 쇼룸 리스트 보기 👤 FRAME MY",notes = "내가 북마크한 쇼룸 모아보기")
     @GetMapping("/store")
     public CommonResponse<PageResponse<List<UserRes.StoreInfo>>> getMyBookMarkStore(@AuthenticationPrincipal User user,
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -167,7 +169,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "02-09 내가 북마크한 리뷰 리스트 보기 👤 FRAME MY")
+    @ApiOperation(value = "02-09 내가 북마크한 리뷰 리스트 보기 👤 FRAME MY",notes = "내가 북마크한 리뷰 모아보기")
     @GetMapping("/bookmark/review")
     public CommonResponse<PageResponse<List<UserRes.Review>>> getMyBookMarkReview(@AuthenticationPrincipal User user,
                                                                                     @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
@@ -180,7 +182,7 @@ public class UserController {
         return CommonResponse.onSuccess(review);
     }
 
-    @ApiOperation(value = "02-10 내가 북마크한 리뷰 상세 조회 👤 FRAME MY_REVIEW")
+    @ApiOperation(value = "02-10 내가 북마크한 리뷰 상세 조회 👤 FRAME MY_REVIEW",notes = "북마크한 리뷰 상세보기 prev,next Id")
     @GetMapping("/bookmark/review/detail/{reviewId}")
     public CommonResponse<UserRes.ReviewInfo> getMyBookMarkReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
         log.info("get-review-detail");
@@ -199,20 +201,36 @@ public class UserController {
         return CommonResponse.onSuccess(settingInfo);
     }
 
-    @ApiOperation(value = "02-12 개인정보 카카오 연동 👤 FRAME SETTING 02")
+    @ApiOperation(value = "02-12 개인정보 카카오 연동 👤 FRAME SETTING 02",notes = "카카오 연동")
     @PostMapping("/info/kakao")
     public CommonResponse<String> syncKakaoUser(@AuthenticationPrincipal User user, @RequestBody UserReq.SocialLogin socialLogin){
         authService.syncKakaoUser(user.getId(),socialLogin.getAccessToken());
         return CommonResponse.onSuccess("연동 성공");
    }
 
-    @ApiOperation(value = "02-13 개인정보 애플 연동 👤 FRAME SETTING 02")
+    @ApiOperation(value = "02-13 개인정보 애플 연동 👤 FRAME SETTING 02",notes = "애플 연동")
     @PostMapping("/info/apple")
     public CommonResponse<String> syncAppleUser(@AuthenticationPrincipal User user, @RequestBody UserReq.SocialLogin socialLogin){
         authService.syncAppleUser(user.getId(),socialLogin.getAccessToken());
         return CommonResponse.onSuccess("연동 성공");
     }
 
+
+    @ApiOperation(value = "02-14 개인정보 카카오 연동 해지 👤 FRAME SETTING 02",notes = "카카오 연동 해지")
+    @DeleteMapping("/info/kakao")
+    public CommonResponse<String> unSyncKakaoUser(@AuthenticationPrincipal User user){
+        if(!userService.checkSocialUser(user.getId(),Constants.kakao))throw new BadRequestException(NOT_EXIST_SOCIAL);
+        authService.unSyncSocial(user.getId(),Constants.kakao);
+        return CommonResponse.onSuccess("연동 성공");
+    }
+
+    @ApiOperation(value = "02-15 개인정보 애플 연동 해지 👤 FRAME SETTING 02",notes = "애플 연동 해지")
+    @DeleteMapping("/info/apple")
+    public CommonResponse<String> unSyncAppleUser(@AuthenticationPrincipal User user){
+        if(!userService.checkSocialUser(user.getId(),Constants.apple))throw new BadRequestException(NOT_EXIST_SOCIAL);
+        authService.unSyncSocial(user.getId(), Constants.apple);
+        return CommonResponse.onSuccess("연동 성공");
+    }
 
 
 }

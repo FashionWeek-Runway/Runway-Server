@@ -23,4 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsernameAndSocialAndStatus(String appleId, String apple, boolean b);
 
+    boolean existsByUsernameAndSocial(String toString, String kakao);
 }

@@ -1,5 +1,7 @@
 package com.example.runway.domain;
 
+import com.example.runway.domain.BaseEntity;
+import com.example.runway.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Social extends BaseEntity{
+public class Social extends BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -328,7 +328,7 @@ public class AuthServiceImpl implements AuthService{
             Long kakaoId = element.getAsJsonObject().get("id").getAsLong();
 
             if(socialRepository.existsBySocialIdAndUserIdNot(kakaoId.toString(),userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
-            if(userRepository.existsByUsernameAndSocial(kakaoId.toString(),Constants.kakao)) throw new BadRequestException(EXIST_USER_SOCIAL);
+            if(userRepository.existsByUsernameAndSocialAndStatus(kakaoId.toString(),Constants.kakao,true)) throw new BadRequestException(EXIST_USER_SOCIAL);
             if(socialRepository.existsByUserIdAndType(userId,Constants.kakao))throw new BadRequestException(EXIST_SYNC_SOCIAL);
 
             Social social = UserConvertor.SyncSocial(String.valueOf(kakaoId),userId,Constants.kakao);
@@ -429,7 +429,7 @@ public class AuthServiceImpl implements AuthService{
 
 
         if(socialRepository.existsBySocialIdAndUserIdNot(appleId,userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
-        if(userRepository.existsByUsernameAndSocial(appleId,Constants.apple)) throw new BadRequestException(EXIST_USER_SOCIAL);
+        if(userRepository.existsByUsernameAndSocialAndStatus(appleId,Constants.apple,true)) throw new BadRequestException(EXIST_USER_SOCIAL);
         if(socialRepository.existsByUserIdAndType(userId,Constants.apple))throw new BadRequestException(EXIST_SYNC_SOCIAL);
 
         Social social = UserConvertor.SyncSocial(appleId,userId,Constants.kakao);

@@ -206,7 +206,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-07 내 리뷰 조회 🏬 API Response")
+    @ApiModel(value = "02-07 내 리뷰 조회 👤 API Response")
     public static class ReviewInfo {
         @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
@@ -235,7 +235,7 @@ public class UserRes {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-07 리뷰 이전 id, 다음 id 🏬 API Response")
+    @ApiModel(value = "02-07 리뷰 이전 id, 다음 id 👤 API Response")
     public static class ReviewInquiry{
         @ApiModelProperty(notes="이전 리뷰 ID",required = true,example = "1")
         private Long prevReviewId;
@@ -244,4 +244,15 @@ public class UserRes {
     }
 
 
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-10 개인정보 설정 페이지 조회 👤 API Response")
+    public static class SettingInfo {
+        private String phone;
+        private boolean kakao;
+        private boolean apple;
+    }
 }

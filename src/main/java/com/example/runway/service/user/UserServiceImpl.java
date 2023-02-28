@@ -148,6 +148,12 @@ public class UserServiceImpl implements UserService {
         return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
     }
 
+    @Override
+    public UserRes.SettingInfo getUserInfo(User user) {
+
+        return null;
+    }
+
     private Long getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextBookMarkReviewId(createdAt,userId, reviewId);
         Long nextId = null;

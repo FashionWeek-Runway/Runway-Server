@@ -26,4 +26,6 @@ public interface UserService {
     PageResponse<List<UserRes.Review>> getMyBookMarkReview(Long userId, Integer page, Integer size);
 
     UserRes.ReviewInfo getMyBookMarkReviewDetail(Long id, Long reviewId);
+
+    UserRes.SettingInfo getUserInfo(User user);
 }

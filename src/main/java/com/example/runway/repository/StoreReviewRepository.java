@@ -10,6 +10,7 @@ import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     Page<StoreReview> findByStoreIdAndStatusOrderByCreatedAtDescIdAsc(Long storeId,  boolean b,Pageable pageReq);
@@ -34,17 +35,13 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     boolean existsByIdAndStatus(Long reviewId, boolean b);
 
-    @Query(value = "select count(*)'size' from Store S join StoreCategory SC on S.id = SC.store_id " +
-            "join Category C on SC.category_id = C.id join StoreReview SR on S.id = SR.store_id where C.category IN (:categoryList)",nativeQuery = true)
-    StoreReviewRepository.GetCountAllReview CountReview(@Param(("categoryList")) List<String> categoryList);
-
 
     @Query(value = "select SR.id from StoreReview SR" +
-            " where SR.user_id=:userId and SR.created_at>:createdAt and SR.id != :reviewId order by created_at asc limit 1",nativeQuery = true)
+            " where SR.user_id=:userId and SR.created_at>:createdAt and SR.id != :reviewId and SR.status =true  order by created_at asc limit 1",nativeQuery = true)
     GetReviewId findPrevMuReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
     @Query(value = "select SR.id from StoreReview SR" +
-            " where SR.user_id=:userId and SR.created_at<:createdAt and SR.id != :reviewId order by created_at desc limit 1",nativeQuery = true)
+            " where SR.user_id=:userId and SR.created_at<:createdAt and SR.id != :reviewId and SR.status =true order by created_at desc limit 1",nativeQuery = true)
     GetReviewId findNextMyReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
     @Query(value = "select SR.id         'reviewId',SR.user_id'userId',\n" +
@@ -59,7 +56,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "         join Store S on SR.store_id = S.id\n" +
             "         join Region R on S.region_id = R.id\n" +
             "         left join ReviewKeep RK on SR.id = RK.review_id\n" +
-            "where SR.id=:reviewId and RK.review_id=SR.id and RK.user_id=:userId",nativeQuery = true)
+            "where SR.id=:reviewId and RK.review_id=SR.id and RK.user_id=:userId and SR.status =true ",nativeQuery = true)
     GetStoreReview getMyBookmarkReview(@Param("reviewId") Long reviewId,@Param("userId") Long userId);
 
 
@@ -68,7 +65,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at < :createdAt\n" +
             "   or (created_at = :createdAt AND id > :reviewId)\n" +
-            "  and SR.id != :reviewId\n" +
+            "  and SR.id != :reviewId and SR.status =true \n" +
             "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
     GetReviewId findNextBookMarkReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
@@ -77,9 +74,11 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at > :createdAt\n" +
             "   or (created_at = :createdAt AND id<:reviewId)\n" +
-            "    and SR.id != :reviewId\n" +
-            "order by SR.created_at asc, SR.id desc limit 1",nativeQuery = true)
+            "    and SR.id != :reviewId and SR.status =true \n" +
+            "order by SR.created_at asc, SR.id desc limit 1 ",nativeQuery = true)
     GetReviewId findPrevBookMarkReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
+
+    Optional<Object> findByIdAndStatus(Long reviewId, boolean b);
 
 
     interface GetCountAllReview {
@@ -90,7 +89,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
                 "where SR.store_id = :storeId\n" +
                 "  and SR.created_at > :createdAt\n" +
                 "   or (created_at = :createdAt AND id<:reviewId)\n" +
-                "    and SR.id != :reviewId\n" +
+                "    and SR.id != :reviewId and SR.status =true \n" +
                 "order by created_at asc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findPrevReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("storeId") Long storeId,@Param("reviewId") Long reviewId);
 
@@ -100,7 +99,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "where SR.store_id = :storeId\n" +
             "  and SR.created_at < :createdAt\n" +
             "   or (created_at = :createdAt AND id > :reviewId)\n" +
-            "  and SR.id != :reviewId\n" +
+            "  and SR.id != :reviewId and SR.status =true \n " +
             "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findNextReviewId(@Param("createdAt") LocalDateTime createdAt, @Param("storeId") Long storeId, @Param("reviewId") Long reviewId);
 
@@ -117,7 +116,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "         join Store S on SR.store_id = S.id\n" +
             "         join Region R on S.region_id = R.id\n" +
             "         left join ReviewKeep RK on SR.id = RK.review_id\n" +
-            "where SR.id=:reviewId",nativeQuery = true)
+            "where SR.id=:reviewId and SR.status =true ",nativeQuery = true)
     GetStoreReview getMyReview(@Param("reviewId") Long reviewId);
     interface GetStoreReview {
         Long getReviewId();
@@ -170,7 +169,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
                     "group by SR.id order by categoryScore DESC,bookmarkCnt DESC,SR.id asc",
             countQuery = "select count(DISTINCT StoreReview.id) from StoreReview join Store S on StoreReview.store_id = S.id" +
                         " join StoreCategory SC on S.id = SC.store_id join Category C on SC.category_id = C.id" +
-                        " where C.category IN(:categoryList) ",
+                        " where C.category IN(:categoryList) and StoreReview.status=true ",
             nativeQuery = true)
     Page<GetReview> RecommendReview(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList, Pageable pageReq);
     interface GetReview {

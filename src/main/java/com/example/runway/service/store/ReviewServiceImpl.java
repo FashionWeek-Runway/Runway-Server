@@ -10,6 +10,8 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.ReviewReq;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.exception.BadRequestException;
+import com.example.runway.exception.NotFoundException;
 import com.example.runway.repository.ReviewReadRepository;
 import com.example.runway.repository.ReviewReportRepository;
 import com.example.runway.repository.StoreReviewRepository;
@@ -24,6 +26,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW;
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW_DELETE;
 
 @Service
 @RequiredArgsConstructor
@@ -135,6 +141,17 @@ public class ReviewServiceImpl implements ReviewService {
     public void reportReview(Long userId, ReviewReq.ReportReview reportReview) {
         ReviewReport reviewReport = ReviewConvertor.ReportReview(userId,reportReview);
         reviewReportRepository.save(reviewReport);
+    }
+
+    @Override
+    public void deleteReview(Long reviewId, Long userId) {
+        StoreReview storeReview = (StoreReview) storeReviewRepository.findByIdAndStatus(reviewId,true).orElseThrow(()-> new NotFoundException(NOT_EXIST_REVIEW));;
+
+        if(!storeReview.getUserId().equals(userId)) throw new BadRequestException(NOT_EXIST_REVIEW_DELETE);
+
+        storeReview.modifyStatus(false);
+
+        storeReviewRepository.save(storeReview);
     }
 
 

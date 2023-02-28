@@ -204,7 +204,7 @@ public class StoreController {
 
     @ApiOperation(value = "03-10 리뷰 신고 🏬 API FRAME REPORT",notes = "리뷰 신고")
     @PostMapping("/review/report")
-    private CommonResponse<String> reportReview(@AuthenticationPrincipal User user, @RequestBody ReviewReq.ReportReview reportReview){
+    public CommonResponse<String> reportReview(@AuthenticationPrincipal User user, @RequestBody ReviewReq.ReportReview reportReview){
         log.info("review-report");
         log.info("api = review-report,reviewID = {}",reportReview.getReviewId());
 
@@ -212,8 +212,20 @@ public class StoreController {
 
         reviewService.reportReview(userId,reportReview);
         return CommonResponse.onSuccess("리뷰 신고 성공");
-
     }
+
+    //TODO 리뷰 삭제
+
+    @ApiOperation(value = "03-12 리뷰 삭제 🏬 API FRAME REVIEWDELETE_01",notes = "리뷰 삭제")
+    @PatchMapping("/review/detail/{reviewId}")
+    public CommonResponse<String> deleteReview(@AuthenticationPrincipal User user,@Parameter(description = "reviewId 리뷰 Id값") @PathVariable("reviewId") Long reviewId){
+        Long userId= user.getId();
+
+        reviewService.deleteReview(reviewId,userId);
+
+        return CommonResponse.onSuccess("리뷰 삭제 성공");
+    }
+
 
 
 }

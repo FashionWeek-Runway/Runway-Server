@@ -154,4 +154,15 @@ public class UserReq {
         @ApiModelProperty(notes = "유저 경도", required = true, example = "127.055327")
         private double longitude;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-15,16 유저 비밀번호 재설정 API Request🔑")
+    public static class Password {
+        @ApiModelProperty(notes ="15 요청 시 기존 비밀번호, 16 요청시 변경할 비밀번호", required = true, example = "runway8925!")
+        private String password;
+    }
 }

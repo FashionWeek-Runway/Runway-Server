@@ -111,7 +111,8 @@ public enum CommonResponseStatus {
 
     NOT_EXIST_STORE(NOT_FOUND,"S001","해당 가게는 존재하지 않습니다."),
     NOT_EXIST_REGION(NOT_FOUND,"SOO2","해당 지역은 존재하지 않습니다"),
-    NOT_EXIST_REVIEW(NOT_FOUND,"R001","해당 리뷰는 존재하지 않습니다.")
+    NOT_EXIST_REVIEW(NOT_FOUND,"R001","해당 리뷰는 존재하지 않습니다."),
+    NOT_EXIST_REVIEW_DELETE(BAD_REQUEST,"R002","해당 리뷰를 삭제할 권한이 없습니다.")
 
 
     ;

@@ -23,4 +23,6 @@ public interface ReviewService {
     void readReview(Long reviewId, Long userId);
 
     void reportReview(Long userId, ReviewReq.ReportReview reportReview);
+
+    void deleteReview(Long reviewId, Long userId);
 }

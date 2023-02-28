@@ -42,4 +42,8 @@ public class StoreReview extends BaseEntity {
     @Column(name="status",insertable = false)
     @ColumnDefault(value="true")
     private boolean status;
+
+    public void modifyStatus(boolean status) {
+        this.status=status;
+    }
 }

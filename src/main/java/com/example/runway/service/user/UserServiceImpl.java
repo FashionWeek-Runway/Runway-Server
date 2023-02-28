@@ -207,6 +207,11 @@ public class UserServiceImpl implements UserService {
         return UserConvertor.SettingInfo(kakao,apple,user.getUsername(),social);
     }
 
+    @Override
+    public boolean checkSocialUser(Long userId, String social) {
+        return socialRepository.existsByUserIdAndType(userId,social);
+    }
+
     public boolean checkAppleSync(Long userId) {
         return socialRepository.existsByUserIdAndType(userId, Constants.apple);
     }

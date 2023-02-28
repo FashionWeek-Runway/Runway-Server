@@ -14,4 +14,6 @@ public interface AuthService {
     void syncKakaoUser(Long id, String accessToken);
 
     void syncAppleUser(Long id, String accessToken);
+
+    void unSyncSocial(Long id, String social);
 }

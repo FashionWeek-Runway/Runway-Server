@@ -11,14 +11,12 @@ import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
 import com.example.runway.repository.SocialRepository;
 import com.example.runway.repository.UserRepository;
-import com.example.runway.service.util.RedisService;
 import com.google.gson.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -45,13 +43,11 @@ public class AuthServiceImpl implements AuthService{
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
 
-    @Value("${jwt.refresh-token-seconds}")
-    private long refreshTime;
 
     @Override
     public String getKakaoAccessToken(String code) {
-        String access_Token = "";
-        String refresh_Token = "";
+        String access_Token="";
+        String refresh_Token;
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
         try {
@@ -64,12 +60,11 @@ public class AuthServiceImpl implements AuthService{
 
             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id="+kakaoRestApiKey); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:9000/login/kakao"); // TODO 인가코드 받은 redirect_uri 입력
-            sb.append("&code=" + code);
-            bw.write(sb.toString());
+            String sb = "grant_type=authorization_code" +
+                    "&client_id=" + kakaoRestApiKey + // TODO REST_API_KEY 입력
+                    "&redirect_uri=http://localhost:9000/login/kakao" + // TODO 인가코드 받은 redirect_uri 입력
+                    "&code=" + code;
+            bw.write(sb);
             bw.flush();
 
             //결과 코드가 200이라면 성공
@@ -77,17 +72,17 @@ public class AuthServiceImpl implements AuthService{
             System.out.println("responseCode : " + responseCode);
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
+            String line;
+            StringBuilder result = new StringBuilder();
 
             while ((line = br.readLine()) != null) {
-                result += line;
+                result.append(line);
             }
             System.out.println("response body : " + result);
 
             //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
+            JsonElement element = JsonParser.parseString(result.toString());
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
@@ -122,17 +117,17 @@ public class AuthServiceImpl implements AuthService{
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
+            String line ;
+            StringBuilder result = new StringBuilder();
 
             while ((line = br.readLine()) != null) {
-                result += line;
+                result.append(line);
             }
             System.out.println("response body : " + result);
 
             //Gson 라이브러리로 JSON파싱
             JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
+            JsonElement element = parser.parse(result.toString());
 
             Long id = element.getAsJsonObject().get("id").getAsLong();
 
@@ -444,6 +439,11 @@ public class AuthServiceImpl implements AuthService{
 
 
 
+    }
+
+    @Override
+    public void unSyncSocial(Long userId, String social) {
+        socialRepository.deleteByUserIdAndType(userId,social);
     }
 
 

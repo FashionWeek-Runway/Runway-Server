@@ -1,11 +1,15 @@
 package com.example.runway.service.user;
 
+import com.example.runway.constants.Constants;
+import com.example.runway.convertor.UserConvertor;
+import com.example.runway.domain.Social;
 import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.exception.ForbiddenException;
+import com.example.runway.repository.SocialRepository;
 import com.example.runway.repository.UserRepository;
 import com.example.runway.service.util.RedisService;
 import com.google.gson.*;
@@ -36,8 +40,7 @@ public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
     private final LoginService loginService;
-    private final PasswordEncoder passwordEncoder;
-    private final RedisService redisService;
+    private final SocialRepository socialRepository;
 
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
@@ -105,8 +108,6 @@ public class AuthServiceImpl implements AuthService{
     public UserRes.Token logInKakaoUser(UserReq.SocialLogin SocialLogin) throws ForbiddenException {
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
-        //access_token을 이용하여 사용자 정보 조회
-        //access_token을 이용하여 사용자 정보 조회
         try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -144,6 +145,13 @@ public class AuthServiceImpl implements AuthService{
             HashMap<String,String> kakao = new HashMap<String,String>();
             kakao.put("kakaoId",id.toString());
             kakao.put("profileImgUrl",profileImgUrl);
+
+            Optional<Social> social = socialRepository.findBySocialIdAndType(id.toString(), Constants.kakao);
+
+            if(social.isPresent()){
+                UserRes.GenerateToken generateToken = loginService.createToken(social.get().getUserId());
+                return new UserRes.Token(social.get().getUserId(), generateToken.getAccessToken(), generateToken.getRefreshToken());
+            }
 
             //회원 존재 X -> 예외처리(카카오 id, 프로필 이미지)
             User user=userRepository.findByUsernameAndSocialAndStatus(String.valueOf(id), "KAKAO",true).orElseThrow(() ->
@@ -270,18 +278,170 @@ public class AuthServiceImpl implements AuthService{
             throw new BadRequestException(APPLE_BAD_REQUEST);
         }
 
+        Optional<Social> social = socialRepository.findBySocialIdAndType(appleId,apple);
 
+        if(social.isPresent()){
+            UserRes.GenerateToken generateToken = loginService.createToken(social.get().getUserId());
+            return new UserRes.AppleLogin(true,null,social.get().getUserId(), generateToken.getAccessToken(), generateToken.getRefreshToken());
+        }
         if(!userRepository.existsByUsernameAndSocialAndStatus(appleId, "APPLE", true)){
             return new UserRes.AppleLogin(false,appleId,null,null,null);
         }
 
+
         Optional<User> user = userRepository.findByUsernameAndSocialAndStatus(appleId,apple,true);
-        // 가입된 유저 확인 시 jwt, refreshToken 반환
+
         Long userId=user.get().getId();
+
         UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
 
         return new UserRes.AppleLogin(true,null,userId, generateToken.getAccessToken(), generateToken.getRefreshToken());
+
+
+    }
+
+    @Override
+    public void syncKakaoUser(Long userId, String accessToken) {
+        String reqURL = "https://kapi.kakao.com/v2/user/me";
+
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken); //전송할 header 작성, access_token전송
+
+            //결과 코드가 200이라면 성공
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
+
+            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+
+            //Gson 라이브러리로 JSON파싱
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+
+            Long kakaoId = element.getAsJsonObject().get("id").getAsLong();
+
+            if(socialRepository.existsBySocialIdAndUserIdNot(kakaoId.toString(),userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
+            if(userRepository.existsByUsernameAndSocial(kakaoId.toString(),Constants.kakao)) throw new BadRequestException(EXIST_USER_SOCIAL);
+            if(socialRepository.existsByUserIdAndType(userId,Constants.kakao))throw new BadRequestException(EXIST_SYNC_SOCIAL);
+
+            Social social = UserConvertor.SyncSocial(String.valueOf(kakaoId),userId,Constants.kakao);
+
+
+            socialRepository.save(social);
+
+            br.close();
+
+
+        } catch (IOException e) {
+            throw new ForbiddenException(KAKAO_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public void syncAppleUser(Long userId, String accessToken) {
+        String appleReqUrl = "https://appleid.apple.com/auth/keys";
+        StringBuffer result = new StringBuffer();
+
+        String appleId;
+
+        // 애플 api로 토큰 검증용 공개키 요청
+        try {
+            URL url = new URL(appleReqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("charset", "utf-8");
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode != HttpStatus.OK.value()) throw new ForbiddenException(APPLE_SERVER_ERROR);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+
+        } catch (Exception e) {
+            throw new ForbiddenException(APPLE_SERVER_ERROR);
+        }
+
+        //Gson 라이브러리로 JSON파싱
+        // 통신 결과에서 공개키 목록 가져오기
+        JsonParser parser = new JsonParser();
+        JsonObject keys = (JsonObject) parser.parse(result.toString());
+        JsonArray publicKeys = (JsonArray) keys.get("keys");
+
+        try {
+            // 클라이언트로부터 입력받은 jwt(idToken)에서 공개키와 비교할 항목 추출하기
+            String headerOfIdentityToken = accessToken.substring(0, accessToken.indexOf("."));
+            String header = new String(Base64.getDecoder().decode(headerOfIdentityToken), "UTF-8");
+
+            JsonObject parsedHeader = (new Gson()).fromJson(header, JsonObject.class);
+            JsonElement kid = parsedHeader.get("kid");
+            JsonElement alg = parsedHeader.get("alg");
+
+            // 애플의 공개키 3개중 클라이언트 토큰과 kid, alg 일치하는 것 찾기
+            JsonObject avaliableObject = null;
+            for (int i = 0; i < publicKeys.size(); i++) {
+                JsonObject appleObject = (JsonObject) publicKeys.get(i);
+                JsonElement appleKid = appleObject.get("kid");
+                JsonElement appleAlg = appleObject.get("alg");
+                System.out.println(kid);
+                System.out.println(alg);
+
+                if (Objects.equals(appleKid, kid) && Objects.equals(appleAlg, alg)) {
+                    avaliableObject = appleObject;
+                    break;
+                }
+            }
+
+            //일치하는 공개키 없음
+            if (ObjectUtils.isEmpty(avaliableObject))
+                throw new BadRequestException(APPLE_BAD_REQUEST);
+
+            PublicKey publicKey = this.getPublicKey(avaliableObject);
+            System.out.println(getPublicKey(avaliableObject));
+
+            // 일치하는 키를 이용해 정보 확인 후, 사용자 정보 가져오기
+            Claims userInfo = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(accessToken).getBody();
+            JsonObject userInfoObject = (JsonObject) parser.parse(new Gson().toJson(userInfo));
+
+            if (!Objects.equals(userInfoObject.get("iss").getAsString(), "https://appleid.apple.com"))
+                throw new BadRequestException(APPLE_BAD_REQUEST);
+
+            if (!Objects.equals(userInfoObject.get("aud").getAsString(), "com.fashionweek.Runway-iOS"))
+                throw new BadRequestException(APPLE_BAD_REQUEST);
+
+            appleId  = userInfoObject.get("sub").getAsString();
+
+
+        } catch (Exception e) {
+            throw new BadRequestException(APPLE_BAD_REQUEST);
+        }
+
+
+        if(socialRepository.existsBySocialIdAndUserIdNot(appleId,userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
+        if(userRepository.existsByUsernameAndSocial(appleId,Constants.apple)) throw new BadRequestException(EXIST_USER_SOCIAL);
+        if(socialRepository.existsByUserIdAndType(userId,Constants.apple))throw new BadRequestException(EXIST_SYNC_SOCIAL);
+
+        Social social = UserConvertor.SyncSocial(appleId,userId,Constants.kakao);
+
+
+        socialRepository.save(social);
+
 
 
     }

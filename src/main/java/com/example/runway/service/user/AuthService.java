@@ -11,4 +11,7 @@ public interface AuthService {
 
     UserRes.AppleLogin appleLogin(UserReq.SocialLogin SocialLogin);
 
+    void syncKakaoUser(Long id, String accessToken);
+
+    void syncAppleUser(Long id, String accessToken);
 }

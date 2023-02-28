@@ -103,6 +103,9 @@ public enum CommonResponseStatus {
     NOT_CORRECT_CONFIRM_NUM(BAD_REQUEST,"U026","인증번호가 일치하지 않습니다."),
 
     NOT_EXIST_CONFIRM_NUM(BAD_REQUEST,"U027","요청한 전화번호가 존재하지 않습니다."),
+    EXIST_SYNC_SOCIAL(BAD_REQUEST,"U028","이미 연동된 소셜 계정입니다."),
+    EXIST_DIFF_USER_SOCIAL(BAD_REQUEST,"U029","이미 다른 계정과 연동된 소셜 계정입니다."),
+    EXIST_USER_SOCIAL(BAD_REQUEST,"U030","이미 해당 소셜 아이디로 연결된 계정이 존재합니다."),
 
 
     NOT_EXIST_STORE(NOT_FOUND,"S001","해당 가게는 존재하지 않습니다."),

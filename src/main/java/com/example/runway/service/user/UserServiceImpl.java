@@ -1,5 +1,6 @@
 package com.example.runway.service.user;
 
+import com.example.runway.constants.Constants;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
@@ -8,10 +9,7 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
-import com.example.runway.repository.StoreRepository;
-import com.example.runway.repository.StoreReviewRepository;
-import com.example.runway.repository.UserCategoryRepository;
-import com.example.runway.repository.UserRepository;
+import com.example.runway.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final StoreReviewRepository storeReviewRepository;
     private final StoreRepository storeRepository;
     private final LoginService loginService;
+    private final SocialRepository socialRepository;
 
     @Override
     public void postUserLocation(User user, UserReq.UserLocation userLocation) {
@@ -148,12 +147,6 @@ public class UserServiceImpl implements UserService {
         return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
     }
 
-    @Override
-    public UserRes.SettingInfo getUserInfo(User user) {
-
-        return null;
-    }
-
     private Long getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextBookMarkReviewId(createdAt,userId, reviewId);
         Long nextId = null;
@@ -202,4 +195,24 @@ public class UserServiceImpl implements UserService {
 
         userCategoryRepository.saveAll(userCategoryArrayList);
     }
+
+
+    @Override
+    public UserRes.SettingInfo getUserInfo(User user) {
+        boolean social = user.getSocial() != null;
+
+        boolean kakao=checkKakaoSync(user.getId());
+        boolean apple=checkAppleSync(user.getId());
+
+        return UserConvertor.SettingInfo(kakao,apple,user.getUsername(),social);
+    }
+
+    public boolean checkAppleSync(Long userId) {
+        return socialRepository.existsByUserIdAndType(userId, Constants.apple);
+    }
+
+    public boolean checkKakaoSync(Long userId) {
+        return socialRepository.existsByUserIdAndType(userId, Constants.kakao);
+    }
+
 }

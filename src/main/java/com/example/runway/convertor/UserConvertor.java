@@ -1,8 +1,8 @@
 package com.example.runway.convertor;
 
 import com.example.runway.domain.Authority;
+import com.example.runway.domain.Social;
 import com.example.runway.domain.User;
-import com.example.runway.domain.UserCategory;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.repository.StoreReviewRepository;
@@ -92,5 +92,14 @@ public class UserConvertor {
                 .reviewInquiry(reviewInquiry)
                 .isMy(userId.equals(result.getUserId()))
                 .build();
+    }
+
+    public static UserRes.SettingInfo SettingInfo(boolean kakao, boolean apple, String username, boolean social) {
+        return UserRes.SettingInfo.builder().social(social).apple(apple).kakao(kakao).phone(username).build();
+    }
+
+
+    public static Social SyncSocial(String socialId, Long userId, String social) {
+        return Social.builder().socialId(socialId).userId(userId).type(social).build();
     }
 }

@@ -251,8 +251,13 @@ public class UserRes {
     @NoArgsConstructor
     @ApiModel(value = "02-10 개인정보 설정 페이지 조회 👤 API Response")
     public static class SettingInfo {
+        @ApiModelProperty(notes = "소셜 회원가입인지 유무, 소셜 회원가입이면 전화번호가 나오지 않습니다.  ",required = true,example = "true")
+        private boolean social;
+        @ApiModelProperty(notes = "전화번호",required = true,example = "01012345677")
         private String phone;
+        @ApiModelProperty(notes="카카오 로그인이 연동 되있는지 여부",required = true,example = "true")
         private boolean kakao;
+        @ApiModelProperty(notes="애플 로그인이 연동 되있는지 여부",required = true,example = "true")
         private boolean apple;
     }
 }

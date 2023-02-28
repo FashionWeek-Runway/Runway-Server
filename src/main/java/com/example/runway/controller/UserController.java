@@ -8,6 +8,7 @@ import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
 import com.example.runway.jwt.TokenProvider;
+import com.example.runway.service.user.AuthService;
 import com.example.runway.service.util.RedisService;
 import com.example.runway.service.user.UserService;
 import io.swagger.annotations.*;
@@ -33,6 +34,7 @@ public class UserController {
     private final RedisService redisService;
     private final TokenProvider tokenProvider;
     private final UserService userService;
+    private final AuthService authService;
 
 
     @Operation(summary = "02-01 토큰 재발급 👤", description = "액세스 토큰 만료시 재발급 요청 하는 API")
@@ -187,17 +189,28 @@ public class UserController {
         return CommonResponse.onSuccess(review);
     }
 
-    //@ApiOperation(value = "02-07 내가 북마크한 사장님 소식 리스트 보기 👤 FRAME MY")
 
-
-    //@ApiOperation(value = "02-08 사장님인 경우 내가 쓴 글 조회 👤 FRAME MY")
-
-
-    @ApiOperation(value = "02-11 개인정보 관리 조회 👤 FRAME SETTINGS 01")
+    @ApiOperation(value = "02-11 개인정보 관리 조회 👤 FRAME SETTING 02,03",
+            notes = "social 값이 true = FRAME setting 03 , false = FRAME setting 02" +
+                    " kakao,apple boolean 값으로 화면에 보여주면 됩니다!")
     @GetMapping("/info")
     public CommonResponse<UserRes.SettingInfo> getUserInfo(@AuthenticationPrincipal User user){
         UserRes.SettingInfo settingInfo =  userService.getUserInfo(user);
         return CommonResponse.onSuccess(settingInfo);
+    }
+
+    @ApiOperation(value = "02-12 개인정보 카카오 연동 👤 FRAME SETTING 02")
+    @PostMapping("/info/kakao")
+    public CommonResponse<String> syncKakaoUser(@AuthenticationPrincipal User user, @RequestBody UserReq.SocialLogin socialLogin){
+        authService.syncKakaoUser(user.getId(),socialLogin.getAccessToken());
+        return CommonResponse.onSuccess("연동 성공");
+   }
+
+    @ApiOperation(value = "02-13 개인정보 애플 연동 👤 FRAME SETTING 02")
+    @PostMapping("/info/apple")
+    public CommonResponse<String> syncAppleUser(@AuthenticationPrincipal User user, @RequestBody UserReq.SocialLogin socialLogin){
+        authService.syncAppleUser(user.getId(),socialLogin.getAccessToken());
+        return CommonResponse.onSuccess("연동 성공");
     }
 
 

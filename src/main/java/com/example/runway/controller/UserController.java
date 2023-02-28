@@ -193,4 +193,13 @@ public class UserController {
     //@ApiOperation(value = "02-08 사장님인 경우 내가 쓴 글 조회 👤 FRAME MY")
 
 
+    @ApiOperation(value = "02-11 개인정보 관리 조회 👤 FRAME SETTINGS 01")
+    @GetMapping("/info")
+    public CommonResponse<UserRes.SettingInfo> getUserInfo(@AuthenticationPrincipal User user){
+        UserRes.SettingInfo settingInfo =  userService.getUserInfo(user);
+        return CommonResponse.onSuccess(settingInfo);
+    }
+
+
+
 }

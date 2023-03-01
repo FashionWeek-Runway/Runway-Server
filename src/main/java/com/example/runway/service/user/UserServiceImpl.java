@@ -212,6 +212,13 @@ public class UserServiceImpl implements UserService {
         return socialRepository.existsByUserIdAndType(userId,social);
     }
 
+    @Override
+    public void modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) {
+        if(modifyProfile.getMultipartFile().isEmpty()){
+
+        }
+    }
+
     public boolean checkAppleSync(Long userId) {
         return socialRepository.existsByUserIdAndType(userId, Constants.apple);
     }

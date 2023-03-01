@@ -64,17 +64,16 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "from StoreReview SR\n" +
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at < :createdAt\n" +
-            "   or (created_at = :createdAt AND id > :reviewId)\n" +
             "  and SR.id != :reviewId and SR.status =true \n" +
-            "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
+            "   or (created_at = :createdAt AND id > :reviewId)\n" + "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
     GetReviewId findNextBookMarkReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
     @Query(value = "select SR.id \n" +
             "from StoreReview SR\n" +
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at > :createdAt\n" +
-            "   or (created_at = :createdAt AND id<:reviewId)\n" +
             "    and SR.id != :reviewId and SR.status =true \n" +
+            "   or (created_at = :createdAt AND id<:reviewId)\n" +
             "order by SR.created_at asc, SR.id desc limit 1 ",nativeQuery = true)
     GetReviewId findPrevBookMarkReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
@@ -88,8 +87,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
                 "from StoreReview SR\n" +
                 "where SR.store_id = :storeId\n" +
                 "  and SR.created_at > :createdAt\n" +
-                "   or (created_at = :createdAt AND id<:reviewId)\n" +
                 "    and SR.id != :reviewId and SR.status =true \n" +
+                "   or (created_at = :createdAt AND id<:reviewId)\n" +
                 "order by created_at asc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findPrevReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("storeId") Long storeId,@Param("reviewId") Long reviewId);
 
@@ -98,8 +97,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "from StoreReview SR\n" +
             "where SR.store_id = :storeId\n" +
             "  and SR.created_at < :createdAt\n" +
-            "   or (created_at = :createdAt AND id > :reviewId)\n" +
             "  and SR.id != :reviewId and SR.status =true \n " +
+            "   or (created_at = :createdAt AND id > :reviewId)\n" +
             "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findNextReviewId(@Param("createdAt") LocalDateTime createdAt, @Param("storeId") Long storeId, @Param("reviewId") Long reviewId);
 

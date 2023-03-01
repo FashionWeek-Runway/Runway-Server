@@ -165,4 +165,18 @@ public class UserReq {
         @ApiModelProperty(notes ="15 요청 시 기존 비밀번호, 16 요청시 변경할 비밀번호", required = true, example = "runway8925!")
         private String password;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-05 유저 프로필 변경 API Request🔑")
+    public static class ModifyProfile {
+        @ApiModelProperty(notes = "닉네임", required = true, example = "이메누")
+        private String nickname;
+
+        @ApiModelProperty(notes="프로필 사진 변경",required = true,example = "프로필 사진 변경")
+        private MultipartFile multipartFile;
+    }
 }

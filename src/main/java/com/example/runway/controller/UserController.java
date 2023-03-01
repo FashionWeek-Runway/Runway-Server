@@ -126,13 +126,17 @@ public class UserController {
         return CommonResponse.onSuccess(userInfo);
     }
 
+
     /*
     @ApiOperation(value = "02-05 프로필 편집  👤 FRAME MY")
     @PatchMapping("/profile")
-    public CommonResponse<String> modifyUserProfile(@AuthenticationPrincipal User user){
+    public CommonResponse<String> modifyUserProfile(@AuthenticationPrincipal User user,@ModelAttribute UserReq.ModifyProfile modifyProfile){
+        userService.modifyUserProfile(user,modifyProfile);
         return CommonResponse.onSuccess("변경 성공");
     }
+
      */
+
 
     @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY",notes = "내가 작성한 리뷰 모아보기")
     @GetMapping("/review")

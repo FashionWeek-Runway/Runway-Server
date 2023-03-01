@@ -30,4 +30,6 @@ public interface UserService {
     UserRes.SettingInfo getUserInfo(User user);
 
     boolean checkSocialUser(Long userId, String social);
+
+    void modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile);
 }

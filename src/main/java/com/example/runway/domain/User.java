@@ -133,4 +133,9 @@ public class User extends BaseEntity implements UserDetails{
     public boolean isEnabled() {
         return false;
     }
+
+    public void modifyProfileInfo(String profileImgUrl, String nickname) {
+        this.profileImgUrl=profileImgUrl;
+        this.nickname=nickname;
+    }
 }

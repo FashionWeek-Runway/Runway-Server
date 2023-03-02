@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface StoreService {
 
-    List<String> getCategoryList(Long userId);
-
     StoreRes.StoreInfo getStoreDetail(User user, Long storeId);
 
     boolean checkStore(Long storeId);

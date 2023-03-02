@@ -1,5 +1,6 @@
 package com.example.runway.service.user;
 
+import com.example.runway.constants.CommonResponseStatus;
 import com.example.runway.constants.Constants;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.User;
@@ -9,13 +10,16 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
+import com.example.runway.exception.BadRequestException;
 import com.example.runway.repository.*;
+import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final StoreRepository storeRepository;
     private final LoginService loginService;
     private final SocialRepository socialRepository;
+    private final AwsS3Service awsS3Service;
 
     @Override
     public void postUserLocation(User user, UserReq.UserLocation userLocation) {
@@ -213,11 +218,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) {
-        if(modifyProfile.getMultipartFile().isEmpty()){
+    public UserRes.ModifyUser modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) throws IOException {
+        if(modifyProfile.getMultipartFile()==null&&modifyProfile.getNickname()!=null){
+            if(userRepository.existsByNicknameAndStatus(modifyProfile.getNickname(),true))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            modifyProfileInfo(user,user.getProfileImgUrl(),modifyProfile.getNickname());
+            return new UserRes.ModifyUser(user.getProfileImgUrl(),modifyProfile.getNickname(),getCategoryList(user.getId()));
+        }
+        if(modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()==null){
+            if(user.getProfileImgUrl()!=null){
+                awsS3Service.deleteImage(user.getProfileImgUrl());
+            }            String imgUrl=awsS3Service.upload(modifyProfile.getMultipartFile(),"profile");
+            modifyProfileInfo(user,imgUrl,user.getNickname());
+            return new UserRes.ModifyUser(imgUrl,user.getNickname(),getCategoryList(user.getId()));
 
         }
+        if (modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()!=null){
+            if(userRepository.existsByNicknameAndStatus(modifyProfile.getNickname(),true))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(user.getProfileImgUrl()!=null){
+                awsS3Service.deleteImage(user.getProfileImgUrl());
+            }
+            String imgUrl=awsS3Service.upload(modifyProfile.getMultipartFile(),"profile");
+            modifyProfileInfo(user,imgUrl,modifyProfile.getNickname());
+            return new UserRes.ModifyUser(imgUrl,modifyProfile.getNickname(),getCategoryList(user.getId()));
+
+        }
+        return null;
     }
+
+    private void modifyProfileInfo(User user, String profileImgUrl, String nickname) {
+        System.out.println(profileImgUrl);
+        user.modifyProfileInfo(profileImgUrl,nickname);
+        userRepository.save(user);
+    }
+
 
     public boolean checkAppleSync(Long userId) {
         return socialRepository.existsByUserIdAndType(userId, Constants.apple);
@@ -225,6 +258,11 @@ public class UserServiceImpl implements UserService {
 
     public boolean checkKakaoSync(Long userId) {
         return socialRepository.existsByUserIdAndType(userId, Constants.kakao);
+    }
+
+    public List<String> getCategoryList(Long userId){
+        List<UserCategory> category=userCategoryRepository.findByIdUserIdAndStatus(userId,true);
+        return category.stream().map(e-> e.getCategory().getCategory()).collect(Collectors.toList());
     }
 
 }

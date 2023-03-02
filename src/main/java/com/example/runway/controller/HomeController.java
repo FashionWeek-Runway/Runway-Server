@@ -82,22 +82,20 @@ public class HomeController {
        return CommonResponse.onSuccess(review);
     }
 
-    /*
     @ApiOperation(value = "05-05 홈화면 리뷰 상세 조회 🏠 API FRAME HOME_01", notes = "리뷰 상세 조회")
-    @GetMapping("/review")
-    public CommonResponse<StoreRes.ReviewInfo> getReviewDetail(@AuthenticationPrincipal User user,
-                                                                               @Parameter(description = "페이지", example = "0") @RequestParam(required = true) @Min(value = 0) Integer page,
-                                                                               @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true)  Integer size){
+    @GetMapping("/review/detail/{reviewId}")
+    public CommonResponse<HomeRes.ReviewInfo> getReviewDetail(@AuthenticationPrincipal User user,
+                                                              @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
         log.info("get-recommend-review");
-        log.info("api = get-recommend-review 05-04");
+        log.info("api = get-recommend-review-detail 05-05");
 
         Long userId = user.getId();
-        PageResponse<List<HomeRes.Review>> review= reviewService.recommendReview(userId,page,size);
 
+        HomeRes.ReviewInfo review = reviewService.getRecommendedReview(userId,reviewId);
         return CommonResponse.onSuccess(review);
     }
 
-     */
+
 
 
 

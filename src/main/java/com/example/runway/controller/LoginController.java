@@ -68,7 +68,6 @@ public class LoginController {
 
     @ApiOperation(value = "01-02 로그인 🔑", notes = "로그인을 하는 API")
     @PostMapping("")
-    @CrossOrigin(origins="http://localhost:3000")
     public CommonResponse<UserRes.Token> login( @Valid @RequestBody UserReq.LoginUserInfo loginUserInfo){
         log.info("post-logIn");
         log.info("api = logIn 01-02 ,username={}",loginUserInfo.getPhone());

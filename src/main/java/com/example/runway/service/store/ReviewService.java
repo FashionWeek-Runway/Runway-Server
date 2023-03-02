@@ -25,4 +25,6 @@ public interface ReviewService {
     void reportReview(Long userId, ReviewReq.ReportReview reportReview);
 
     void deleteReview(Long reviewId, Long userId);
+
+    HomeRes.ReviewInfo getRecommendedReview(Long userId, Long reviewId);
 }

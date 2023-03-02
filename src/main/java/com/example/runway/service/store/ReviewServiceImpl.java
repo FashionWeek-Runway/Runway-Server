@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW;
 import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW_DELETE;
@@ -82,6 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Long getNextReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextReviewId(createdAt, storeId, reviewId);
+
         Long nextId = null;
         if (result != null) {
             nextId = result.getId();
@@ -153,6 +153,40 @@ public class ReviewServiceImpl implements ReviewService {
         storeReview.modifyStatus(false);
 
         storeReviewRepository.save(storeReview);
+    }
+
+    @Override
+    public HomeRes.ReviewInfo getRecommendedReview(Long userId, Long reviewId) {
+        List<String> categoryList = userService.getCategoryList(userId);
+
+        StoreReviewRepository.GetStoreReview result = storeReviewRepository.getStoreReviewRecommend(reviewId,userId,categoryList);
+
+
+
+        Long prevReviewId = getPrevRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
+        Long nextReviewId = getNextRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
+        System.out.println("prevReviewID:" + prevReviewId);
+        System.out.println("nextReviewId:" + nextReviewId);
+
+        return StoreConvertor.StoreReviewRecommend(result, prevReviewId, nextReviewId,userId);
+    }
+
+    private Long getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
+        Long nextId = null;
+        if (result != null) {
+            nextId = result.getId();
+        }
+        return nextId;
+    }
+
+    private Long getPrevRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
+        StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
+        Long prevId = null;
+        if (result != null) {
+            prevId = result.getId();
+        }
+        return prevId;
     }
 
 

@@ -5,8 +5,10 @@ import com.example.runway.domain.KeepOwnerFeed;
 import com.example.runway.domain.Store;
 import com.example.runway.domain.StoreReview;
 import com.example.runway.domain.pk.KeepPk;
+import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.dto.user.UserRes;
 import com.example.runway.repository.OwnerFeedRepository;
 import com.example.runway.repository.StoreRepository;
 import com.example.runway.repository.StoreReviewRepository;
@@ -94,5 +96,22 @@ public class StoreConvertor {
                 .bookmarkCnt(result.getBookmarkCnt())
                 .isMy(userId.equals(result.getUserId()))
                 .build();
+    }
+
+    public static HomeRes.ReviewInfo StoreReviewRecommend(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId, Long userId) {
+        return HomeRes.ReviewInfo.builder()
+                .reviewId(result.getReviewId())
+                .profileImgUrl(result.getProfileImgUrl())
+                .nickname(result.getNickname())
+                .imgUrl(result.getImgUrl())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .bookmarkCnt(result.getBookmarkCnt())
+                .regionInfo(result.getRegionInfo())
+                .isMy(result.getUserId().equals(userId))
+                .reviewInquiry(new UserRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .build();
+
     }
 }

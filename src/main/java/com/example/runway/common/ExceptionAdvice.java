@@ -17,7 +17,7 @@ import java.io.StringWriter;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdvice {
-
+/*
     private void getExceptionStackTrace(Exception e, @AuthenticationPrincipal User user,
                                         HttpServletRequest request) {
         StringWriter sw = new StringWriter();
@@ -50,4 +50,6 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(CommonResponse.onFailure("500", exception.getMessage(), null), null,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+ */
 }

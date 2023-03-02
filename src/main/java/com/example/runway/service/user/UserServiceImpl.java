@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRes.ModifyUser modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) throws IOException {
         if(modifyProfile.getMultipartFile()==null&&modifyProfile.getNickname()!=null){
-            if(userRepository.existsByNicknameAndStatus(modifyProfile.getNickname(),true))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             modifyProfileInfo(user,user.getProfileImgUrl(),modifyProfile.getNickname());
             return new UserRes.ModifyUser(user.getProfileImgUrl(),modifyProfile.getNickname(),getCategoryList(user.getId()));
         }
@@ -233,7 +233,7 @@ public class UserServiceImpl implements UserService {
 
         }
         if (modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()!=null){
-            if(userRepository.existsByNicknameAndStatus(modifyProfile.getNickname(),true))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             if(user.getProfileImgUrl()!=null){
                 awsS3Service.deleteImage(user.getProfileImgUrl());
             }
@@ -246,7 +246,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private void modifyProfileInfo(User user, String profileImgUrl, String nickname) {
-        System.out.println(profileImgUrl);
         user.modifyProfileInfo(profileImgUrl,nickname);
         userRepository.save(user);
     }

@@ -128,7 +128,7 @@ public class UserController {
 
 
 
-    @ApiOperation(value = "02-05 프로필 편집  👤 FRAME MY")
+    @ApiOperation(value = "02-05 프로필 편집  👤 FRAME MY",notes = "이미지 파일 변경할 경우 multipart 에 넣어주시고, 이미지 변경 안할 시 multipart null 값으로 보내주세영 아이디는 기존 아이디값+변경할 아이디값 둘중 하나 보내시면 됩니다")
     @PatchMapping("/profile")
     public CommonResponse<UserRes.ModifyUser> modifyUserProfile(@ModelAttribute UserReq.ModifyProfile modifyProfile,@AuthenticationPrincipal User user) throws IOException {
         UserRes.ModifyUser modifyUser=userService.modifyUserProfile(user,modifyProfile);

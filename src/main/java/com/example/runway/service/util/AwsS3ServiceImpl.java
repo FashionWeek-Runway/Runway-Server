@@ -109,9 +109,18 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
     public void deleteImage(String fileName) {
         int index=fileName.indexOf(url);
-        String fileRoute=fileName.substring(index+url.length());
-        System.out.println("deletefilename"+fileRoute);
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, "/"+fileRoute));
+        String fileRoute=fileName.substring(index+url.length()+1);
+        System.out.println("deletefilename : "+fileRoute);
+        try {
+            boolean isObjectExist = amazonS3.doesObjectExist(bucket, fileRoute);
+            if (isObjectExist) {
+                amazonS3.deleteObject(bucket,fileRoute);
+            } else {
+                System.out.println( "file not found");
+            }
+        } catch (Exception e) {
+            System.out.println("Delete File failed");
+        }
     }
 
     public String createFileName(String fileName) throws ForbiddenException {

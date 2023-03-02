@@ -50,7 +50,7 @@ public class HomeController {
 
         Long userId = user.getId();
 
-        List<String> userCategoryList=storeService.getCategoryList(userId);
+        List<String> userCategoryList=userService.getCategoryList(userId);
 
         return CommonResponse.onSuccess(userCategoryList);
     }
@@ -98,6 +98,7 @@ public class HomeController {
     }
 
      */
+
 
 
 }

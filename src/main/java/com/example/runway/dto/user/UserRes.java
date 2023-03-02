@@ -260,4 +260,20 @@ public class UserRes {
         @ApiModelProperty(notes="애플 로그인이 연동 되있는지 여부",required = true,example = "true")
         private boolean apple;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-05 프로필 편집 👤 API Response")
+    public static class ModifyUser {
+        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        private String imgUrl;
+        @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
+        private String nickname;
+        @ApiModelProperty(notes = "카테고리 리스트",required = true,example = "카테고리 리스트")
+        private List<String> categoryList;
+
+    }
 }

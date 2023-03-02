@@ -26,6 +26,9 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.url}")
+    private String url;
+
     private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
@@ -105,7 +108,10 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     }
 
     public void deleteImage(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        int index=fileName.indexOf(url);
+        String fileRoute=fileName.substring(index+url.length());
+        System.out.println("deletefilename"+fileRoute);
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, "/"+fileRoute));
     }
 
     public String createFileName(String fileName) throws ForbiddenException {
@@ -120,11 +126,4 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         }
     }
 
-    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
-        File convertedFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convertedFile);
-        fos.write(file.getBytes());
-        fos.close();
-        return convertedFile;
-    }
 }

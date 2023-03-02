@@ -6,6 +6,7 @@ import com.example.runway.dto.user.UserRes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface LoginService {
     UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException;
@@ -30,4 +31,6 @@ public interface LoginService {
     void countUserPhone(String phone);
 
     UserRes.SignUp signUpSocial(UserReq.SocialSignUp socialSignUp) throws IOException;
+
+    List<String> getCategoryNameList(List<Long> categoryList);
 }

@@ -6,6 +6,7 @@ import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -31,5 +32,8 @@ public interface UserService {
 
     boolean checkSocialUser(Long userId, String social);
 
-    void modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile);
+    UserRes.ModifyUser modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) throws IOException;
+
+    List<String> getCategoryList(Long userId);
+
 }

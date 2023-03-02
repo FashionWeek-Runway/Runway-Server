@@ -173,10 +173,10 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "02-05 유저 프로필 변경 API Request🔑")
     public static class ModifyProfile {
-        @ApiModelProperty(notes = "닉네임", required = true, example = "이메누")
+        @ApiModelProperty(notes = "닉네임", required = false, example = "이메누")
         private String nickname;
 
-        @ApiModelProperty(notes="프로필 사진 변경",required = true,example = "프로필 사진 변경")
+        @ApiModelProperty(notes="프로필 사진 변경",required =false,example = "프로필 사진 변경")
         private MultipartFile multipartFile;
     }
 }

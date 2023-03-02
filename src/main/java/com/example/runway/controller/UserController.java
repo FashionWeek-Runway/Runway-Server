@@ -4,7 +4,6 @@ import com.example.runway.common.CommonResponse;
 import com.example.runway.constants.Constants;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
-import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
@@ -21,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
@@ -127,15 +127,15 @@ public class UserController {
     }
 
 
-    /*
+
     @ApiOperation(value = "02-05 프로필 편집  👤 FRAME MY")
     @PatchMapping("/profile")
-    public CommonResponse<String> modifyUserProfile(@AuthenticationPrincipal User user,@ModelAttribute UserReq.ModifyProfile modifyProfile){
-        userService.modifyUserProfile(user,modifyProfile);
-        return CommonResponse.onSuccess("변경 성공");
+    public CommonResponse<UserRes.ModifyUser> modifyUserProfile(@ModelAttribute UserReq.ModifyProfile modifyProfile,@AuthenticationPrincipal User user) throws IOException {
+        UserRes.ModifyUser modifyUser=userService.modifyUserProfile(user,modifyProfile);
+        return CommonResponse.onSuccess(modifyUser);
     }
 
-     */
+
 
 
     @ApiOperation(value = "02-06 내가 작성한 리뷰 보기 👤 FRAME MY",notes = "내가 작성한 리뷰 모아보기")

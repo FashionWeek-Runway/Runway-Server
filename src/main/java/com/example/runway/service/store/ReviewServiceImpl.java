@@ -15,6 +15,7 @@ import com.example.runway.exception.NotFoundException;
 import com.example.runway.repository.ReviewReadRepository;
 import com.example.runway.repository.ReviewReportRepository;
 import com.example.runway.repository.StoreReviewRepository;
+import com.example.runway.service.user.UserService;
 import com.example.runway.service.util.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_REVIEW
 public class ReviewServiceImpl implements ReviewService {
     private final AwsS3Service awsS3Service;
     private final StoreReviewRepository storeReviewRepository;
-    private final StoreService storeService;
+    private final UserService userService;
     private final ReviewReadRepository reviewReadRepository;
     private final ReviewReportRepository reviewReportRepository;
 
@@ -104,7 +105,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public PageResponse<List<HomeRes.Review>> recommendReview(Long userId, Integer page, Integer size) {
-        List<String> categoryList = storeService.getCategoryList(userId);
+        List<String> categoryList = userService.getCategoryList(userId);
 
 
         List<HomeRes.Review> review = new ArrayList<>();

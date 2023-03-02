@@ -176,7 +176,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<StoreRepository.RecommendStore> recommendStore(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList,@Param("limit") int limit);
     interface RecommendStore {
         boolean getBookmark();
-        String getImgUrl();
+        String getStoreImg();
         Long getStoreId();
         String getRegionInfo();
         String getStoreName();

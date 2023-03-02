@@ -173,6 +173,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Long getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
+        System.out.println("reviewId :"+ reviewId+"시간: "+ createdAt+"categoryScore: "+categoryScore);
+
         Long nextId = null;
         if (result != null) {
             nextId = result.getId();
@@ -181,7 +183,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Long getPrevRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
+        System.out.println("reviewId :"+ reviewId+"시간: "+ createdAt+"categoryScore: "+categoryScore);
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
+
         Long prevId = null;
         if (result != null) {
             prevId = result.getId();

@@ -173,7 +173,7 @@ public class StoreServiceImpl implements StoreService{
                 result->{
                     storeInfo.add(new HomeRes.StoreInfo(
                             result.getBookmark(),
-                            result.getImgUrl(),
+                            result.getStoreImg(),
                             result.getStoreId(),
                             result.getStoreName(),
                             result.getRegionInfo(),

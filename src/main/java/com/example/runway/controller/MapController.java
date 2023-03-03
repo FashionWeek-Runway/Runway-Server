@@ -89,7 +89,8 @@ public class MapController {
                                                                            @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = true) Integer size) {
         log.info("get-region-swipe");
         log.info("api = get-region-swipe 04-06");
-        PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getInfoByRegion(regionId,page,size);
+        Long userId=user.getId();
+        PageResponse<List<MapRes.StoreInfo>> storeInfoList=mapService.getInfoByRegion(regionId,page,size,userId);
         return CommonResponse.onSuccess(storeInfoList);
     }
 

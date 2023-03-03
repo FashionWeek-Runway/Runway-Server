@@ -79,7 +79,6 @@ public class MapServiceImpl implements MapService {
                         result.getStoreImg(),
                         Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                         result.getStoreName(),
-                        result.getDistance(),
                         result.getBookmark()
                 ))
         );
@@ -118,8 +117,7 @@ public class MapServiceImpl implements MapService {
                             new MapRes.StoreSearchList(
                                     result.getStoreId(),
                                     result.getStoreName(),
-                                    result.getAddress(),
-                                    result.getDistance()
+                                    result.getAddress()
                             )
                     );
                 }
@@ -174,10 +172,10 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size) {
+    public PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size, Long userId) {
         Pageable pageReq = PageRequest.of(page, size);
         List<MapRes.StoreInfo> storeInfoList=new ArrayList<>();
-        Page<StoreRepository.StoreInfoList> storeInfoResult=storeRepository.getStoreInfoRegion(regionId,pageReq);
+        Page<StoreRepository.StoreInfoList> storeInfoResult=storeRepository.getStoreInfoRegion(regionId,pageReq,userId);
         storeInfoResult.forEach(
                 result-> {
                         storeInfoList.add(new MapRes.StoreInfo(
@@ -185,7 +183,6 @@ public class MapServiceImpl implements MapService {
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                 result.getStoreName(),
-                                result.getDistance(),
                                 result.getBookmark()
                         ));
                 }

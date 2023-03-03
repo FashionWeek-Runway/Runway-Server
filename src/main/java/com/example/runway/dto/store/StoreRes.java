@@ -63,13 +63,13 @@ public class StoreRes {
         @ApiModelProperty(notes="쇼룸 운영시간",required = true,example = "월 - 일 08:00 ~ 21:00")
         private String storeTime;
 
-        @ApiModelProperty(notes="쇼룸 전화번호", required = true,example = "01012445678")
+        @ApiModelProperty(notes="쇼룸 전화번호", required = false,example = "01012445678")
         private String storePhone;
 
-        @ApiModelProperty(notes="인스타 그램 링크",required = true,example = "해당 매장의 인스타그램 링크")
+        @ApiModelProperty(notes="인스타 그램 링크",required = false,example = "해당 매장의 인스타그램 링크")
         private String instagram;
 
-        @ApiModelProperty(notes="웹사이트 링크",required = true,example = "해당 매장의 웹사이트 링크")
+        @ApiModelProperty(notes="웹사이트 링크",required = false,example = "해당 매장의 웹사이트 링크")
         private String webSite;
 
         @ApiModelProperty(notes = "해당 매장 유저의 북마크 여부",required = true,example = "true")
@@ -118,7 +118,7 @@ public class StoreRes {
     public static class ReviewInfo {
         @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String profileImgUrl;
         @ApiModelProperty(notes = "닉네임",required = true,example = "이름")
         private String nickname;
@@ -147,9 +147,9 @@ public class StoreRes {
     @NoArgsConstructor
     @ApiModel(value = "03-09 쇼룸 리뷰 이전 id, 다음 id 🏬 API Response")
     public static class ReviewInquiry{
-        @ApiModelProperty(notes="이전 리뷰 ID",required = true,example = "1")
+        @ApiModelProperty(notes="이전 리뷰 ID",required = false,example = "1")
         private Long prevReviewId;
-        @ApiModelProperty(notes="다음 리뷰 ID",required = true,example = "1")
+        @ApiModelProperty(notes="다음 리뷰 ID",required = false,example = "1")
         private Long nextReviewId;
     }
 

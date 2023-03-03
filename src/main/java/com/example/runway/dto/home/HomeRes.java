@@ -57,7 +57,7 @@ public class HomeRes {
     public static class ReviewInfo {
         @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String profileImgUrl;
         @ApiModelProperty(notes = "닉네임",required = true,example = "이름")
         private String nickname;

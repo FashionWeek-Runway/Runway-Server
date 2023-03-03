@@ -66,10 +66,10 @@ public class MapServiceImpl implements MapService {
         Page<StoreRepository.StoreInfoList> storeResult=null;
 
         if(filterMap.getCategory().size()==0){
-            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq, filterMap.getLatitude(), filterMap.getLongitude());
+            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq, filterMap.getLatitude(), filterMap.getLongitude(),userId);
         }
         else{
-            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq,filterMap.getLatitude(),filterMap.getLongitude());
+            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq,filterMap.getLatitude(),filterMap.getLongitude(),userId);
         }
 
 
@@ -79,7 +79,8 @@ public class MapServiceImpl implements MapService {
                         result.getStoreImg(),
                         Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                         result.getStoreName(),
-                        result.getDistance()
+                        result.getDistance(),
+                        result.getBookmark()
                 ))
         );
 
@@ -184,7 +185,8 @@ public class MapServiceImpl implements MapService {
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                 result.getStoreName(),
-                                result.getDistance()
+                                result.getDistance(),
+                                result.getBookmark()
                         ));
                 }
 

@@ -56,6 +56,8 @@ public class MapRes {
 
         private Double distance;
 
+        private boolean bookmark;
+
 
     }
 

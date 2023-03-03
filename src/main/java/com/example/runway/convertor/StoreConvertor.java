@@ -45,7 +45,6 @@ public class StoreConvertor {
                 .storeId(storeResult.getStoreId())
                 .storeImg(storeResult.getStoreImg())
                 .storeName(storeResult.getStoreName())
-                .distance(storeResult.getDistance())
                 .category(storeCategory).build();
     }
 

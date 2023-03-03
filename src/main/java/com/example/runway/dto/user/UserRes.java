@@ -78,7 +78,7 @@ public class UserRes {
         private String accessToken;
         @Schema(description = "리프레쉬 토큰", required = true, example = "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ----")
         private String refreshToken;
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String imgUrl;
         @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
         private String nickname;
@@ -159,7 +159,7 @@ public class UserRes {
     @NoArgsConstructor
     @ApiModel(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 API Response")
     public static class UserInfo {
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String imgUrl;
         @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
         private String nickname;
@@ -174,7 +174,7 @@ public class UserRes {
     @NoArgsConstructor
     @ApiModel(value = "02-04 프로필 편집을 위한 기존 데이터 GET 👤 API Response")
     public static class PatchUserInfo {
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String imgUrl;
         @ApiModelProperty(notes = "유저 닉네임",required = true,example = "이미지 url")
         private String nickname;
@@ -210,7 +210,7 @@ public class UserRes {
     public static class ReviewInfo {
         @ApiModelProperty(notes="reviewId",required = true,example = "1")
         private Long reviewId;
-        @ApiModelProperty(notes = "프로필 이미지",required = true,example = "이미지 url")
+        @ApiModelProperty(notes = "프로필 이미지",required = false,example = "이미지 url")
         private String profileImgUrl;
         @ApiModelProperty(notes = "닉네임",required = true,example = "이름")
         private String nickname;
@@ -237,9 +237,9 @@ public class UserRes {
     @NoArgsConstructor
     @ApiModel(value = "02-07 리뷰 이전 id, 다음 id 👤 API Response")
     public static class ReviewInquiry{
-        @ApiModelProperty(notes="이전 리뷰 ID",required = true,example = "1")
+        @ApiModelProperty(notes="이전 리뷰 ID",required = false,example = "1")
         private Long prevReviewId;
-        @ApiModelProperty(notes="다음 리뷰 ID",required = true,example = "1")
+        @ApiModelProperty(notes="다음 리뷰 ID",required = false,example = "1")
         private Long nextReviewId;
     }
 

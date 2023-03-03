@@ -21,5 +21,5 @@ public interface MapService {
 
     MapRes.StorePositionAndInfo getStorePositionAndInfo(Long storeId);
 
-    PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size);
+    PageResponse<List<MapRes.StoreInfo>> getInfoByRegion(Long regionId, Integer page, Integer size, Long userId);
 }

@@ -18,7 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
             " join Category C on SC.category_id = C.id " +
-            " where C.category IN (:categoryList) and S.status=true group by S.id order by distance",nativeQuery = true)
+            " where C.category IN (:categoryList) and S.status=true group by S.id having distance < `10 order by distance",nativeQuery = true)
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList, @Param("userId") Long userId, @Param("latitude") double latitude,@Param("longitude") double longitude);
 
     List<Store> findByRegionId(Long regionId);
@@ -65,7 +65,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1  " +
                     "where S.region_id=:regionId and S.status=true",countQuery = "select count(*) from Store where region_id=:regionId")
-    Page<StoreInfoList> getStoreInfoRegion(@Param("regionId") Long regionId, Pageable pageReq);
+    Page<StoreInfoList> getStoreInfoRegion(@Param("regionId") Long regionId, Pageable pageReq,@Param("userId") Long userId);
 
     @Query(value="select S.id 'storeId',\n" +
             "       S.name'storeName',\n" +
@@ -94,7 +94,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getStoreCategory();
         String getStoreName();
         String getAddress();
-        Double getDistance();
         double getLatitude();
         double getLongitude();
         boolean getBookmark();

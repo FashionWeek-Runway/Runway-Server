@@ -61,7 +61,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "        from Category C2\n" +
                     "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
                     "                 join Store S2 on SC2.store_id = S2.id \n" +
-                    "        where S2.id = S.id)as 'storeCategory',latitude,longitude,address \n" +
+                    "        where S2.id = S.id)as 'storeCategory',latitude,longitude,address,IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark' \n" +
                     "from Store S " +
                     "left join StoreImg SI on S.id=SI.store_id and SI.sequence=1  " +
                     "where S.region_id=:regionId and S.status=true",countQuery = "select count(*) from Store where region_id=:regionId")
@@ -78,7 +78,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "        where S2.id = S.id \n" +
             "       )as 'storeCategory',\n" +
             "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
-            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance," +
+            "IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark' " +
             "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
             "join Category C on SC.category_id = C.id "  +
             "left join StoreImg SI on S.id = SI.store_id and sequence=1 where C.category IN (:categoryList) and S.status=true group by S.id having distance<10 order by distance ",
@@ -86,7 +87,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
                     "join Category C on SC.category_id = C.id \n" +
                     "left join StoreImg SI on S.id = SI.store_id and sequence=1 and S.status=true where C.category IN (:categoryList) and S.status=true group by S.id",
             nativeQuery = true)
-    Page<StoreInfoList> getStoreInfoFilter(@Param("categoryList") List<String> categoryList, Pageable pageReq,@Param("latitude") double latitude,@Param("longitude") double longitude);
+    Page<StoreInfoList> getStoreInfoFilter(@Param("categoryList") List<String> categoryList, Pageable pageReq, @Param("latitude") double latitude, @Param("longitude") double longitude,@Param("userId") Long userId);
     interface StoreInfoList {
         Long getStoreId();
         String getStoreImg();
@@ -96,6 +97,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         Double getDistance();
         double getLatitude();
         double getLongitude();
+        boolean getBookmark();
     }
 
     @Query(value = "select S.id'storeId', S.name'storeName', S.address'address'," +

@@ -92,6 +92,7 @@ public class HomeController {
         Long userId = user.getId();
 
         HomeRes.ReviewInfo review = reviewService.getRecommendedReview(userId,reviewId);
+        reviewService.readReview(reviewId,userId);
         return CommonResponse.onSuccess(review);
     }
 

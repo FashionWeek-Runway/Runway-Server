@@ -173,6 +173,8 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "02-05 유저 프로필 변경 API Request🔑")
     public static class ModifyProfile {
+        @ApiModelProperty(notes="기본 이미지 변경 유무",required = true,example = "0")
+        private int basic;
         @ApiModelProperty(notes = "닉네임", required = false, example = "이메누")
         private String nickname;
 

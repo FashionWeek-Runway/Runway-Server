@@ -54,8 +54,9 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     boolean existsByIdAndStatus(Long reviewId, boolean b);
 
 
-    @Query(value = "select SR.id from StoreReview SR" +
-            " where SR.user_id=:userId and SR.created_at>:createdAt and SR.id != :reviewId and SR.status =true  order by created_at asc limit 1",nativeQuery = true)
+    @Query(value = "select SR.id from StoreReview SR " +
+            " where SR.user_id=:userId and SR.created_at>:createdAt and SR.id != :reviewId and SR.status =true " +
+            "  order by SR.created_at asc limit 1",nativeQuery = true)
     GetReviewId findPrevMuReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
     @Query(value = "select SR.id from StoreReview SR" +
@@ -102,22 +103,24 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
         int getSize();
     }
     @Query(value = "select SR.id \n" +
-                "from StoreReview SR\n" +
+                "from StoreReview SR  join Store S on SR.store_id = S.id " +
+            "join StoreReview SR2 on SR2.store_id=S.id and SR2.id=:reviewId \n" +
                 "where SR.store_id = :storeId\n" +
                 "  and SR.created_at > :createdAt\n" +
                 "    and SR.id != :reviewId and SR.status =true \n" +
-                "   or (created_at = :createdAt AND id<:reviewId)\n" +
-                "order by created_at asc, SR.id desc limit 1",nativeQuery = true)
+                "   or (SR.created_at = :createdAt AND SR.id<:reviewId)\n" +
+                "order by SR.created_at asc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findPrevReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("storeId") Long storeId,@Param("reviewId") Long reviewId);
 
 
     @Query(value = "select SR.id\n" +
-            "from StoreReview SR\n" +
+            "from StoreReview SR  " +
+            "join Store S on SR.store_id = S.id join StoreReview SR2 on SR2.store_id=S.id and SR2.id=:reviewId\n" +
             "where SR.store_id = :storeId\n" +
             "  and SR.created_at < :createdAt\n" +
             "  and SR.id != :reviewId and SR.status =true \n " +
-            "   or (created_at = :createdAt AND id > :reviewId)\n" +
-            "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
+            "   or (SR.created_at = :createdAt AND SR.id > :reviewId)\n" +
+            "order by SR.created_at desc, SR.id desc limit 1",nativeQuery = true)
     StoreReviewRepository.GetReviewId findNextReviewId(@Param("createdAt") LocalDateTime createdAt, @Param("storeId") Long storeId, @Param("reviewId") Long reviewId);
 
 

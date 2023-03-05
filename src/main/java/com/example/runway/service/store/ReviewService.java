@@ -4,6 +4,7 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.ReviewReq;
 import com.example.runway.dto.store.StoreRes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface ReviewService {
     void deleteReview(Long reviewId, Long userId);
 
     HomeRes.ReviewInfo getRecommendedReview(Long userId, Long reviewId);
+
+    void postStoreReviewImg(Long storeId, Long userId, MultipartFile multipartFile) throws IOException;
 }

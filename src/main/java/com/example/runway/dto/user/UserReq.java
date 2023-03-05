@@ -181,4 +181,19 @@ public class UserReq {
         @ApiModelProperty(notes="프로필 사진 변경",required =false,example = "프로필 사진 변경")
         private MultipartFile multipartFile;
     }
+
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-16 유저 비밀번호 재설정 API Request🔑")
+    public static class UserPassword {
+        @ApiModelProperty(notes ="기존 비밀번호", required = true, example = "runway8925!")
+        private String password;
+
+        @ApiModelProperty(notes ="기존 비밀번호", required = true, example = "runway8925!")
+        private String modifyPassword;
+    }
 }

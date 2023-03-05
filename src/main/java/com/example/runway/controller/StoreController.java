@@ -10,13 +10,18 @@ import com.example.runway.service.store.ReviewService;
 import com.example.runway.service.util.CrawlingService;
 import com.example.runway.service.store.StoreService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import retrofit2.http.Multipart;
 
 import javax.validation.constraints.Min;
 import java.io.IOException;
@@ -224,6 +229,23 @@ public class StoreController {
         reviewService.deleteReview(reviewId,userId);
 
         return CommonResponse.onSuccess("리뷰 삭제 성공");
+    }
+
+    @ApiOperation(value = "03-13 쇼룸 후기작성 🏬 API FRAME REVIEW_01",notes = "쇼룸 후기 작성 API")
+    @PostMapping(value = "/review/img/{storeId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    private CommonResponse<String> postStoreReviewImg(@AuthenticationPrincipal User user,
+                                                      @Parameter(description = "Files to be uploaded", content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+                                                      @RequestPart(value="img") MultipartFile multipartFile,
+                                                      @Parameter(description = "storeId 쇼룸 Id값") @PathVariable("storeId") Long storeId) throws IOException {
+        log.info("post-store-review");
+        log.info("api = post-store-review 03-05,storeId = {}",storeId);
+        Long userId=user.getId();
+
+        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
+
+        reviewService.postStoreReviewImg(storeId,userId,multipartFile);
+
+        return CommonResponse.onSuccess("리뷰 등록 성공");
     }
 
 

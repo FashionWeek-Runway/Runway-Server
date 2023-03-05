@@ -142,11 +142,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void readReview(Long reviewId, Long userId) {
         ReviewReadPk reviewReadPk = ReviewReadPk.builder().reviewId(reviewId).userId(userId).build();
-
-        if (!reviewReadRepository.existsByIdReviewIdAndIdUserId(reviewId, userId)) {
-            ReviewRead reviewRead = ReviewRead.builder().id(reviewReadPk).build();
-            reviewReadRepository.save(reviewRead);
-        }
+        ReviewRead reviewRead = ReviewRead.builder().id(reviewReadPk).build();
+        reviewReadRepository.save(reviewRead);
     }
 
     @Override

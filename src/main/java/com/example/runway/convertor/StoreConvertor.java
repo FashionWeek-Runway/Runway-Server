@@ -109,6 +109,7 @@ public class StoreConvertor {
                 .bookmarkCnt(result.getBookmarkCnt())
                 .regionInfo(result.getRegionInfo())
                 .isMy(result.getUserId().equals(userId))
+                .bookmark(result.getBookMark())
                 .reviewInquiry(new UserRes.ReviewInquiry(prevReviewId,nextReviewId))
                 .build();
 

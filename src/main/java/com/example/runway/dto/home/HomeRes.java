@@ -69,10 +69,13 @@ public class HomeRes {
         private String storeName;
         @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
         private String regionInfo;
-        @ApiModelProperty(notes = "리뷰 북마크 갯수",required = true,example = "false")
+        @ApiModelProperty(notes = "리뷰 북마크 갯수",required = true,example = "1")
         private int bookmarkCnt;
         @ApiModelProperty(notes = "리뷰 내 게시글 유무",required = true,example = "false")
         private boolean isMy;
+        @ApiModelProperty(notes = "리뷰 북마크 dba",required = true,example = "false")
+
+        private boolean bookmark;
         @ApiModelProperty(notes="쇼룸 리뷰 이전 id, 다음 id",example = "이전 id, 다음 id")
         private UserRes.ReviewInquiry reviewInquiry;
     }

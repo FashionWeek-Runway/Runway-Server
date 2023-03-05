@@ -236,5 +236,12 @@ public class UserController {
         return CommonResponse.onSuccess("연동 성공");
     }
 
+    @ApiOperation(value = "02-16 개인정보 비밀번호변경 👤 FRAME SETTING 02",notes = "애플 연동 해지")
+    @PatchMapping("/password")
+    public CommonResponse<String> modifyPassword(@AuthenticationPrincipal User user,@RequestBody UserReq.UserPassword userPassword){
+        userService.modifyPassword(user,userPassword);
+        return CommonResponse.onSuccess("변경 성공");
+    }
+
 
 }

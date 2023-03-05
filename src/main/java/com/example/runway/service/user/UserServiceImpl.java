@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final LoginService loginService;
     private final SocialRepository socialRepository;
     private final AwsS3Service awsS3Service;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public void postUserLocation(User user, UserReq.UserLocation userLocation) {
@@ -284,6 +287,14 @@ public class UserServiceImpl implements UserService {
     public List<String> getCategoryList(Long userId){
         List<UserCategory> category=userCategoryRepository.findByIdUserIdAndStatus(userId,true);
         return category.stream().map(e-> e.getCategory().getCategory()).collect(Collectors.toList());
+    }
+
+    @Override
+    public void modifyPassword(User user, UserReq.UserPassword userPassword) {
+        if(!passwordEncoder.matches(userPassword.getPassword(),user.getPassword())) throw new BadRequestException(CommonResponseStatus.NOT_CORRECT_PASSWORD);
+        String password=passwordEncoder.encode(userPassword.getModifyPassword());
+        user.modifyPassword(password);
+        userRepository.save(user);
     }
 
 }

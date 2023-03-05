@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -43,6 +44,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void postStoreReview(Long storeId, Long userId, byte[] bytes) throws IOException {
         String imgUrl = awsS3Service.uploadByteCode(bytes, "review");
+
+        StoreReview storeReview = ReviewConvertor.UploadImg(storeId, userId, imgUrl);
+
+        storeReviewRepository.save(storeReview);
+    }
+
+
+    @Override
+    public void postStoreReviewImg(Long storeId, Long userId, MultipartFile multipartFile) throws IOException {
+        String imgUrl = awsS3Service.upload(multipartFile,"review");
 
         StoreReview storeReview = ReviewConvertor.UploadImg(storeId, userId, imgUrl);
 
@@ -170,6 +181,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         return StoreConvertor.StoreReviewRecommend(result, prevReviewId, nextReviewId,userId);
     }
+
 
     private Long getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);

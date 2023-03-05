@@ -219,11 +219,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRes.ModifyUser modifyUserProfile(User user, UserReq.ModifyProfile modifyProfile) throws IOException {
+        //기본이미지로 변경 + 닉네임변경
+        if(modifyProfile.getBasic()==1&&modifyProfile.getNickname()==null){
+            if(user.getProfileImgUrl()!=null){
+                awsS3Service.deleteImage(user.getProfileImgUrl());
+            }
+            modifyProfileInfo(user,null,user.getNickname());
+            return new UserRes.ModifyUser(null,user.getNickname(),getCategoryList(user.getId()));
+        }
+        //기본이미지 변경 + 닉네임 변경 X
+        if(modifyProfile.getBasic()==1&&modifyProfile.getNickname()!=null){
+            if(user.getProfileImgUrl()!=null){
+                awsS3Service.deleteImage(user.getProfileImgUrl());
+            }
+            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            modifyProfileInfo(user,null,user.getNickname());
+            return new UserRes.ModifyUser(null, modifyProfile.getNickname(), getCategoryList(user.getId()));
+        }
+
+        //이미지 변경 X 닉네임 변경
         if(modifyProfile.getMultipartFile()==null&&modifyProfile.getNickname()!=null){
             if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             modifyProfileInfo(user,user.getProfileImgUrl(),modifyProfile.getNickname());
             return new UserRes.ModifyUser(user.getProfileImgUrl(),modifyProfile.getNickname(),getCategoryList(user.getId()));
         }
+
+        //이미지 변경  닉네임 변경 X
         if(modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()==null){
             if(user.getProfileImgUrl()!=null){
                 awsS3Service.deleteImage(user.getProfileImgUrl());
@@ -232,6 +253,7 @@ public class UserServiceImpl implements UserService {
             return new UserRes.ModifyUser(imgUrl,user.getNickname(),getCategoryList(user.getId()));
 
         }
+        //둘다 변경
         if (modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()!=null){
             if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             if(user.getProfileImgUrl()!=null){

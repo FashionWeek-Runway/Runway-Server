@@ -18,7 +18,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
             " from Store S join StoreCategory SC on S.id = SC.store_id" +
             " join Category C on SC.category_id = C.id " +
-            " where C.category IN (:categoryList) and S.status=true group by S.id having distance < `10 order by distance",nativeQuery = true)
+            " where C.category IN (:categoryList) and S.status=true group by S.id order by distance",nativeQuery = true)
     List<GetMapList> getMapListFilter(@Param("categoryList") List<String> categoryList, @Param("userId") Long userId, @Param("latitude") double latitude,@Param("longitude") double longitude);
 
     List<Store> findByRegionId(Long regionId);
@@ -82,10 +82,11 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark' " +
             "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
             "join Category C on SC.category_id = C.id "  +
-            "left join StoreImg SI on S.id = SI.store_id and sequence=1 where C.category IN (:categoryList) and S.status=true group by S.id having distance<10 order by distance ",
-            countQuery = "select count(*) from Store S join StoreCategory SC on S.id = SC.store_id \n" +
-                    "join Category C on SC.category_id = C.id \n" +
-                    "left join StoreImg SI on S.id = SI.store_id and sequence=1 and S.status=true where C.category IN (:categoryList) and S.status=true group by S.id",
+            "left join StoreImg SI on S.id = SI.store_id and sequence=1 where C.category IN (:categoryList) and S.status=true group by S.id order by distance ",
+            countQuery = "select count(*) " +
+                    "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
+                    "join Category C on SC.category_id = C.id "  +
+                    "left join StoreImg SI on S.id = SI.store_id and sequence=1 where C.category IN (:categoryList) and S.status=true ",
             nativeQuery = true)
     Page<StoreInfoList> getStoreInfoFilter(@Param("categoryList") List<String> categoryList, Pageable pageReq, @Param("latitude") double latitude, @Param("longitude") double longitude,@Param("userId") Long userId);
     interface StoreInfoList {

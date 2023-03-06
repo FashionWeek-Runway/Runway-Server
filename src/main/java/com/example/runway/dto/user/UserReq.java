@@ -188,12 +188,9 @@ public class UserReq {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @ApiModel(value = "02-16 유저 비밀번호 재설정 API Request🔑")
+    @ApiModel(value = "02-16,17유저 비밀번호 재설정,확인 API Request🔑")
     public static class UserPassword {
-        @ApiModelProperty(notes ="기존 비밀번호", required = true, example = "runway8925!")
+        @ApiModelProperty(notes ="17 요청 시 기존 비밀번호, 16 요청 시 변경할 비밀번호", required = true, example = "runway8925!")
         private String password;
-
-        @ApiModelProperty(notes ="기존 비밀번호", required = true, example = "runway8925!")
-        private String modifyPassword;
     }
 }

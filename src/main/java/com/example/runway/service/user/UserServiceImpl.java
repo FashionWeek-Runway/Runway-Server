@@ -291,10 +291,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void modifyPassword(User user, UserReq.UserPassword userPassword) {
-        if(!passwordEncoder.matches(userPassword.getPassword(),user.getPassword())) throw new BadRequestException(CommonResponseStatus.NOT_CORRECT_PASSWORD);
-        String password=passwordEncoder.encode(userPassword.getModifyPassword());
+        String password=passwordEncoder.encode(userPassword.getPassword());
         user.modifyPassword(password);
         userRepository.save(user);
     }
+
+    @Override
+    public boolean checkPassword(User user, UserReq.UserPassword userPassword) {
+        return passwordEncoder.matches(userPassword.getPassword(),user.getPassword());
+
+    }
+
 
 }

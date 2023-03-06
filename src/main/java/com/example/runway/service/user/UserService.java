@@ -37,4 +37,6 @@ public interface UserService {
     List<String> getCategoryList(Long userId);
 
     void modifyPassword(User user, UserReq.UserPassword userPassword);
+
+    boolean checkPassword(User user, UserReq.UserPassword userPassword);
 }

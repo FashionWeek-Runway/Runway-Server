@@ -23,8 +23,7 @@ import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.runway.constants.CommonResponseStatus.INVALID_REFRESH_TOKEN;
-import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_SOCIAL;
+import static com.example.runway.constants.CommonResponseStatus.*;
 
 
 @Api(tags = "02-사용자 👤")
@@ -243,5 +242,12 @@ public class UserController {
         return CommonResponse.onSuccess("변경 성공");
     }
 
+    @ApiOperation(value = "02-17 개인정보 기존 비밀번호 확인 👤 FRAME SETTING 02",notes = "애플 연동 해지")
+    @PostMapping("/password")
+    public CommonResponse<String> checkPassword(@AuthenticationPrincipal User user,@RequestBody UserReq.UserPassword userPassword){
+        boolean check = userService.checkPassword(user,userPassword);
+        if(!check) throw new BadRequestException(NOT_CORRECT_PASSWORD);
+        return CommonResponse.onSuccess("사용 가능");
+    }
 
 }

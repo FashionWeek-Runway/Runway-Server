@@ -3,6 +3,7 @@ package com.example.runway.service.user;
 import com.example.runway.constants.CommonResponseStatus;
 import com.example.runway.constants.Constants;
 import com.example.runway.convertor.UserConvertor;
+import com.example.runway.domain.StoreReview;
 import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.domain.pk.UserCategoryPk;
@@ -19,8 +20,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -235,14 +238,14 @@ public class UserServiceImpl implements UserService {
             if(user.getProfileImgUrl()!=null){
                 awsS3Service.deleteImage(user.getProfileImgUrl());
             }
-            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(userRepository.existsByNicknameAndIdNot(modifyProfile.getNickname(),user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             modifyProfileInfo(user,null,user.getNickname());
             return new UserRes.ModifyUser(null, modifyProfile.getNickname(), getCategoryList(user.getId()));
         }
 
         //이미지 변경 X 닉네임 변경
         if(modifyProfile.getMultipartFile()==null&&modifyProfile.getNickname()!=null){
-            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(userRepository.existsByNicknameAndIdNot(modifyProfile.getNickname(),user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             modifyProfileInfo(user,user.getProfileImgUrl(),modifyProfile.getNickname());
             return new UserRes.ModifyUser(user.getProfileImgUrl(),modifyProfile.getNickname(),getCategoryList(user.getId()));
         }
@@ -258,7 +261,7 @@ public class UserServiceImpl implements UserService {
         }
         //둘다 변경
         if (modifyProfile.getMultipartFile()!=null&&modifyProfile.getNickname()!=null){
-            if(userRepository.existsByNicknameAndStatusAndIdNot(modifyProfile.getNickname(),true,user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
+            if(userRepository.existsByNicknameAndIdNot(modifyProfile.getNickname(),user.getId()))throw new BadRequestException(CommonResponseStatus.USERS_EXISTS_NICKNAME);
             if(user.getProfileImgUrl()!=null){
                 awsS3Service.deleteImage(user.getProfileImgUrl());
             }
@@ -299,6 +302,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkPassword(User user, UserReq.UserPassword userPassword) {
         return passwordEncoder.matches(userPassword.getPassword(),user.getPassword());
+
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    @Override
+    public void unActiveUser(User user) {
+        //Review,User  status 변경
+
+        user.modifyUserActive(false,LocalDateTime.now());
+        userRepository.save(user);
+
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    @Override
+    public void unActiveReview(User user) {
+        List<StoreReview> review=storeReviewRepository.findByUserId(user.getId());
+        for (StoreReview storeReview : review) {
+            storeReview.modifyStatus(false);
+        }
+        storeReviewRepository.saveAll(review);
 
     }
 

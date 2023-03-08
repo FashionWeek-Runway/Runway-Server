@@ -39,4 +39,8 @@ public interface UserService {
     void modifyPassword(User user, UserReq.UserPassword userPassword);
 
     boolean checkPassword(User user, UserReq.UserPassword userPassword);
+
+    void unActiveUser(User user);
+
+    void unActiveReview(User user);
 }

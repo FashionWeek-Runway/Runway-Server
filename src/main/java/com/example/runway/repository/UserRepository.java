@@ -13,6 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "authorities")
     Optional<User> findOneWithAuthoritiesByUsername(String phone);
 
+    /*
     boolean existsByUsernameAndStatus(String userId, boolean b);
 
     boolean existsByNicknameAndStatus(String nickname, boolean b);
@@ -23,7 +24,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsernameAndSocialAndStatus(String appleId, String apple, boolean b);
 
+     */
+
     boolean existsByUsernameAndSocial(String toString, String kakao);
 
-    boolean existsByNicknameAndStatusAndIdNot(String nickname, boolean b, Long id);
+    boolean existsByNicknameAndIdNot(String nickname, Long id);
+
+    Optional<User> findByUsername(String phone);
+
+    boolean existsByUsername(String phone);
+
+    Optional<User> findByUsernameAndSocial(String valueOf, String kakao);
+
+    boolean existsByNickname(String nickname);
 }

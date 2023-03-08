@@ -1,5 +1,6 @@
 package com.example.runway.service.user;
 
+import com.example.runway.domain.User;
 import com.example.runway.exception.BaseException;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
@@ -7,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface LoginService {
     UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException;
@@ -33,4 +35,8 @@ public interface LoginService {
     UserRes.SignUp signUpSocial(UserReq.SocialSignUp socialSignUp) throws IOException;
 
     List<String> getCategoryNameList(List<Long> categoryList);
+
+    void activeUser(Optional<User> user);
+
+    void activeReview(Optional<User> user);
 }

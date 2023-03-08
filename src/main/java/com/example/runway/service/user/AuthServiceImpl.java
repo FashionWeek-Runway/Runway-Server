@@ -143,17 +143,25 @@ public class AuthServiceImpl implements AuthService{
 
             Optional<Social> social = socialRepository.findBySocialIdAndType(id.toString(), Constants.kakao);
 
+
             if(social.isPresent()){
+                Optional<User> user = userRepository.findById(social.get().getId());
+
+                checkUnactivatedUser(user);
+
+
                 UserRes.GenerateToken generateToken = loginService.createToken(social.get().getUserId());
                 return new UserRes.Token(social.get().getUserId(), generateToken.getAccessToken(), generateToken.getRefreshToken());
             }
 
             //회원 존재 X -> 예외처리(카카오 id, 프로필 이미지)
-            User user=userRepository.findByUsernameAndSocialAndStatus(String.valueOf(id), "KAKAO",true).orElseThrow(() ->
+            User user=userRepository.findByUsernameAndSocial(String.valueOf(id), "KAKAO").orElseThrow(() ->
                     new BaseException(USER_NOT_FOUND, kakao));
 
             br.close();
             Long userId = user.getId();
+            checkUnactivatedUser(Optional.of(user));
+
 
             UserRes.GenerateToken generateToken = loginService.createToken(userId);
 
@@ -166,7 +174,12 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-
+    private void checkUnactivatedUser(Optional<User> user) {
+        if(!user.get().isStatus()){
+            loginService.activeUser(user);
+            loginService.activeReview(user);
+        };
+    }
 
 
     //애플 공개키
@@ -275,16 +288,22 @@ public class AuthServiceImpl implements AuthService{
 
         Optional<Social> social = socialRepository.findBySocialIdAndType(appleId,apple);
 
+
         if(social.isPresent()){
+            Optional<User> user = userRepository.findById(social.get().getId());
+
+            checkUnactivatedUser(user);
             UserRes.GenerateToken generateToken = loginService.createToken(social.get().getUserId());
             return new UserRes.AppleLogin(true,null,social.get().getUserId(), generateToken.getAccessToken(), generateToken.getRefreshToken());
         }
-        if(!userRepository.existsByUsernameAndSocialAndStatus(appleId, "APPLE", true)){
+        if(!userRepository.existsByUsernameAndSocial(appleId, "APPLE")){
             return new UserRes.AppleLogin(false,appleId,null,null,null);
         }
 
 
-        Optional<User> user = userRepository.findByUsernameAndSocialAndStatus(appleId,apple,true);
+        Optional<User> user = userRepository.findByUsernameAndSocial(appleId,apple);
+
+        checkUnactivatedUser(user);
 
         Long userId=user.get().getId();
 
@@ -328,7 +347,7 @@ public class AuthServiceImpl implements AuthService{
             Long kakaoId = element.getAsJsonObject().get("id").getAsLong();
 
             if(socialRepository.existsBySocialIdAndUserIdNot(kakaoId.toString(),userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
-            if(userRepository.existsByUsernameAndSocialAndStatus(kakaoId.toString(),Constants.kakao,true)) throw new BadRequestException(EXIST_USER_SOCIAL);
+            if(userRepository.existsByUsernameAndSocial(kakaoId.toString(),Constants.kakao)) throw new BadRequestException(EXIST_USER_SOCIAL);
             if(socialRepository.existsByUserIdAndType(userId,Constants.kakao))throw new BadRequestException(EXIST_SYNC_SOCIAL);
 
             Social social = UserConvertor.SyncSocial(String.valueOf(kakaoId),userId,Constants.kakao);
@@ -429,7 +448,7 @@ public class AuthServiceImpl implements AuthService{
 
 
         if(socialRepository.existsBySocialIdAndUserIdNot(appleId,userId)) throw new BadRequestException(EXIST_DIFF_USER_SOCIAL);
-        if(userRepository.existsByUsernameAndSocialAndStatus(appleId,Constants.apple,true)) throw new BadRequestException(EXIST_USER_SOCIAL);
+        if(userRepository.existsByUsernameAndSocial(appleId,Constants.apple)) throw new BadRequestException(EXIST_USER_SOCIAL);
         if(socialRepository.existsByUserIdAndType(userId,Constants.apple))throw new BadRequestException(EXIST_SYNC_SOCIAL);
 
         Social social = UserConvertor.SyncSocial(appleId,userId,Constants.kakao);

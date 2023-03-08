@@ -254,6 +254,7 @@ public class UserController {
     @PatchMapping("/active")
     public CommonResponse<String> unActiveUser(@AuthenticationPrincipal User user){
         userService.unActiveUser(user);
+        userService.unActiveReview(user);
         return CommonResponse.onSuccess("회원 탈퇴 완료");
     }
 

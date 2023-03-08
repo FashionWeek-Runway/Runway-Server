@@ -142,7 +142,12 @@ public class User extends BaseEntity implements UserDetails{
         this.nickname=nickname;
     }
 
-    public void unActive(boolean b) {
+    public void modifyStatus(boolean b) {
         this.status=b;
+    }
+
+    public void modifyUserActive(boolean b, LocalDateTime now) {
+        this.status=b;
+        this.unactivatedAt=now;
     }
 }

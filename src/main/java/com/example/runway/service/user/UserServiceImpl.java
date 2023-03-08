@@ -3,6 +3,7 @@ package com.example.runway.service.user;
 import com.example.runway.constants.CommonResponseStatus;
 import com.example.runway.constants.Constants;
 import com.example.runway.convertor.UserConvertor;
+import com.example.runway.domain.StoreReview;
 import com.example.runway.domain.User;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.domain.pk.UserCategoryPk;
@@ -300,6 +301,18 @@ public class UserServiceImpl implements UserService {
     public boolean checkPassword(User user, UserReq.UserPassword userPassword) {
         return passwordEncoder.matches(userPassword.getPassword(),user.getPassword());
 
+    }
+
+    @Override
+    public void unActiveUser(User user) {
+        //Review,User  status 변경
+        user.unActive(false);
+        userRepository.save(user);
+        List<StoreReview> review=storeReviewRepository.findByUserId(user.getId());
+        for (StoreReview storeReview : review) {
+            storeReview.unActive(false);
+        }
+        storeReviewRepository.saveAll(review);
     }
 
 

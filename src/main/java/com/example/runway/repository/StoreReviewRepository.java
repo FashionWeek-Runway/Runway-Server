@@ -98,6 +98,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     Optional<Object> findByIdAndStatus(Long reviewId, boolean b);
 
+    List<StoreReview> findByUserId(Long id);
+
 
     interface GetCountAllReview {
         int getSize();

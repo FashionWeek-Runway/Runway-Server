@@ -46,4 +46,8 @@ public class StoreReview extends BaseEntity {
     public void modifyStatus(boolean status) {
         this.status=status;
     }
+
+    public void unActive(boolean b) {
+        this.status = b;
+    }
 }

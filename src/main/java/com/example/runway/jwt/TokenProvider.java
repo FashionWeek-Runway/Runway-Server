@@ -1,6 +1,7 @@
 package com.example.runway.jwt;
 
 import com.example.runway.domain.User;
+import com.example.runway.exception.BadRequestException;
 import com.example.runway.repository.UserRepository;
 import com.example.runway.service.user.CustomUserDetailsService;
 import com.example.runway.service.util.RedisService;
@@ -24,6 +25,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
 
+import static com.example.runway.constants.CommonResponseStatus.USER_STATUS_UNACTIVATED;
 import static com.example.runway.jwt.JwtFilter.AUTHORIZATION_HEADER;
 import static com.example.runway.jwt.JwtFilter.REFRESH_TOKEN_HEADER;
 
@@ -110,6 +112,7 @@ public class TokenProvider implements InitializingBean {
 
         Optional<User> users=userRepository.findById(userId);
         String userName = users.get().getUsername();
+
 
 
         return new UsernamePasswordAuthenticationToken(users.get(),"",users.get().getAuthorities());

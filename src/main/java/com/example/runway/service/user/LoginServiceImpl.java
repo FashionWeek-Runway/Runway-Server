@@ -1,18 +1,16 @@
 package com.example.runway.service.user;
 
-import com.example.runway.domain.SmsUser;
-import com.example.runway.domain.UserCategory;
+import com.example.runway.domain.*;
 import com.example.runway.domain.pk.UserCategoryPk;
 import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.convertor.UserConvertor;
-import com.example.runway.domain.Authority;
-import com.example.runway.domain.User;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.NotFoundException;
 import com.example.runway.jwt.TokenProvider;
 import com.example.runway.repository.SmsUserRepository;
+import com.example.runway.repository.StoreReviewRepository;
 import com.example.runway.repository.UserCategoryRepository;
 import com.example.runway.repository.UserRepository;
 import com.example.runway.service.util.RedisService;
@@ -49,6 +47,7 @@ public class LoginServiceImpl implements LoginService {
     private final AwsS3Service awsS3Service;
     private final SmsUserRepository smsUserRepository;
 
+    private final StoreReviewRepository storeReviewRepository;
 
     @Value("${jwt.refresh-token-seconds}")
     private long refreshTime;
@@ -64,7 +63,10 @@ public class LoginServiceImpl implements LoginService {
 
         Long userId = user.get().getId();
 
-        if(!user.get().isStatus())throw new BadRequestException(USER_STATUS_UNACTIVATED);
+        if(!user.get().isStatus()){
+            activeUser(user);
+            activeReview(user);
+        };
 
 
 
@@ -80,6 +82,21 @@ public class LoginServiceImpl implements LoginService {
 
         //반환 값 아이디 추가
         return new UserRes.Token(userId,generateToken.getAccessToken(),generateToken.getRefreshToken());
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void activeReview(Optional<User> user) {
+        List<StoreReview> review=storeReviewRepository.findByUserId(user.get().getId());
+        for (StoreReview storeReview : review) {
+            storeReview.modifyStatus(true);
+        }
+        storeReviewRepository.saveAll(review);
+    }
+
+    @Transactional(rollbackFor = SQLException.class)
+    public void activeUser(Optional<User> user) {
+        user.get().modifyUserActive(true,null);
+        userRepository.save(user.get());
     }
 
     public UserRes.GenerateToken createToken(Long userId) {
@@ -175,7 +192,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean checkNickName(String nickname) {
-        return userRepository.existsByNicknameAndStatus(nickname,true);
+        return userRepository.existsByNickname(nickname);
     }
 
     @Override
@@ -197,7 +214,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void modifyPassword(UserReq.PostPassword postPassword) {
-        Optional<User> user = userRepository.findByUsernameAndStatus(postPassword.getPhone(),true);
+        Optional<User> user = userRepository.findByUsername(postPassword.getPhone());
 
         String passwordEncoded=passwordEncoder.encode(postPassword.getPassword());
 

@@ -82,10 +82,13 @@ public class User extends BaseEntity implements UserDetails{
     @Column(name="agree_info")
     private boolean agreeInfo=true;
 
+
     @Column(name="status",insertable = false)
     @ColumnDefault(value="true")
     private boolean status;
 
+    @Column(name="unactivated_at")
+    private LocalDateTime unactivatedAt;
 
     @ManyToMany
     @JoinTable(
@@ -137,5 +140,9 @@ public class User extends BaseEntity implements UserDetails{
     public void modifyProfileInfo(String profileImgUrl, String nickname) {
         this.profileImgUrl=profileImgUrl;
         this.nickname=nickname;
+    }
+
+    public void unActive(boolean b) {
+        this.status=b;
     }
 }

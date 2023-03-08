@@ -250,4 +250,12 @@ public class UserController {
         return CommonResponse.onSuccess("사용 가능");
     }
 
+    @ApiOperation(value = "02-18 유저 탈퇴 👤 FRAME SETTING 02",notes = "애플 연동 해지")
+    @PatchMapping("/active")
+    public CommonResponse<String> unActiveUser(@AuthenticationPrincipal User user){
+        userService.unActiveUser(user);
+        return CommonResponse.onSuccess("회원 탈퇴 완료");
+    }
+
+
 }

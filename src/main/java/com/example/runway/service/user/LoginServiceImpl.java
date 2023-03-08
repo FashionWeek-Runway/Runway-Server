@@ -3,6 +3,7 @@ package com.example.runway.service.user;
 import com.example.runway.domain.SmsUser;
 import com.example.runway.domain.UserCategory;
 import com.example.runway.domain.pk.UserCategoryPk;
+import com.example.runway.exception.BadRequestException;
 import com.example.runway.exception.BaseException;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.Authority;
@@ -34,8 +35,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.runway.constants.CommonResponseStatus.NOT_CORRECT_PASSWORD;
-import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_USER;
+import static com.example.runway.constants.CommonResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,13 +57,14 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public UserRes.Token logIn(UserReq.LoginUserInfo loginUserInfo) throws BaseException {
 
-        Optional<User> user=userRepository.findByUsernameAndStatus(loginUserInfo.getPhone(),true);
+        Optional<User> user=userRepository.findByUsername(loginUserInfo.getPhone());
         if(!checkuserId(loginUserInfo.getPhone())){
             throw new BaseException(NOT_EXIST_USER);
         }
 
         Long userId = user.get().getId();
 
+        if(!user.get().isStatus())throw new BadRequestException(USER_STATUS_UNACTIVATED);
 
 
 
@@ -160,7 +161,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean checkuserId(String phone) {
-        return userRepository.existsByUsernameAndStatus(phone,true);
+        return userRepository.existsByUsername(phone);
     }
 
     @Override

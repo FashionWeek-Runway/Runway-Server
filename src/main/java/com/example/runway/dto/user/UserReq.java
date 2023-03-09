@@ -193,4 +193,15 @@ public class UserReq {
         @ApiModelProperty(notes ="17 요청 시 기존 비밀번호, 16 요청 시 변경할 비밀번호", required = true, example = "runway8925!")
         private String password;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-19 애플코드 API Request🔑")
+    public class AppleCode {
+        @ApiModelProperty(notes ="19 애플코드", required = true, example = "runway8925!")
+        private String code;
+    }
 }

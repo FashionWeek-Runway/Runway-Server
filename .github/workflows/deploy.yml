@@ -33,6 +33,10 @@ jobs:
       - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
 
+      - run: touch ./src/main/resources/application-prod.properties
+      - run: echo "${{ secrets.APPLICATION_PROD }}" > ./src/main/resources/application-prod.properties
+      - run: cat ./src/main/resources/application-prod.properties
+
       - name: create-fcm-json
         id: create-fcm-json
         uses: jsdaniell/create-json@1.1.2
@@ -41,18 +45,12 @@ jobs:
           json: ${{ secrets.FCM_JSON }}
           dir: "./src/main/resources/"
 
-
-#      - run: touch ./src/main/resources/runwayAccessKey.json
-#       - run: echo $runwayAccessKey.json > ./src/main/resources/runwayAccessKey.json
-#     - run: cat ./src/main/resources/runwayAccessKey.json
-
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
         shell: bash
 
       - name: Make zip file

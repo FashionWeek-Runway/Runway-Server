@@ -29,13 +29,13 @@ jobs:
           distribution: 'temurin'
 
 
-      - run: touch ./src/main/resources/application.properties
+      - run: touch ./src/main/resources/application-prod.properties
       - run: echo "${{ secrets.APPLICATION_PROD }}" > ./src/main/resources/application-prod.properties
-      - run: cat ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application-prod.properties
 
       - name: create-fcm-json
         id: create-fcm-json
-        uses: jsdaniell/create-json@1.1.2ㅌ
+        uses: jsdaniell/create-json@1.1.2
         with:
           name: "runwayAccessKey.json"
           json: ${{ secrets.FCM_JSON }}

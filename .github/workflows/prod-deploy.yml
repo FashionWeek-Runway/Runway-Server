@@ -29,6 +29,11 @@ jobs:
           distribution: 'temurin'
 
 
+
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
+
       - run: touch ./src/main/resources/application-prod.properties
       - run: echo "${{ secrets.APPLICATION_PROD }}" > ./src/main/resources/application-prod.properties
       - run: cat ./src/main/resources/application-prod.properties
@@ -52,7 +57,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
         shell: bash
 
       - name: Make zip file

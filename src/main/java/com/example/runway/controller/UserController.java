@@ -229,9 +229,10 @@ public class UserController {
 
     @ApiOperation(value = "02-15 개인정보 애플 연동 해지 👤 FRAME SETTING 02",notes = "애플 연동 해지")
     @DeleteMapping("/info/apple")
-    public CommonResponse<String> unSyncAppleUser(@AuthenticationPrincipal User user){
+    public CommonResponse<String> unSyncAppleUser(@AuthenticationPrincipal User user,@RequestBody UserReq.AppleCode appleCode) throws IOException {
         if(!userService.checkSocialUser(user.getId(),Constants.apple))throw new BadRequestException(NOT_EXIST_SOCIAL);
         authService.unSyncSocial(user.getId(), Constants.apple);
+        authService.revoke(appleCode.getCode());
         return CommonResponse.onSuccess("연동 성공");
     }
 
@@ -259,4 +260,12 @@ public class UserController {
     }
 
 
+    @ApiOperation(value = "02-19 애플용 유저 탈퇴 👤 FRAME SETTING 02",notes = "애플 연동 해지")
+    @PatchMapping("/active")
+    public CommonResponse<String> unActiveAppleUser(@AuthenticationPrincipal User user,@RequestBody UserReq.AppleCode appleCode ) throws IOException {
+        userService.unActiveUser(user);
+        userService.unActiveReview(user);
+        authService.revoke(appleCode.getCode());
+        return CommonResponse.onSuccess("회원 탈퇴 완료");
+    }
 }

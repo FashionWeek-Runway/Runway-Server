@@ -30,7 +30,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.bouncycastle.util.io.pem.*;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -60,13 +59,16 @@ public class AuthServiceImpl implements AuthService{
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
 
+    @Value("${apple.key.path}")
     private String appleSignKeyFilePath;
 
-
+    @Value("${apple.sign.key}")
     private String appleSignKeyId;
 
+    @Value("${apple.bundle.id}")
     private String appleBundleId;
 
+    @Value("${apple.team.id}")
     private String appleTeamId;
 
     @Override
@@ -490,18 +492,19 @@ public class AuthServiceImpl implements AuthService{
         socialRepository.deleteByUserIdAndType(userId,social);
     }
 
-    public void revoke(User user) throws IOException {
+    public void revoke(String code) throws IOException {
 
-        AppleAuthTokenResponse appleAuthToken = GenerateAuthToken(user);
+        String appleAuthToken = GenerateAuthToken(code);
 
-        if (appleAuthToken.getAccessToken() != null) {
+        if (appleAuthToken != null) {
+            System.out.println(appleAuthToken);
             RestTemplate restTemplate = new RestTemplateBuilder().build();
             String revokeUrl = "https://appleid.apple.com/auth/revoke";
 
             LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("client_id", appleBundleId);
             params.add("client_secret", createClientSecret());
-            params.add("token", appleAuthToken.getAccessToken());
+            params.add("token", appleAuthToken);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -513,12 +516,12 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
-    public AppleAuthTokenResponse GenerateAuthToken(User user) throws IOException {
+    public String GenerateAuthToken(String code) throws IOException {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
         String authUrl = "https://appleid.apple.com/auth/token";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", user.getUsername());
+        params.add("code", code);
         params.add("client_id", appleBundleId);
         params.add("client_secret", createClientSecret());
         params.add("grant_type", "authorization_code");
@@ -526,12 +529,16 @@ public class AuthServiceImpl implements AuthService{
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
 
         try {
             ResponseEntity<AppleAuthTokenResponse> response = restTemplate.postForEntity(authUrl, httpEntity, AppleAuthTokenResponse.class);
-            return response.getBody();
+            System.out.println("상태코드:"+response.getStatusCode());
+            System.out.println("토큰:"+response.getBody().getAccess_token());
+            return response.getBody().getAccess_token();
         } catch (HttpClientErrorException e) {
+            System.out.println(e.getCause());
             throw new IllegalArgumentException("Apple Auth Token Error");
         }
     }
@@ -542,6 +549,15 @@ public class AuthServiceImpl implements AuthService{
         jwtHeader.put("kid", appleSignKeyId);
         jwtHeader.put("alg", "ES256");
 
+        System.out.println(Jwts.builder()
+                .setHeaderParams(jwtHeader)
+                .setIssuer(appleTeamId)
+                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행 시간 - UNIX 시간
+                .setExpiration(expirationDate) // 만료 시간
+                .setAudience("https://appleid.apple.com")
+                .setSubject(appleBundleId)
+                .signWith(SignatureAlgorithm.ES256, getPrivateKey())
+                .compact());
         return Jwts.builder()
                 .setHeaderParams(jwtHeader)
                 .setIssuer(appleTeamId)

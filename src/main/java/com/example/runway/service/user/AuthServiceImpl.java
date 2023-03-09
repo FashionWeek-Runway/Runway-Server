@@ -4,6 +4,7 @@ import com.example.runway.constants.Constants;
 import com.example.runway.convertor.UserConvertor;
 import com.example.runway.domain.Social;
 import com.example.runway.domain.User;
+import com.example.runway.dto.user.AppleAuthTokenResponse;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
@@ -14,19 +15,35 @@ import com.example.runway.repository.UserRepository;
 import com.google.gson.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.bouncycastle.util.io.pem.*;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.example.runway.constants.CommonResponseStatus.*;
@@ -43,6 +60,14 @@ public class AuthServiceImpl implements AuthService{
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
 
+    private String appleSignKeyFilePath;
+
+
+    private String appleSignKeyId;
+
+    private String appleBundleId;
+
+    private String appleTeamId;
 
     @Override
     public String getKakaoAccessToken(String code) {
@@ -464,6 +489,81 @@ public class AuthServiceImpl implements AuthService{
     public void unSyncSocial(Long userId, String social) {
         socialRepository.deleteByUserIdAndType(userId,social);
     }
+
+    public void revoke(User user) throws IOException {
+
+        AppleAuthTokenResponse appleAuthToken = GenerateAuthToken(user);
+
+        if (appleAuthToken.getAccessToken() != null) {
+            RestTemplate restTemplate = new RestTemplateBuilder().build();
+            String revokeUrl = "https://appleid.apple.com/auth/revoke";
+
+            LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("client_id", appleBundleId);
+            params.add("client_secret", createClientSecret());
+            params.add("token", appleAuthToken.getAccessToken());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
+
+            restTemplate.postForEntity(revokeUrl, httpEntity, String.class);
+        }
+
+    }
+
+    public AppleAuthTokenResponse GenerateAuthToken(User user) throws IOException {
+        RestTemplate restTemplate = new RestTemplateBuilder().build();
+        String authUrl = "https://appleid.apple.com/auth/token";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("code", user.getUsername());
+        params.add("client_id", appleBundleId);
+        params.add("client_secret", createClientSecret());
+        params.add("grant_type", "authorization_code");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
+
+        try {
+            ResponseEntity<AppleAuthTokenResponse> response = restTemplate.postForEntity(authUrl, httpEntity, AppleAuthTokenResponse.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new IllegalArgumentException("Apple Auth Token Error");
+        }
+    }
+
+    private String createClientSecret() throws IOException {
+        Date expirationDate = Date.from(LocalDateTime.now().plusDays(30).atZone(ZoneId.systemDefault()).toInstant());
+        Map<String, Object> jwtHeader = new HashMap<>();
+        jwtHeader.put("kid", appleSignKeyId);
+        jwtHeader.put("alg", "ES256");
+
+        return Jwts.builder()
+                .setHeaderParams(jwtHeader)
+                .setIssuer(appleTeamId)
+                .setIssuedAt(new Date(System.currentTimeMillis())) // 발행 시간 - UNIX 시간
+                .setExpiration(expirationDate) // 만료 시간
+                .setAudience("https://appleid.apple.com")
+                .setSubject(appleBundleId)
+                .signWith(SignatureAlgorithm.ES256, getPrivateKey())
+                .compact();
+    }
+
+    private PrivateKey getPrivateKey() throws IOException {
+        ClassPathResource resource = new ClassPathResource(appleSignKeyFilePath);
+        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+
+        Reader pemReader = new StringReader(privateKey);
+        PEMParser pemParser = new PEMParser(pemReader);
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+        PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
+        return converter.getPrivateKey(object);
+    }
+
 
 
 }

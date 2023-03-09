@@ -41,3 +41,5 @@ application.properties
 application-prod.properties
 
 runwayAccessKey.json
+
+AuthKey.p8

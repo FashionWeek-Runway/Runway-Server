@@ -17,7 +17,7 @@ if [ -z $CURRENT_PID ]
 then
   echo ">>> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /var/www/prod/prod-deploy.log
 else
-  #kill -15 $CURRENT_PID
+  #kill -15 $CURRENT_PID 출력
   fuser -k 8000/tcp
   echo ">>> kill -15 $CURRENT_PID" >> /var/www/prod/prod-deploy.log
   sleep 5

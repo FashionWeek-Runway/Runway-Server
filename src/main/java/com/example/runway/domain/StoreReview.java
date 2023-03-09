@@ -43,11 +43,19 @@ public class StoreReview extends BaseEntity {
     @ColumnDefault(value="true")
     private boolean status;
 
+    @Column(name="deleted",insertable = false)
+    @ColumnDefault(value="true")
+    private boolean deleted;
+
     public void modifyStatus(boolean status) {
         this.status=status;
     }
 
     public void unActive(boolean b) {
         this.status = b;
+    }
+
+    public void delete(boolean b) {
+        this.deleted=b;
     }
 }

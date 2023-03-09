@@ -35,7 +35,7 @@ jobs:
 
       - name: create-fcm-json
         id: create-fcm-json
-        uses: jsdaniell/create-json@1.1.2ㅌ
+        uses: jsdaniell/create-json@1.1.2
         with:
           name: "runwayAccessKey.json"
           json: ${{ secrets.FCM_JSON }}

@@ -160,6 +160,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         storeReview.delete(false);
 
+        storeReviewRepository.save(storeReview);
+
     }
 
     @Override

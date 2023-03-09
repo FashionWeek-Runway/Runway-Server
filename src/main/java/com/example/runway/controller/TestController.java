@@ -21,10 +21,9 @@ public class TestController {
 
 
     @GetMapping("/user")
-    public CommonResponse<String> test(@AuthenticationPrincipal User user) {
-        Long userId = user.getId();
-        System.out.println("유저 아이디값:" + userId);
-        return CommonResponse.onSuccess("유저 아이디값:" + userId);
+    public CommonResponse<String> test(@RequestParam("img") String img) {
+        awsS3Service.deleteImage(img);
+        return CommonResponse.onSuccess("삭제");
 
     }
 

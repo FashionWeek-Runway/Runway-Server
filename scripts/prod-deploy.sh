@@ -17,7 +17,7 @@ if [ -z $CURRENT_PID ]
 then
   echo ">>> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /var/www/prod/prod-deploy.log
 else
-  #kill -15 $CURRENT_PID
+  #kill -15 $CURRENT_PID 출력
   fuser -k 8000/tcp
   echo ">>> kill -15 $CURRENT_PID" >> /var/www/prod/prod-deploy.log
   sleep 5
@@ -25,8 +25,8 @@ fi
 
 source ~/.bashrc
 
-echo ">>>환경변수 주입" >> /var/www/prod/deploy.log
+echo ">>>환경변수 주입" >> /var/www/prod/prod-deploy.log
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-echo ">>> DEPLOY_JAR 배포"    >> /var/www/prod/deploy.log
-nohup java -jar -Dspring.profiles.active=prod $DEPLOY_JAR >> /var/www/prod/deploy.log 2>/var/www/prod/prod-deploy_err.log &
+echo ">>> DEPLOY_JAR 배포"    >> /var/www/prod/prod-deploy.log
+nohup java -jar -Dspring.profiles.active=prod $DEPLOY_JAR >> /var/www/prod/prod-deploy.log 2>/var/www/prod/prod-deploy_err.log &

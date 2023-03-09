@@ -111,7 +111,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean existsReview(Long reviewId) {
-        return storeReviewRepository.existsByIdAndStatus(reviewId, true);
+        return storeReviewRepository.existsByIdAndDeleted(reviewId, true);
     }
 
     @Override
@@ -158,9 +158,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         if(!storeReview.getUserId().equals(userId)) throw new BadRequestException(NOT_EXIST_REVIEW_DELETE);
 
-        storeReview.modifyStatus(false);
+        storeReview.delete(false);
 
-        storeReviewRepository.save(storeReview);
     }
 
     @Override

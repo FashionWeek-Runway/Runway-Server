@@ -12,6 +12,8 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.SwaggerResource;
+import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.*;
@@ -23,19 +25,22 @@ public class SwaggerConfig {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    private List<SwaggerResourcesProvider> resourcesProviders;
+
     @Bean
     public Docket api() {
         Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
-        Server UbuntuServer = new Server("server", "https://dev.runwayserver.shop", "for server", Collections.emptyList(), Collections.emptyList());
-        Server ProdServer = new Server("server", "https://prod.runwayserver.shop", "for server", Collections.emptyList(), Collections.emptyList());
+        Server UbuntuServer = new Server("server", "https://dev.runwayserver.shop", "for prod server", Collections.emptyList(), Collections.emptyList());
+        Server ProdServer = new Server("server", "https://prod.runwayserver.shop", "for dev server", Collections.emptyList(), Collections.emptyList());
         return new Docket(DocumentationType.OAS_30)
+                .servers(serverLocal,UbuntuServer,ProdServer)
                 .consumes(getConsumeContentTypes())
                 .produces(getProduceContentTypes())
                 .securityContexts(Arrays.asList(securityContext())) // 추가
                 .securitySchemes(Arrays.asList(apiKey())) // 추가
                 .ignoredParameterTypes(User.class)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build().apiInfo(apiInfo());
     }
@@ -51,6 +56,7 @@ public class SwaggerConfig {
         Set<String> produces;
         produces = new HashSet<>();
         produces.add("application/json;charset=UTF-8");
+        produces.add("application/x-www-form-urlencoded");
         return produces;
     }
 
@@ -86,6 +92,19 @@ public class SwaggerConfig {
         //return new ApiKey("Authorization", "Authorization", "header");
         return new ApiKey("X-AUTH-TOKEN", "Bearer", "header");
     }
+    /*
+    @Bean
+    public SwaggerConfiguration swaggerConfiguration() {
+        return new SwaggerConfiguration() {
+            public SwaggerResourcesProvider swaggerResourcesProvider() {
+                return new CompositeSwaggerResourcesProvider(resourcesProviders);
+            }
+        };
+    }
+
+     */
+
+
 
 
 }

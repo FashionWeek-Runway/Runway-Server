@@ -201,6 +201,7 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "02-19 애플코드 API Request🔑")
     public static class AppleCode {
+
         @ApiModelProperty(notes ="19 애플코드", required = true, example = "runway8925!")
         private String code;
     }

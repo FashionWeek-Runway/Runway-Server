@@ -42,6 +42,8 @@ dependencies {
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
     implementation 'net.nurigo:sdk:4.2.7'
     implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
 

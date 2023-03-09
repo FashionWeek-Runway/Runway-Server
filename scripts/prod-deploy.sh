@@ -29,4 +29,4 @@ echo ">>>환경변수 주입" >> /var/www/prod/deploy.log
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> /var/www/prod/deploy.log
-nohup java -jar "-Dspring.profiles.active=prod" $DEPLOY_JAR >> /var/www/prod/deploy.log 2>/var/www/prod/deploy_err.log &
+nohup java -jar -Dspring.profiles.active=prod $DEPLOY_JAR >> /var/www/prod/deploy.log 2>/var/www/prod/deploy_err.log &

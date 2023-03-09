@@ -27,7 +27,8 @@ public class Workaround implements WebMvcOpenApiTransformationFilter {
         Server prodServer = new Server();
         testServer.setDescription("prod");
         testServer.setUrl("https://prod.runwayserver.shop");
-        openApi.setServers(Arrays.asList(localServer, testServer));
+        openApi.setServers(Arrays.asList(localServer, prodServer));
+
         return openApi;
     }
 

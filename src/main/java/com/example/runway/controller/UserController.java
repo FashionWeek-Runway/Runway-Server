@@ -262,7 +262,6 @@ public class UserController {
 
     @ApiOperation(value = "02-19 애플용 유저 탈퇴 👤 FRAME SETTING 02",notes = "애플 연동 해지")
     @PatchMapping("/apple/active")
-
     public CommonResponse<String> unActiveAppleUser(@AuthenticationPrincipal User user,@RequestBody UserReq.AppleCode appleCode ) throws IOException {
         userService.unActiveUser(user);
         userService.unActiveReview(user);

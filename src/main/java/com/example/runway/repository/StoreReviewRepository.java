@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
-    Page<StoreReview> findByStoreIdAndStatusOrderByCreatedAtDescIdAsc(Long storeId,  boolean b,Pageable pageReq);
+    Page<StoreReview> findByStoreIdAndDeletedOrderByCreatedAtDescIdAsc(Long storeId,  boolean b,Pageable pageReq);
 
     @Query(nativeQuery = true,value="select SR.id   'reviewId',SR.user_id'userId',\n" +
             "       U.profile_url 'profileImgUrl',\n" +

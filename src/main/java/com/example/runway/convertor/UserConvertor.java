@@ -90,6 +90,7 @@ public class UserConvertor {
                 .regionInfo(result.getRegionInfo())
                 .bookmarkCnt(result.getBookmarkCnt())
                 .reviewInquiry(reviewInquiry)
+                .bookmark(result.getBookMark())
                 .isMy(userId.equals(result.getUserId()))
                 .build();
     }

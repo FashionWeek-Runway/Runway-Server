@@ -16,4 +16,3 @@ hooks:
     - location: scripts/prod-deploy.sh
       timeout: 60
       runas: ubuntu
-#

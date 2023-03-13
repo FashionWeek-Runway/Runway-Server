@@ -67,7 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Pageable pageReq = PageRequest.of(page, size);
 
-        Page<StoreReview> storeReview = storeReviewRepository.findByStoreIdAndStatusOrderByCreatedAtDescIdAsc(storeId, true, pageReq);
+        Page<StoreReview> storeReview = storeReviewRepository.findByStoreIdAndDeletedOrderByCreatedAtDescIdAsc(storeId, true, pageReq);
 
         for (StoreReview review : storeReview) {
             StoreRes.StoreReview storeReviewDto = StoreConvertor.StoreReviewBuilder(review);

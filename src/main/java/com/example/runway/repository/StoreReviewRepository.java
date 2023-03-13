@@ -70,7 +70,8 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "       SR.img_url    'imgUrl',S.id'storeId',\n" +
             "       S.name        'storeName',\n" +
             "       concat(R.region, ', ', R.city)'regionInfo',\n" +
-            "       count(RK.review_id)'bookmarkCnt',SR.created_at'createdAt'\n" +
+            "       count(RK.review_id)'bookmarkCnt',SR.created_at'createdAt'," +
+            "       IF((select exists(select * from ReviewKeep RK where RK.review_id=:reviewId and RK.user_id=:userId)),'true','false')'bookmark'\n" +
             "from StoreReview SR\n" +
             "         join User U on SR.user_id = U.id\n" +
             "         join Store S on SR.store_id = S.id\n" +

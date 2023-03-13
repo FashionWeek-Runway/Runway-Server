@@ -226,6 +226,8 @@ public class UserRes {
         private int bookmarkCnt;
         @ApiModelProperty(notes = "리뷰 내 게시글 유무",required = true,example = "false")
         private boolean isMy;
+        @ApiModelProperty(notes = "리뷰 북마크 유무",required = true,example = "false")
+        private boolean bookmark;
         @ApiModelProperty(notes="쇼룸 리뷰 이전 id, 다음 id",example = "이전 id, 다음 id")
         private ReviewInquiry reviewInquiry;
     }

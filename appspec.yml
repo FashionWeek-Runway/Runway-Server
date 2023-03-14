@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /var/www/dev
+    destination: /var/www/prod
     overwrite: yes
 
 permissions:
@@ -13,6 +13,6 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: scripts/dev.sh
+    - location: scripts/prod-deploy.sh
       timeout: 60
       runas: ubuntu

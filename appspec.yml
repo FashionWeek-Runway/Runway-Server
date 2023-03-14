@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /var/www/dev1
+    destination: /var/www/dev
     overwrite: yes
 
 permissions:

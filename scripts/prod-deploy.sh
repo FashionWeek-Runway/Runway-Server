@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash123
 
 BUILD_JAR=$(ls /var/www/prod/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)

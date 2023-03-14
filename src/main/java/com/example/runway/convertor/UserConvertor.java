@@ -90,6 +90,20 @@ public class UserConvertor {
                 .regionInfo(result.getRegionInfo())
                 .bookmarkCnt(result.getBookmarkCnt())
                 .reviewInquiry(reviewInquiry)
+                .isMy(userId.equals(result.getUserId()))
+                .build();
+    }
+
+    public static UserRes.BookMarkReviewInfo BookMarkReviewDetail(StoreReviewRepository.GetStoreReview result, UserRes.ReviewInquiry reviewInquiry,Long userId) {
+        return UserRes.BookMarkReviewInfo.builder().reviewId(result.getReviewId())
+                .profileImgUrl(result.getProfileImgUrl())
+                .nickname(result.getNickname())
+                .imgUrl(result.getImgUrl())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .bookmarkCnt(result.getBookmarkCnt())
+                .reviewInquiry(reviewInquiry)
                 .bookmark(result.getBookMark())
                 .isMy(userId.equals(result.getUserId()))
                 .build();

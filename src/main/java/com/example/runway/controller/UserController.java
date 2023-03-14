@@ -187,10 +187,10 @@ public class UserController {
 
     @ApiOperation(value = "02-10 내가 북마크한 리뷰 상세 조회 👤 FRAME MY_REVIEW",notes = "북마크한 리뷰 상세보기 prev,next Id")
     @GetMapping("/bookmark/review/detail/{reviewId}")
-    public CommonResponse<UserRes.ReviewInfo> getMyBookMarkReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
+    public CommonResponse<UserRes.BookMarkReviewInfo> getMyBookMarkReviewDetail(@AuthenticationPrincipal User user, @Parameter(description = "review 리뷰 Id값") @PathVariable Long reviewId){
         log.info("get-review-detail");
         log.info("api = get-my-review-detail 02-07");
-        UserRes.ReviewInfo review=userService.getMyBookMarkReviewDetail(user.getId(),reviewId);
+        UserRes.BookMarkReviewInfo review=userService.getMyBookMarkReviewDetail(user.getId(),reviewId);
         return CommonResponse.onSuccess(review);
     }
 

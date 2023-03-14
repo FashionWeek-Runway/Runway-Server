@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                 result.getStoreName()
-                                )
+                        )
                 )
         );
 
@@ -148,14 +148,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRes.ReviewInfo getMyBookMarkReviewDetail(Long userId, Long reviewId) {
+    public UserRes.BookMarkReviewInfo getMyBookMarkReviewDetail(Long userId, Long reviewId) {
 
         StoreReviewRepository.GetStoreReview result=storeReviewRepository.getMyBookmarkReview(reviewId,userId);
 
         Long prevReviewId = getBookMarkPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
         Long nextReviewId = getBookMarkNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
 
-        return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
+        return UserConvertor.BookMarkReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
     }
 
     private Long getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {

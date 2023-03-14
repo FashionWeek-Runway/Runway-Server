@@ -94,6 +94,21 @@ public class UserConvertor {
                 .build();
     }
 
+    public static UserRes.BookMarkReviewInfo BookMarkReviewDetail(StoreReviewRepository.GetStoreReview result, UserRes.ReviewInquiry reviewInquiry,Long userId) {
+        return UserRes.BookMarkReviewInfo.builder().reviewId(result.getReviewId())
+                .profileImgUrl(result.getProfileImgUrl())
+                .nickname(result.getNickname())
+                .imgUrl(result.getImgUrl())
+                .storeId(result.getStoreId())
+                .storeName(result.getStoreName())
+                .regionInfo(result.getRegionInfo())
+                .bookmarkCnt(result.getBookmarkCnt())
+                .reviewInquiry(reviewInquiry)
+                .bookmark(result.getBookMark())
+                .isMy(userId.equals(result.getUserId()))
+                .build();
+    }
+
     public static UserRes.SettingInfo SettingInfo(boolean kakao, boolean apple, String username, boolean social) {
         return UserRes.SettingInfo.builder().social(social).apple(apple).kakao(kakao).phone(username).build();
     }

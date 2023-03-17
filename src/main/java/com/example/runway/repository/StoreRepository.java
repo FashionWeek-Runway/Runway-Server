@@ -162,7 +162,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 
     @Query(nativeQuery = true,value = "select IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
-            "       S.id'storeId',store_img'storeImg' ,concat(R.region,', ',R.city)'regionInfo',S.name'storeName', " +
+            "       S.id'storeId',S.img_url'storeImg' ,concat(R.region,', ',R.city)'regionInfo',S.name'storeName', " +
             "       (select GROUP_CONCAT(C2.category SEPARATOR ',')" +
             "        from Category C2" +
             "                 join StoreCategory SC2 on SC2.category_id = C2.id" +
@@ -173,7 +173,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             " join Region R on S.region_id = R.id " +
             " join StoreCategory SC on S.id = SC.store_id " +
             " join Category C on SC.category_id = C.id " +
-            " left join StoreImg SI on S.id=SI.store_id and SI.sequence=1 " +
             " where C.category IN (:categoryList) and S.status=true group by S.id limit :limit")
     List<StoreRepository.RecommendStore> recommendStore(@Param("userId") Long userId, @Param("categoryList") List<String> categoryList,@Param("limit") int limit);
     interface RecommendStore {

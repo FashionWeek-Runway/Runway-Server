@@ -69,6 +69,9 @@ public class Store extends BaseEntity {
     @Column(name="longitude")
     private double longitude;
 
+    @Column(name="img_url")
+    private String imgUrl;
+
     @Column(name="status",insertable = false)
     @ColumnDefault(value="true")
     private boolean status;

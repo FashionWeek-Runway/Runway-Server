@@ -90,9 +90,8 @@ public class StoreController {
         log.info("get-store-blog");
         log.info("api = get-store-blog 03-04,storeId = {}",storeId);
 
-        if(!storeService.checkStore(storeId))throw new NotFoundException(NOT_EXIST_STORE);
 
-        List<StoreRes.StoreBlog> storeBlog=crawlingService.getStoreBlog(storeName);
+        List<StoreRes.StoreBlog> storeBlog=crawlingService.getStoreBlog(storeName,storeId);
 
         return CommonResponse.onSuccess(storeBlog);
     }

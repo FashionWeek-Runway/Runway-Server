@@ -26,6 +26,41 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByIdAndStatus(Long storeId, boolean b);
 
+   @Query(value="select S.id 'storeId',S.name'storeName',IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
+            " latitude,longitude, " +
+            "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
+            " from Store S join StoreCategory SC on S.id = SC.store_id" +
+            " join Category C on SC.category_id = C.id " +
+            " join Keep K on K.store_id=S.id and K.user_id=:userId " +
+            " where S.status=true group by S.id order by distance", nativeQuery=true)
+    List<GetMapList> getBookMarkMap(@Param("userId") Long userId,@Param("latitude") double latitude, @Param("longitude") double longitude);
+
+    @Query(value="select S.id 'storeId',\n" +
+            "       S.name'storeName',\n" +
+            "       SI.store_img'storeImg'\n" +
+            "       ,\n" +
+            "       (select GROUP_CONCAT(C2.category SEPARATOR ',')\n" +
+            "        from Category C2\n" +
+            "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
+            "                 join Store S2 on SC2.store_id = S2.id \n" +
+            "        where S2.id = S.id \n" +
+            "       )as 'storeCategory',\n" +
+            "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance," +
+            "IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark' " +
+            "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
+            "join Category C on SC.category_id = C.id "  +
+            "left join StoreImg SI on S.id = SI.store_id and sequence=1 " +
+            "join Keep K on K.store_id=S.id and K.user_id=:userId where S.status=true group by S.id order by distance ",
+            countQuery = "select count(*) " +
+                    "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
+                    "join Category C on SC.category_id = C.id "  +
+                    "left join StoreImg SI on S.id = SI.store_id and sequence=1 join Keep K on K.store_id=S.id and K.user_id=:userId" +
+                    " where S.status=true ",
+            nativeQuery = true)
+    Page<StoreInfoList> getBookMarkInfo(@Param("userId") Long userId, @Param("latitude") double latitude, @Param("longitude") double longitude, Pageable pageable);
+
 
     interface GetMapList{
         Long getStoreId();
@@ -37,10 +72,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     }
 
     boolean existsByIdAndStatus(Long storeId, boolean b);
-
-
-
-
 
 
 

@@ -34,7 +34,11 @@ public class MapServiceImpl implements MapService {
 
         List<StoreRepository.GetMapList> mapResult=null;
 
-        if(filterMap.getCategory().size()==0){
+        if(filterMap.getCategory().contains("bookmark")){
+            mapResult=storeRepository.getBookMarkMap(userId,filterMap.getLatitude(),filterMap.getLongitude());
+            System.out.println("bookmark");
+        }
+        else if(filterMap.getCategory().size()==0){
             mapResult=storeRepository.getMapListFilter(CATEGORY,userId,filterMap.getLatitude(),filterMap.getLongitude());
         }
         else{
@@ -65,7 +69,11 @@ public class MapServiceImpl implements MapService {
         Pageable pageReq = PageRequest.of(page, size);
         Page<StoreRepository.StoreInfoList> storeResult=null;
 
-        if(filterMap.getCategory().size()==0){
+
+        if(filterMap.getCategory().contains("bookmark")){
+            storeResult=storeRepository.getBookMarkInfo(userId,filterMap.getLatitude(),filterMap.getLongitude(),pageReq);
+        }
+        else if(filterMap.getCategory().size()==0){
             storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq, filterMap.getLatitude(), filterMap.getLongitude(),userId);
         }
         else{

@@ -72,6 +72,9 @@ public class Store extends BaseEntity {
     @Column(name="img_url")
     private String imgUrl;
 
+    @Column(name="search_content")
+    private String searchContent;
+
     @Column(name="status",insertable = false)
     @ColumnDefault(value="true")
     private boolean status;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
@@ -23,6 +24,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     List<Store> findByRegionId(Long regionId);
 
+    Optional<Store> findByIdAndStatus(Long storeId, boolean b);
 
 
     interface GetMapList{

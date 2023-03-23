@@ -57,7 +57,9 @@ public class CrawlingServiceImpl implements CrawlingService{
         Elements selects = document.select("li.bx._svp_item");	//⭐⭐⭐
         System.out.println("div 갯수: "+selects.size());
         for (int i=0;i<5;i++) {
+
             String img=selects.get(i).select("span.thumb_count").text();
+
             if(img.length()!=0) {
                 StoreRes.StoreBlog storeBlog = StoreRes.StoreBlog.builder()
                         .imgUrl(selects.get(i).select("img.thumb.api_get").attr("src"))

@@ -60,6 +60,10 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.68'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
 
+    implementation 'com.github.downgoon:marvin:1.5.5'
+    implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
+    compileOnly group: 'org.springframework', name: 'spring-test'
+
 
 
     //이미지

@@ -6,13 +6,23 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.runway.exception.ForbiddenException;
+import com.google.common.math.Quantiles;
 import lombok.RequiredArgsConstructor;
+import marvin.image.MarvinImage;
+import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,40 +42,27 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
-        String s3FileName=dirName+"/"+createFileName(multipartFile.getOriginalFilename());
-        System.out.println(s3FileName);
-        ObjectMetadata objMeta = new ObjectMetadata();
+        String fileName = dirName+"/"+UUID.randomUUID().toString() + ".jpg";
+
+        MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
+
+        byte[] bytes = resizeFile.getBytes();
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/jpeg");
+        metadata.setContentLength(bytes.length);
+        amazonS3.putObject(bucket, fileName, byteArrayInputStream, metadata);
 
 
-        //파일 형식 구하기
-        String ext = s3FileName.split("\\.")[1];
-        String contentType = multipartFile.getContentType();
-
-        switch (ext) {
-            case "jpeg":
-                contentType = "image/jpeg";
-                break;
-            case "png":
-                contentType = "image/png";
-                break;
-            case "jpg":
-                contentType = "image/jpg";
-                break;
-
-        }
-
-        objMeta.setContentType(contentType);
-        objMeta.setContentLength(multipartFile.getInputStream().available());
-
-        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-
-        return amazonS3.getUrl(bucket, s3FileName).toString();
+        return amazonS3.getUrl(bucket, fileName).toString();
     }
 
 
     @Override
-    public String uploadByteCode(byte[] bytes, String review) {
-        String s3FileName=review+"/"+UUID.randomUUID().toString()+".jpg";
+    public String uploadByteCode(byte[] bytes, String dirName) {
+        String s3FileName=dirName+"/"+UUID.randomUUID().toString()+".jpg";
         ObjectMetadata metadata = new ObjectMetadata();
 
         metadata.setContentLength(bytes.length);
@@ -75,6 +72,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
         return amazonS3.getUrl(bucket,s3FileName).toString();
     }
+
+
 
     public List<String> uploadImage(List<MultipartFile> multipartFile){
         List<String> fileNameList = new ArrayList<>();
@@ -134,5 +133,39 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             throw new ForbiddenException(WRONG_FORMAT_FILE);
         }
     }
+
+    MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
+        try {
+            // MultipartFile -> BufferedImage Convert
+            BufferedImage image = ImageIO.read(originalImage.getInputStream());
+            // newWidth : newHeight = originWidth : originHeight
+            int originWidth = image.getWidth();
+            int originHeight = image.getHeight();
+
+            // origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
+            if(originWidth < targetWidth)
+                return originalImage;
+
+            MarvinImage imageMarvin = new MarvinImage(image);
+
+            Scale scale = new Scale();
+            scale.load();
+            scale.setAttribute("newWidth", targetWidth);
+            scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
+            scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
+
+            BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(imageNoAlpha, fileFormatName, baos);
+            baos.flush();
+
+            return new MockMultipartFile(fileName, baos.toByteArray());
+
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
+        }
+    }
+
+
 
 }

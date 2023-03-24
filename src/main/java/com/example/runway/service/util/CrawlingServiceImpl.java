@@ -54,9 +54,11 @@ public class CrawlingServiceImpl implements CrawlingService{
 
     private List<StoreRes.StoreBlog> getDataList(Document document) {
         List<StoreRes.StoreBlog> storeBlogList = new ArrayList<>();
-        Elements selects = document.select("li.bx._svp_item");	//⭐⭐⭐
+        Elements selects = document.select("li.bx._svp_item");
         System.out.println("div 갯수: "+selects.size());
+        
         int cnt = 0;
+
         for (org.jsoup.nodes.Element select : selects) {
 
             String img = select.select("span.thumb_count").text();
@@ -77,7 +79,6 @@ public class CrawlingServiceImpl implements CrawlingService{
             }
 
         }
-
         return storeBlogList;
     }
 

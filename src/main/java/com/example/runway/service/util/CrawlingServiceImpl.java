@@ -56,18 +56,23 @@ public class CrawlingServiceImpl implements CrawlingService{
         List<StoreRes.StoreBlog> storeBlogList = new ArrayList<>();
         Elements selects = document.select("li.bx._svp_item");	//⭐⭐⭐
         System.out.println("div 갯수: "+selects.size());
-        for (int i=0;i<5;i++) {
+        for (org.jsoup.nodes.Element select : selects) {
 
-            String img=selects.get(i).select("span.thumb_count").text();
+            String img = select.select("span.thumb_count").text();
 
-            if(img.length()!=0) {
+            if (img.length() != 0) {
                 StoreRes.StoreBlog storeBlog = StoreRes.StoreBlog.builder()
-                        .imgUrl(selects.get(i).select("img.thumb.api_get").attr("src"))
+                        .imgUrl(select.select("img.thumb.api_get").attr("src"))
                         .imgCnt(Integer.parseInt(img))
-                        .title(selects.get(i).select("a.api_txt_lines.total_tit._cross_trigger").text())
-                        .webUrl(selects.get(i).select("a.api_txt_lines.total_tit._cross_trigger").attr("href"))
-                        .content(selects.get(i).select("div.api_txt_lines.dsc_txt").text()).build();
+                        .title(select.select("a.api_txt_lines.total_tit._cross_trigger").text())
+                        .webUrl(select.select("a.api_txt_lines.total_tit._cross_trigger").attr("href"))
+                        .content(select.select("div.api_txt_lines.dsc_txt").text()).build();
                 storeBlogList.add(storeBlog);
+                cnt++;
+            }
+            
+            if(cnt==4){
+                break;
             }
 
         }

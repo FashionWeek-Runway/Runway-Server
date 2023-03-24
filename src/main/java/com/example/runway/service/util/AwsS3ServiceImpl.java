@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -159,7 +161,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             ImageIO.write(imageNoAlpha, fileFormatName, baos);
             baos.flush();
 
-            return new MockMultipartFile(fileName, baos.toByteArray());
+            return new CustomMultipartFile(fileName,fileFormatName, originalImage.getContentType() ,baos.toByteArray());
 
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
@@ -167,5 +169,64 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     }
 
 
+    private static class CustomMultipartFile implements MultipartFile {
+        private final String name;
 
+        private final String originalFilename;
+
+        private final String contentType;
+
+        private final byte[] content;
+        boolean isEmpty;
+
+
+        public CustomMultipartFile(String name, String originalFilename, String contentType, byte[] content) {
+            Assert.hasLength(name, "Name must not be null");
+            this.name = name;
+            this.originalFilename = (originalFilename != null ? originalFilename : "");
+            this.contentType = contentType;
+            this.content = (content != null ? content : new byte[0]);
+            this.isEmpty = false;
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        @Override
+        public String getOriginalFilename() {
+            return this.originalFilename;
+        }
+
+        @Override
+        public String getContentType() {
+            return this.contentType;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return (this.content.length == 0);
+        }
+
+        @Override
+        public long getSize() {
+            return this.content.length;
+        }
+
+        @Override
+        public byte[] getBytes() throws IOException {
+            return this.content;
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return new ByteArrayInputStream(this.content);
+        }
+
+        @Override
+        public void transferTo(File dest) throws IOException, IllegalStateException {
+            FileCopyUtils.copy(this.content, dest);
+        }
+    }
 }

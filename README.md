@@ -12,7 +12,6 @@
 ![Team 패션위크_8](https://user-images.githubusercontent.com/81962309/229269409-f3d5dac4-6d23-4bc2-9923-d4d9ad97c014.jpg)
 ![Team 패션위크_9](https://user-images.githubusercontent.com/81962309/229269410-c674cf33-921f-49c1-b06d-b6ec0ef354fd.jpg)
 ![Team 패션위크_10](https://user-images.githubusercontent.com/81962309/229269411-49e0f87b-8086-44bf-8992-fe1d3272cbff.jpg)
-![Team 패션위크_11](https://user-images.githubusercontent.com/81962309/229269412-c41ea99b-1a8c-46b8-b296-21dfdd9c7fd4.jpg)
 
 ## 깃모지 커밋 컨벤션
 💄 : UI, 스타일 관련 파일 추가 및 수정 <br>

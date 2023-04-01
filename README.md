@@ -1,4 +1,6 @@
 # Runway O4O 서비스 
+## 프로젝트 아키텍쳐
+![제목을 입력해주세요_-001 (1)](https://user-images.githubusercontent.com/81962309/229272260-3b9230d1-43a2-43a6-9da9-8b84a4ef66f0.png)
 ## 서비스 소개
 ![Team 패션위크_1](https://user-images.githubusercontent.com/81962309/229269394-778ee4c2-44f5-489b-b7e8-f4c5902f61f4.jpg)
 ![Team 패션위크_2](https://user-images.githubusercontent.com/81962309/229269398-9acc8938-0b79-4e68-8d85-07aa4c91a832.jpg)

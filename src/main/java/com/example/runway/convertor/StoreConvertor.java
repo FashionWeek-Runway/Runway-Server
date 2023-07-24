@@ -90,7 +90,7 @@ public class StoreConvertor {
                 .storeId(result.getStoreId())
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
-                .reviewInquiry(new StoreRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .reviewInquiry(StoreRes.ReviewInquiry.builder().prevReviewId(prevReviewId).prevReviewImgUrl("").nextReviewId(nextReviewId).nextReviewImgUrl("").build())
                 .bookmark(result.getBookMark())
                 .bookmarkCnt(result.getBookmarkCnt())
                 .isMy(userId.equals(result.getUserId()))

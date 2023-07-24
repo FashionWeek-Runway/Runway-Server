@@ -82,10 +82,6 @@ public class ReviewServiceImpl implements ReviewService {
         StoreReviewRepository.GetStoreReview result = storeReviewRepository.getStoreReview(reviewId,userId);
         Long prevReviewId = getPrevReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
         Long nextReviewId = getNextReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
-        System.out.println(result.getCreatedAt());
-        System.out.println(result.getReviewId());
-        System.out.println("prevReviewID:" + prevReviewId);
-        System.out.println("nextReviewId:" + nextReviewId);
 
         return StoreConvertor.StoreReview(result, prevReviewId, nextReviewId,userId);
     }
@@ -174,8 +170,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         Long prevReviewId = getPrevRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
         Long nextReviewId = getNextRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
-        System.out.println("prevReviewID:" + prevReviewId);
-        System.out.println("nextReviewId:" + nextReviewId);
 
         return StoreConvertor.StoreReviewRecommend(result, prevReviewId, nextReviewId,userId);
     }
@@ -183,7 +177,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Long getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
-        System.out.println("reviewId :"+ reviewId+"시간: "+ createdAt+"categoryScore: "+categoryScore);
 
         Long nextId = null;
         if (result != null) {
@@ -193,7 +186,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Long getPrevRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
-        System.out.println("reviewId :"+ reviewId+"시간: "+ createdAt+"categoryScore: "+categoryScore);
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
 
         Long prevId = null;

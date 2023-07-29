@@ -149,8 +149,13 @@ public class StoreRes {
     public static class ReviewInquiry{
         @ApiModelProperty(notes="이전 리뷰 ID",required = false,example = "1")
         private Long prevReviewId;
+        @ApiModelProperty(notes="이전 리뷰 이미지")
+        private String prevReviewImgUrl;
         @ApiModelProperty(notes="다음 리뷰 ID",required = false,example = "1")
         private Long nextReviewId;
+        @ApiModelProperty(notes="다음 리뷰 이미지")
+        private String nextReviewImgUrl;
+
     }
 
     @Getter
@@ -197,6 +202,15 @@ public class StoreRes {
         private String storeName;
         @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
         private String regionInfo;
+    }
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReviewResult{
+        private Long reviewId;
+        private String reviewImgUrl;
     }
 
 }

@@ -43,9 +43,9 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
         String fileName = dirName+"/"+UUID.randomUUID().toString() + ".jpg";
 
-        MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
+        //MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
 
-        byte[] bytes = resizeFile.getBytes();
+        byte[] bytes = multipartFile.getBytes();
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
@@ -133,6 +133,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         }
     }
 
+    /*
+
     MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
         try {
             // MultipartFile -> BufferedImage Convert
@@ -164,6 +166,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
         }
     }
+
+     */
 
 
     private static class CustomMultipartFile implements MultipartFile {

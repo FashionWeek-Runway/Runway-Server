@@ -55,7 +55,11 @@ public class CrawlingServiceImpl implements CrawlingService{
     private List<StoreRes.StoreBlog> getDataList(Document document) {
         List<StoreRes.StoreBlog> storeBlogList = new ArrayList<>();
         Elements selects = document.select("li.bx._svp_item");	//⭐⭐⭐
+        if (selects.isEmpty()){
+            return null;
+        }
         System.out.println("div 갯수: "+selects.size());
+
         int cnt = 0;
         for (org.jsoup.nodes.Element select : selects) {
 
@@ -69,13 +73,11 @@ public class CrawlingServiceImpl implements CrawlingService{
                         .webUrl(select.select("a.api_txt_lines.total_tit._cross_trigger").attr("href"))
                         .content(select.select("div.api_txt_lines.dsc_txt").text()).build();
                 storeBlogList.add(storeBlog);
-            }
-            cnt++;
-            if(cnt==4){
-                break;
+                cnt++;
             }
 
         }
+
 
         return storeBlogList;
     }

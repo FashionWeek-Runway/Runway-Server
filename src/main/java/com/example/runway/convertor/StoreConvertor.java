@@ -81,7 +81,7 @@ public class StoreConvertor {
         return KeepOwnerFeed.builder().feedId(feedId).userId(userId).build();
     }
 
-    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId, Long userId) {
+    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReviewId, StoreRes.ReviewResult nextReviewId, Long userId) {
         return StoreRes.ReviewInfo.builder()
                 .reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
@@ -90,14 +90,19 @@ public class StoreConvertor {
                 .storeId(result.getStoreId())
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
-                .reviewInquiry(new StoreRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .reviewInquiry(StoreRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReviewId.getReviewId())
+                        .prevReviewImgUrl(prevReviewId.getReviewImgUrl())
+                        .nextReviewId(nextReviewId.getReviewId())
+                        .nextReviewImgUrl(nextReviewId.getReviewImgUrl())
+                        .build())
                 .bookmark(result.getBookMark())
                 .bookmarkCnt(result.getBookmarkCnt())
                 .isMy(userId.equals(result.getUserId()))
                 .build();
     }
 
-    public static HomeRes.ReviewInfo StoreReviewRecommend(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId, Long userId) {
+    public static HomeRes.ReviewInfo StoreReviewRecommend(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReviewId, StoreRes.ReviewResult nextReviewId, Long userId) {
         return HomeRes.ReviewInfo.builder()
                 .reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
@@ -110,7 +115,12 @@ public class StoreConvertor {
                 .regionInfo(result.getRegionInfo())
                 .isMy(result.getUserId().equals(userId))
                 .bookmark(result.getBookMark())
-                .reviewInquiry(new UserRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .reviewInquiry(UserRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReviewId.getReviewId())
+                        .prevReviewImgUrl(prevReviewId.getReviewImgUrl())
+                        .nextReviewId(nextReviewId.getReviewId())
+                        .nextReviewImgUrl(nextReviewId.getReviewImgUrl())
+                        .build())
                 .build();
 
     }

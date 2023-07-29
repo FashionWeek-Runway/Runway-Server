@@ -80,29 +80,33 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public StoreRes.ReviewInfo getStoreReviewByReviewId(Long reviewId, Long userId) {
         StoreReviewRepository.GetStoreReview result = storeReviewRepository.getStoreReview(reviewId,userId);
-        Long prevReviewId = getPrevReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
-        Long nextReviewId = getNextReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
+        StoreRes.ReviewResult prevReviewId = getPrevReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
+        StoreRes.ReviewResult nextReviewId = getNextReviewId(result.getStoreId(), result.getCreatedAt(), result.getReviewId());
 
         return StoreConvertor.StoreReview(result, prevReviewId, nextReviewId,userId);
     }
 
-    private Long getNextReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult getNextReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextReviewId(createdAt, storeId, reviewId);
 
         Long nextId = null;
+        String nextImgUrl = null;
         if (result != null) {
             nextId = result.getId();
+            nextImgUrl = result.getImgUrl();
         }
-        return nextId;
+        return new StoreRes.ReviewResult(nextId,nextImgUrl);
     }
 
-    private Long getPrevReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult getPrevReviewId(Long storeId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevReviewId(createdAt, storeId, reviewId);
         Long prevId = null;
+        String prevReviewImg = null;
         if (result != null) {
             prevId = result.getId();
+            prevReviewImg = result.getImgUrl();
         }
-        return prevId;
+        return new StoreRes.ReviewResult(prevId, prevReviewImg);
     }
 
     @Override
@@ -168,31 +172,37 @@ public class ReviewServiceImpl implements ReviewService {
 
 
 
-        Long prevReviewId = getPrevRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
-        Long nextReviewId = getNextRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
+        StoreRes.ReviewResult prevReviewId = getPrevRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
+        StoreRes.ReviewResult nextReviewId = getNextRecommendId(result.getCategoryScore(), result.getCreatedAt(), result.getReviewId(),categoryList);
 
         return StoreConvertor.StoreReviewRecommend(result, prevReviewId, nextReviewId,userId);
     }
 
 
-    private Long getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
+    private StoreRes.ReviewResult getNextRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
 
         Long nextId = null;
+        String imgUrl = null;
         if (result != null) {
             nextId = result.getId();
+            imgUrl = result.getImgUrl();
+
         }
-        return nextId;
+        return new StoreRes.ReviewResult(nextId,imgUrl);
     }
 
-    private Long getPrevRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
+    private StoreRes.ReviewResult getPrevRecommendId(int categoryScore, LocalDateTime createdAt, Long reviewId, List<String> categoryList) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevRecommendReviewId(createdAt, categoryScore, reviewId,categoryList);
 
         Long prevId = null;
+        String imgUrl = null;
         if (result != null) {
             prevId = result.getId();
+            imgUrl = result.getImgUrl();
         }
-        return prevId;
+
+        return new StoreRes.ReviewResult(prevId,imgUrl);
     }
 
 

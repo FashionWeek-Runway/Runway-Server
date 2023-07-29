@@ -203,5 +203,14 @@ public class StoreRes {
         @ApiModelProperty(notes="쇼룸 지역정보",required = true,example = "성수, 서울")
         private String regionInfo;
     }
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReviewResult{
+        private Long reviewId;
+        private String reviewImgUrl;
+    }
 
 }

@@ -32,6 +32,7 @@ public class UserConvertor {
                 .agreeInfo(true)
                 .alarm(true)
                 .status(true)
+                .role("ROLE_USER")
                 .loginDate(LocalDateTime.now())
                 .build();
     }
@@ -62,6 +63,7 @@ public class UserConvertor {
                 .agreeInfo(true)
                 .alarm(true)
                 .status(true)
+                .role("ROLE_USER")
                 .loginDate(LocalDateTime.now())
                 .build();
     }

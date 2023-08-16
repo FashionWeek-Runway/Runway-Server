@@ -33,7 +33,9 @@ public class StoreConvertor {
                 .storePhone(storeResult.getStorePhone())
                 .instagram(storeResult.getInstagram())
                 .webSite(storeResult.getWebsite())
-                .bookmark(checkBookMark).build();
+                .bookmark(checkBookMark)
+                .latitude(storeResult.getLatitude())
+                .longitude(storeResult.getLongitude()).build();
     }
 
     public static StoreRes.StoreReview StoreReviewBuilder(StoreReview review) {

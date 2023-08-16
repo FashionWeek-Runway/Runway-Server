@@ -75,6 +75,11 @@ public class StoreRes {
         @ApiModelProperty(notes = "해당 매장 유저의 북마크 여부",required = true,example = "true")
         private boolean bookmark;
 
+        @ApiModelProperty(notes = "위도", required = true, example = "37.544499")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도", required = true, example = "127.055327")
+        private double longitude;
     }
 
     @Getter

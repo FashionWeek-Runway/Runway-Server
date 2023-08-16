@@ -180,7 +180,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     @Query(value = "select SR.id,\n" +
             "       (select count(*) from ReviewKeep RK where RK.review_id = SR.id)                                                  'bookmarkCnt',\n" +
             "       S.name,\n" +
-            "       SUM(CASE WHEN C.category IN (:categoryList) THEN 1 ELSE 0 END) AS categoryScore,\n" +
+            "      M,\n" +
             "       SR.created_at,SR.img_url'imgUrl'\n" +
             "from StoreReview SR\n" +
             "         join Store S on S.id = SR.store_id\n" +

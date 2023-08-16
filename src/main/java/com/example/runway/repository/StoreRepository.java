@@ -176,7 +176,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "                             join StoreCategory SC on SC.category_id = C.id\n" +
             "                             join Store S2 on SC.store_id = S2.id\n" +
             "                    where S.id = S2.id\n" +
-            "                   )as 'category'\n" +
+            "                   )as 'category',S.latitude, S.longitude\n" +
             "from Store S where S.id=:storeId and S.status=true;",nativeQuery = true)
     StoreInfo getStoreInfo(@Param("storeId") Long storeId);
     interface StoreInfo {
@@ -188,6 +188,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         String getStoreTime();
         String getStorePhone();
         String getInstagram();
+        Double getLatitude();
+        Double getLongitude();
     }
 
 

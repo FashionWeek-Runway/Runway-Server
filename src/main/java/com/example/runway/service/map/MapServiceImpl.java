@@ -87,7 +87,9 @@ public class MapServiceImpl implements MapService {
                         result.getStoreImg(),
                         Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                         result.getStoreName(),
-                        result.getBookmark()
+                        result.getBookmark(),
+                        result.getLatitude(),
+                        result.getLongitude()
                 ))
         );
 
@@ -191,7 +193,9 @@ public class MapServiceImpl implements MapService {
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                 result.getStoreName(),
-                                result.getBookmark()
+                                result.getBookmark(),
+                                result.getLatitude(),
+                                result.getLongitude()
                         ));
                 }
 

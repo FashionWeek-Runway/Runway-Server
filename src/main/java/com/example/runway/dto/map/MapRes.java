@@ -57,6 +57,12 @@ public class MapRes {
 
         private boolean bookmark;
 
+        @ApiModelProperty(notes = "위도", required = true, example = "37.544499")
+        private double latitude;
+
+        @ApiModelProperty(notes = "경도", required = true, example = "127.055327")
+        private double longitude;
+
 
     }
 
@@ -150,5 +156,7 @@ public class MapRes {
         private MapMarkerList mapMarker;
         @ApiModelProperty(notes="쇼룸 하단 스와이프 조회", required = true,example = "")
         private StoreInfo storeInfo;
+
+
     }
 }

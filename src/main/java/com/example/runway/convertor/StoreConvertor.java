@@ -47,7 +47,10 @@ public class StoreConvertor {
                 .storeId(storeResult.getStoreId())
                 .storeImg(storeResult.getStoreImg())
                 .storeName(storeResult.getStoreName())
-                .category(storeCategory).build();
+                .category(storeCategory)
+                .latitude(storeResult.getLatitude())
+                .longitude(storeResult.getLongitude())
+                .build();
     }
 
     public static MapRes.MapMarkerList PositionBuilder(StoreRepository.StoreInfoList storeResult) {

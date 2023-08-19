@@ -112,7 +112,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "       )as 'storeCategory',\n" +
             "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
             "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance," +
-            "IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark' " +
+            "IF((select exists(select * from Keep where Keep.store_id=S.id and Keep.user_id=:userId)),'true','false')'bookmark'," +
+            "S.longitude, " +
+            "S.latitude " +
             "from Store S join StoreCategory SC on S.id = SC.store_id\n" +
             "join Category C on SC.category_id = C.id "  +
             "left join StoreImg SI on S.id = SI.store_id and sequence=1 where C.category IN (:categoryList) and S.status=true group by S.id order by distance ",
@@ -135,7 +137,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query(value = "select S.id'storeId', S.name'storeName', S.address'address'," +
             "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
-            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
+            "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance,longitude,latitude " +
             "    from Store S join Region R on S.region_id = R.id " +
             "    where S.name LIKE concat('%',:content,'%') or S.address LIKE concat('%',:content,'%') or R.region LIKE concat('%',:content,'%') and S.status=true " +
             "    group by S.id order by distance ",nativeQuery = true)
@@ -155,7 +157,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "                 join StoreCategory SC2 on SC2.category_id = C2.id\n" +
             "                 join Store S2 on SC2.store_id = S2.id \n" +
             "        where S2.id = S.id \n" +
-            "       )as 'storeCategory' \n" +
+            "       )as 'storeCategory',longitude,latitude \n" +
             " from Store S join StoreCategory SC on S.id = SC.store_id\n" +
             " join Category C on SC.category_id = C.id "  +
             " left join StoreImg SI on S.id = SI.store_id and sequence=1" +

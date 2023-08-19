@@ -179,9 +179,9 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     @Query(value = "select SR.id,\n" +
             "       (select count(*) from ReviewKeep RK where RK.review_id = SR.id)                                                  'bookmarkCnt',\n" +
-            "       S.name,\n" +
-            "      M,\n" +
-            "       SR.created_at,SR.img_url'imgUrl'\n" +
+            "       S.name, "+
+            "       SUM(CASE WHEN C.category IN (:categoryList) THEN 1 ELSE 0 END) AS categoryScore,\n" +
+            "       SR.created_at, SR.img_url'imgUrl'\n" +
             "from StoreReview SR\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join StoreCategory SC on S.id = SC.store_id\n" +

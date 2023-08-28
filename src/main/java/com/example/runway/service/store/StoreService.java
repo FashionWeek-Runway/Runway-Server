@@ -3,6 +3,7 @@ package com.example.runway.service.store;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeRes;
+import com.example.runway.dto.store.StoreReq;
 import com.example.runway.dto.store.StoreRes;
 
 import java.util.List;
@@ -38,4 +39,6 @@ public interface StoreService {
     void unCheckBookMarkReview(Long userId, Long reviewId);
 
     void checkBookMarkReview(Long userId, Long reviewId);
+
+    void reportStoreInfo(Long storeId, StoreReq.StoreReport storeReport);
 }

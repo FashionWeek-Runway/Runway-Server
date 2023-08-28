@@ -4,6 +4,7 @@ import com.example.runway.common.CommonResponse;
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.store.ReviewReq;
+import com.example.runway.dto.store.StoreReq;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.exception.NotFoundException;
 import com.example.runway.service.store.ReviewService;
@@ -246,6 +247,14 @@ public class StoreController {
         reviewService.postStoreReviewImg(storeId,userId,multipartFile);
 
         return CommonResponse.onSuccess("리뷰 등록 성공");
+    }
+
+    @ApiOperation(value = "03-14 상점 잘못된 정보신고")
+    @PostMapping("/report/{storeId}")
+    private CommonResponse<String> reportStoreInfo(@AuthenticationPrincipal User user, @RequestBody StoreReq.StoreReport storeReport, @PathVariable Long storeId){
+        storeService.reportStoreInfo(storeId,storeReport);
+        return CommonResponse.onSuccess("상점 신고 성공");
+
     }
 
 

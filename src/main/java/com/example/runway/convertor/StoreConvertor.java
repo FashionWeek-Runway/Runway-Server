@@ -1,18 +1,17 @@
 package com.example.runway.convertor;
 
-import com.example.runway.domain.Keep;
-import com.example.runway.domain.KeepOwnerFeed;
-import com.example.runway.domain.Store;
-import com.example.runway.domain.StoreReview;
+import com.example.runway.domain.*;
 import com.example.runway.domain.pk.KeepPk;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.map.MapRes;
+import com.example.runway.dto.store.Message;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.repository.OwnerFeedRepository;
 import com.example.runway.repository.StoreRepository;
 import com.example.runway.repository.StoreReviewRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -128,5 +127,23 @@ public class StoreConvertor {
                         .build())
                 .build();
 
+    }
+
+    public static StoreInfoReport ReportStoreInfo(Store store, String reportReason) {
+        return StoreInfoReport.builder().storeId(store.getId()).reportReason(reportReason).build();
+    }
+
+    public static String MakeDiscordMessage(String name, String storeInfoReport) {
+        return "🚨쇼룸 "+ name + "에 잘못된 정보 신고가 들어왔어욧🚨\n" + storeInfoReport;
+    }
+
+    public static Message MessageBuilder(Store store, String storeInfoReport) {
+        List<Message.Embeds> embedList = new ArrayList<>();
+        embedList.add(Message.Embeds.builder().title("신고 내용").description(storeInfoReport).build());
+        return Message.builder()
+                .content("🚨쇼룸 "+ store.getName() + "에 잘못된 정보 신고가 들어왔어요🚨")
+                .tts(false)
+                .embeds(embedList)
+                .build();
     }
 }

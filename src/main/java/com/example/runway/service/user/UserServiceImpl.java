@@ -9,6 +9,7 @@ import com.example.runway.domain.UserCategory;
 import com.example.runway.domain.pk.UserCategoryPk;
 import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
+import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.exception.BadRequestException;
@@ -118,9 +119,9 @@ public class UserServiceImpl implements UserService {
     public UserRes.ReviewInfo getMyReviewDetail(Long userId, Long reviewId) {
         StoreReviewRepository.GetStoreReview result=storeReviewRepository.getMyReview(reviewId);
 
-        Long prevReviewId = getPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
-        Long nextReviewId = getNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
-        return UserConvertor.MyReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
+        StoreRes.ReviewResult prevReviewId = getPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        StoreRes.ReviewResult nextReviewId = getNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        return UserConvertor.MyReviewDetail(result,prevReviewId,nextReviewId,userId);
     }
 
     @Override
@@ -152,46 +153,54 @@ public class UserServiceImpl implements UserService {
 
         StoreReviewRepository.GetStoreReview result=storeReviewRepository.getMyBookmarkReview(reviewId,userId);
 
-        Long prevReviewId = getBookMarkPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
-        Long nextReviewId = getBookMarkNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        StoreRes.ReviewResult prevReviewId = getBookMarkPrevReviewId(userId, result.getCreatedAt(), result.getReviewId());
+        StoreRes.ReviewResult  nextReviewId = getBookMarkNextReviewId(userId, result.getCreatedAt(), result.getReviewId());
 
-        return UserConvertor.BookMarkReviewDetail(result,new UserRes.ReviewInquiry(prevReviewId,nextReviewId),userId);
+        return UserConvertor.BookMarkReviewDetail(result,prevReviewId,nextReviewId,userId);
     }
 
-    private Long getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult  getBookMarkNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextBookMarkReviewId(createdAt,userId, reviewId);
         Long nextId = null;
+        String imgUrl =  null;
         if (result != null) {
             nextId = result.getId();
+            imgUrl = result.getImgUrl();
         }
-        return nextId;
+        return new StoreRes.ReviewResult(nextId,imgUrl);
     }
 
-    private Long getBookMarkPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult  getBookMarkPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevBookMarkReviewId(createdAt, userId, reviewId);
         Long prevId = null;
+        String imgUrl =  null;
         if (result != null) {
             prevId = result.getId();
+            imgUrl = result.getImgUrl();
         }
-        return prevId;
+        return new StoreRes.ReviewResult(prevId, imgUrl);
     }
 
-    private Long getNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult getNextReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findNextMyReviewId(createdAt,userId, reviewId);
         Long nextId = null;
+        String imgUrl = null;
         if (result != null) {
             nextId = result.getId();
+            imgUrl = result.getImgUrl();
         }
-        return nextId;
+        return new StoreRes.ReviewResult(nextId,imgUrl);
     }
 
-    private Long getPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
+    private StoreRes.ReviewResult getPrevReviewId(Long userId, LocalDateTime createdAt, Long reviewId) {
         StoreReviewRepository.GetReviewId result = storeReviewRepository.findPrevMuReviewId(createdAt, userId, reviewId);
         Long prevId = null;
+        String imgUrl = null;
         if (result != null) {
             prevId = result.getId();
+            imgUrl = result.getImgUrl();
         }
-        return prevId;
+        return new StoreRes.ReviewResult(prevId,imgUrl);
     }
 
     public void saveUserCategoryList(Long userId,List<Long> userCategoryList) {

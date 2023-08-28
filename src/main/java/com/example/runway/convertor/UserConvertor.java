@@ -3,6 +3,7 @@ package com.example.runway.convertor;
 import com.example.runway.domain.Authority;
 import com.example.runway.domain.Social;
 import com.example.runway.domain.User;
+import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserReq;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.repository.StoreReviewRepository;
@@ -31,6 +32,7 @@ public class UserConvertor {
                 .agreeInfo(true)
                 .alarm(true)
                 .status(true)
+                .role("ROLE_USER")
                 .loginDate(LocalDateTime.now())
                 .build();
     }
@@ -61,6 +63,7 @@ public class UserConvertor {
                 .agreeInfo(true)
                 .alarm(true)
                 .status(true)
+                .role("ROLE_USER")
                 .loginDate(LocalDateTime.now())
                 .build();
     }
@@ -80,7 +83,8 @@ public class UserConvertor {
                 .build();
     }
 
-    public static UserRes.ReviewInfo MyReviewDetail(StoreReviewRepository.GetStoreReview result, UserRes.ReviewInquiry reviewInquiry,Long userId) {
+    public static UserRes.ReviewInfo MyReviewDetail(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReview,
+                                                    StoreRes.ReviewResult nextReview,Long userId) {
         return UserRes.ReviewInfo.builder().reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
                 .nickname(result.getNickname())
@@ -89,12 +93,17 @@ public class UserConvertor {
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
                 .bookmarkCnt(result.getBookmarkCnt())
-                .reviewInquiry(reviewInquiry)
+                .reviewInquiry(UserRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReview.getReviewId())
+                        .prevReviewImgUrl(prevReview.getReviewImgUrl())
+                        .nextReviewId(nextReview.getReviewId())
+                        .nextReviewImgUrl(nextReview.getReviewImgUrl()).build())
                 .isMy(userId.equals(result.getUserId()))
                 .build();
     }
 
-    public static UserRes.BookMarkReviewInfo BookMarkReviewDetail(StoreReviewRepository.GetStoreReview result, UserRes.ReviewInquiry reviewInquiry,Long userId) {
+    public static UserRes.BookMarkReviewInfo BookMarkReviewDetail(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReview,
+                                                                  StoreRes.ReviewResult nextReview, Long userId) {
         return UserRes.BookMarkReviewInfo.builder().reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
                 .nickname(result.getNickname())
@@ -103,7 +112,11 @@ public class UserConvertor {
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
                 .bookmarkCnt(result.getBookmarkCnt())
-                .reviewInquiry(reviewInquiry)
+                .reviewInquiry(UserRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReview.getReviewId())
+                        .prevReviewImgUrl(prevReview.getReviewImgUrl())
+                        .nextReviewId(nextReview.getReviewId())
+                        .nextReviewImgUrl(nextReview.getReviewImgUrl()).build())
                 .bookmark(result.getBookMark())
                 .isMy(userId.equals(result.getUserId()))
                 .build();

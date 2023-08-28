@@ -74,9 +74,24 @@ public class HomeRes {
         @ApiModelProperty(notes = "리뷰 내 게시글 유무",required = true,example = "false")
         private boolean isMy;
         @ApiModelProperty(notes = "리뷰 북마크 dba",required = true,example = "false")
-
         private boolean bookmark;
         @ApiModelProperty(notes="쇼룸 리뷰 이전 id, 다음 id",example = "이전 id, 다음 id")
         private UserRes.ReviewInquiry reviewInquiry;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class InstaFeed {
+        private Long feedId;
+
+        private String storeName;
+
+        private String instaLink;
+
+        private List<String> imgList;
+
     }
 }

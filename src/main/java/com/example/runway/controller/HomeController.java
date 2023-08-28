@@ -6,6 +6,7 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.service.instagram.InstagramService;
 import com.example.runway.service.store.ReviewService;
 import com.example.runway.service.store.StoreService;
 import com.example.runway.service.user.UserService;
@@ -30,6 +31,7 @@ public class HomeController {
     private final StoreService storeService;
     private final UserService userService;
     private final ReviewService reviewService;
+    private final InstagramService instagramService;
 
     @ApiOperation(value = "05-02 홈화면 카테고리 선택 🏠 API FRAME HOME_01", notes = "")
     @PatchMapping("/categories")
@@ -94,6 +96,15 @@ public class HomeController {
         HomeRes.ReviewInfo review = reviewService.getRecommendedReview(userId,reviewId);
         reviewService.readReview(reviewId,userId);
         return CommonResponse.onSuccess(review);
+    }
+
+    @ApiOperation(value = "05-05 인스타 피드 조회",notes = "v2 인스타 조회 기능")
+    @GetMapping("/insta")
+    public CommonResponse<PageResponse<List<HomeRes.InstaFeed>>> getInstaFeed(@Parameter(description = "페이지", example = "0") @RequestParam(required = false,defaultValue = "0") @Min(value = 0) int page,
+                                                          @Parameter(description = "페이지 사이즈", example = "10") @RequestParam(required = false,defaultValue = "10")  int size){
+        log.info("get-insta-feed");
+        log.info("api = get-intal-feed-list 05-05");
+        return CommonResponse.onSuccess(instagramService.getInstaFeed(size, page));
     }
 
 

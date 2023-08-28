@@ -43,9 +43,9 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
         String fileName = dirName+"/"+UUID.randomUUID().toString() + ".jpg";
 
-        MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
+        //MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
 
-        byte[] bytes = resizeFile.getBytes();
+        byte[] bytes = multipartFile.getBytes();
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
@@ -74,32 +74,32 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
 
 
-    public List<String> uploadImage(List<MultipartFile> multipartFile){
+    public List<String> uploadImage(List<MultipartFile> multipartFile, String dirName){
         List<String> fileNameList = new ArrayList<>();
 
         multipartFile.forEach(file -> {
             String fileName = null;
             try {
-                fileName = createFileName(file.getOriginalFilename());
+                fileName = dirName + "/"+createFileName(file.getOriginalFilename());
             } catch (ForbiddenException e) {
-                e.printStackTrace();
+                throw new ForbiddenException(FAIL_UPLOAD_IMG);
             }
+
+            byte[] bytes = new byte[0];
+            try {
+                bytes = file.getBytes();
+            } catch (IOException e) {
+                throw new ForbiddenException(FAIL_UPLOAD_IMG);
+            }
+
+
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
 
-            try(InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch(IOException e) {
-                try {
-                    throw new ForbiddenException(FAIL_UPLOAD_IMG);
-                } catch (ForbiddenException ex) {
-                    ex.printStackTrace();
-                }
-            }
+            amazonS3.putObject(new PutObjectRequest(bucket,fileName,new ByteArrayInputStream(bytes),objectMetadata));
 
-            fileNameList.add(fileName);
+            fileNameList.add(amazonS3.getUrl(bucket,fileName).toString());
         });
 
         return fileNameList;
@@ -133,6 +133,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         }
     }
 
+    /*
+
     MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
         try {
             // MultipartFile -> BufferedImage Convert
@@ -164,6 +166,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 리사이즈에 실패했습니다.");
         }
     }
+
+     */
 
 
     private static class CustomMultipartFile implements MultipartFile {

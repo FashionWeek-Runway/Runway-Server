@@ -55,12 +55,12 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     boolean existsByIdAndDeleted(Long reviewId, boolean b);
 
-    @Query(value = "select SR.id from StoreReview SR " +
+    @Query(value = "select SR.id,SR.img_url'imgUrl' from StoreReview SR " +
             " where SR.user_id=:userId and SR.created_at>:createdAt and SR.id != :reviewId and SR.deleted =true " +
             "  order by SR.created_at asc limit 1",nativeQuery = true)
     GetReviewId findPrevMuReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
-    @Query(value = "select SR.id from StoreReview SR" +
+    @Query(value = "select SR.id,SR.img_url'imgUrl' from StoreReview SR" +
             " where SR.user_id=:userId and SR.created_at<:createdAt and SR.id != :reviewId and SR.deleted =true order by created_at desc limit 1",nativeQuery = true)
     GetReviewId findNextMyReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
@@ -81,7 +81,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     GetStoreReview getMyBookmarkReview(@Param("reviewId") Long reviewId,@Param("userId") Long userId);
 
 
-    @Query(value = "select SR.id\n" +
+    @Query(value = "select SR.id,SR.img_url'imgUrl'\n" +
             "from StoreReview SR\n" +
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at < :createdAt\n" +
@@ -89,7 +89,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "   or (created_at = :createdAt AND id > :reviewId)\n" + "order by created_at desc, SR.id desc limit 1",nativeQuery = true)
     GetReviewId findNextBookMarkReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("userId") Long userId,@Param("reviewId") Long reviewId);
 
-    @Query(value = "select SR.id \n" +
+    @Query(value = "select SR.id,SR.img_url'imgUrl' \n" +
             "from StoreReview SR\n" +
             "join ReviewKeep RK on SR.id = RK.review_id " +
             "where RK.user_id=:userId and SR.created_at > :createdAt\n" +
@@ -106,7 +106,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     interface GetCountAllReview {
         int getSize();
     }
-    @Query(value = "select SR.id \n" +
+    @Query(value = "select SR.id,SR.img_url'imgUrl' \n" +
                 "from StoreReview SR  join Store S on SR.store_id = S.id " +
             "join StoreReview SR2 on SR2.store_id=S.id and SR2.id=:reviewId \n" +
                 "where SR.store_id = :storeId\n" +
@@ -117,7 +117,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     StoreReviewRepository.GetReviewId findPrevReviewId(@Param("createdAt") LocalDateTime createdAt,@Param("storeId") Long storeId,@Param("reviewId") Long reviewId);
 
 
-    @Query(value = "select SR.id\n" +
+    @Query(value = "select SR.id,SR.img_url'imgUrl'\n" +
             "from StoreReview SR  " +
             "join Store S on SR.store_id = S.id join StoreReview SR2 on SR2.store_id=S.id and SR2.id=:reviewId\n" +
             "where SR.store_id = :storeId\n" +
@@ -174,13 +174,14 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
 
     interface GetReviewId{
         Long getId();
+        String getImgUrl();
     }
 
     @Query(value = "select SR.id,\n" +
             "       (select count(*) from ReviewKeep RK where RK.review_id = SR.id)                                                  'bookmarkCnt',\n" +
-            "       S.name,\n" +
+            "       S.name, "+
             "       SUM(CASE WHEN C.category IN (:categoryList) THEN 1 ELSE 0 END) AS categoryScore,\n" +
-            "       SR.created_at\n" +
+            "       SR.created_at, SR.img_url'imgUrl'\n" +
             "from StoreReview SR\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join StoreCategory SC on S.id = SC.store_id\n" +
@@ -196,7 +197,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "       (select count(*) from ReviewKeep RK where RK.review_id = SR.id)'bookmarkCnt',\n" +
             "       S.name,\n" +
             "       SUM(CASE WHEN C.category IN (:categoryList) THEN 1 ELSE 0 END) AS categoryScore,\n" +
-            "       SR.created_at\n" +
+            "       SR.created_at,SR.img_url'imgUrl'\n" +
             "from StoreReview SR\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join StoreCategory SC on S.id = SC.store_id\n" +

@@ -22,7 +22,7 @@ public class Workaround implements WebMvcOpenApiTransformationFilter {
 
         Server testServer = new Server();
         testServer.setDescription("test");
-        testServer.setUrl("https://dev.runwayserver.shop");
+        testServer.setUrl("http://runway-dev-env.eba-h3xrns2m.ap-northeast-2.elasticbeanstalk.com");
 
         Server prodServer = new Server();
         prodServer.setDescription("prod");

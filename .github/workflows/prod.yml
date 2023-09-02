@@ -1,4 +1,4 @@
-name: dev Runway API Server CI/CD
+name: PROD Runway API Server CI/CD
 
 on:
   push:

@@ -30,11 +30,11 @@ public class Workaround implements WebMvcOpenApiTransformationFilter {
 
         Server devRealServer = new Server();
         devRealServer.setDescription("devRealServer");
-        devRealServer.setUrl("https://dev.runway-api.net");
+        devRealServer.setUrl("https://dev.runway-api.com");
 
         Server prodRealServer = new Server();
         prodRealServer.setDescription("prodRealServer");
-        prodRealServer.setUrl("https://prod.runway-api.net");
+        prodRealServer.setUrl("https://prod.runway-api.com");
 
         openApi.setServers(Arrays.asList(localServer, testServer,prodServer,devRealServer,prodRealServer));
 

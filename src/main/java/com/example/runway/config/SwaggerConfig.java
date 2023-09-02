@@ -32,8 +32,8 @@ public class SwaggerConfig {
         Server serverLocal = new Server("local", "http://localhost:9000", "for local usages", Collections.emptyList(), Collections.emptyList());
         Server UbuntuServer = new Server("server", "http://runway-dev-env.eba-h3xrns2m.ap-northeast-2.elasticbeanstalk.com", "for dev server", Collections.emptyList(), Collections.emptyList());
         Server ProdServer = new Server("server", "https://prod.runwayserver.shop", "for prod server", Collections.emptyList(), Collections.emptyList());
-        Server DevRealServer = new Server("devServer", "https://dev.runway-api.net", "진짜 개발 서버", Collections.emptyList(), Collections.emptyList());
-        Server ProdRealServer = new Server("prodServer", "https://prod.runway-api.net", "진짜 배포 서버", Collections.emptyList(), Collections.emptyList());
+        Server DevRealServer = new Server("devServer", "https://dev.runway-api.com", "진짜 개발 서버", Collections.emptyList(), Collections.emptyList());
+        Server ProdRealServer = new Server("prodServer", "https://prod.runway-api.com", "진짜 배포 서버", Collections.emptyList(), Collections.emptyList());
 
         return new Docket(DocumentationType.OAS_30)
                 .servers(serverLocal,UbuntuServer,ProdServer,DevRealServer,ProdRealServer)

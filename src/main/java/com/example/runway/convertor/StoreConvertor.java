@@ -165,4 +165,8 @@ public class StoreConvertor {
     public static StoreImg PostStoreImg(Long id, int index, String img) {
         return StoreImg.builder().storeId(id).sequence(index).storeImg(img).build();
     }
+
+    public static StoreCategory StoreCategory(Long storeId, Long categoryId) {
+        return StoreCategory.builder().storeId(storeId).categoryId(categoryId).build();
+    }
 }

@@ -3,6 +3,8 @@ package com.example.runway.dto.admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.List;
+
 public class AdminReq {
     @Getter
     @Setter
@@ -39,5 +41,7 @@ public class AdminReq {
         private double longitude;
 
         private int region;
+
+        private List<Long> categoryList;
     }
 }

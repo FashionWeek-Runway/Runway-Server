@@ -94,4 +94,15 @@ public class HomeRes {
         private List<String> imgList;
 
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PopUp {
+        private Long popUpId;
+
+        private String imgUrl;
+    }
 }

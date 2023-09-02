@@ -6,6 +6,7 @@ import com.example.runway.dto.PageResponse;
 import com.example.runway.dto.home.HomeReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.service.home.PopUpService;
 import com.example.runway.service.instagram.InstagramService;
 import com.example.runway.service.store.ReviewService;
 import com.example.runway.service.store.StoreService;
@@ -32,6 +33,7 @@ public class HomeController {
     private final UserService userService;
     private final ReviewService reviewService;
     private final InstagramService instagramService;
+    private final PopUpService popUpService;
 
     @ApiOperation(value = "05-02 홈화면 카테고리 선택 🏠 API FRAME HOME_01", notes = "")
     @PatchMapping("/categories")
@@ -106,6 +108,13 @@ public class HomeController {
         log.info("api = get-intal-feed-list 05-05");
         return CommonResponse.onSuccess(instagramService.getInstaFeed(size, page));
     }
+
+    @ApiOperation(value = "05-06 홈화면 홈 광고 조회",notes = "v2 홈화면 조회 기능")
+    @GetMapping("/pop-up")
+    public CommonResponse<List<HomeRes.PopUp>> getPopUp(){
+        return CommonResponse.onSuccess(popUpService.getPopUp());
+    }
+
 
 
 

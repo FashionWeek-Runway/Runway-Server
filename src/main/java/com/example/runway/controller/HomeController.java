@@ -111,8 +111,8 @@ public class HomeController {
 
     @ApiOperation(value = "05-06 홈화면 홈 광고 조회",notes = "v2 홈화면 조회 기능")
     @GetMapping("/pop-up")
-    public CommonResponse<List<HomeRes.PopUp>> getPopUp(){
-        return CommonResponse.onSuccess(popUpService.getPopUp());
+    public CommonResponse<List<HomeRes.PopUp>> getPopUp(@AuthenticationPrincipal User user){
+        return CommonResponse.onSuccess(popUpService.getPopUp(user.getId()));
     }
 
 

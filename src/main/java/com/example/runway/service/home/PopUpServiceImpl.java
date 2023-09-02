@@ -14,8 +14,8 @@ import java.util.List;
 public class PopUpServiceImpl implements PopUpService{
     private final PopUpRepository popUpRepository;
     @Override
-    public List<HomeRes.PopUp> getPopUp() {
+    public List<HomeRes.PopUp> getPopUp(Long userId) {
         List<PopUp> popUps = popUpRepository.findAll();
-        return PopUpConvertor.PopUp(popUps);
+        return PopUpConvertor.PopUp(popUps, userId);
     }
 }

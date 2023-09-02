@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PopUpConvertor {
-    public static List<HomeRes.PopUp> PopUp(List<PopUp> popUps) {
+    public static List<HomeRes.PopUp> PopUp(List<PopUp> popUps, Long userId) {
         List<HomeRes.PopUp> popUpList = new ArrayList<>();
 
         popUps.forEach(
                 result -> popUpList.add(
                         new HomeRes.PopUp(
                                 result.getId(),
+                                userId,
                                 result.getImgUrl()
                         )
                 )

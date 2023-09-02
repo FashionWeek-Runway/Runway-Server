@@ -103,6 +103,8 @@ public class HomeRes {
     public static class PopUp {
         private Long popUpId;
 
+        private Long userId;
+
         private String imgUrl;
     }
 }

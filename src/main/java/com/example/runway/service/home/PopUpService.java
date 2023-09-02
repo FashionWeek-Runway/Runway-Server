@@ -5,5 +5,5 @@ import com.example.runway.dto.home.HomeRes;
 import java.util.List;
 
 public interface PopUpService {
-    List<HomeRes.PopUp> getPopUp();
+    List<HomeRes.PopUp> getPopUp(Long id);
 }

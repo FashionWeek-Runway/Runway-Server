@@ -15,4 +15,29 @@ public class AdminReq {
         @Schema(description = "가게 이름", required = true, example = "성수")
         private String storeName;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class StoreInfo {
+        private String storeName;
+
+        private String website;
+
+        private String phoneNumber;
+
+        private String time;
+
+        private String address;
+
+        private String instagramLink;
+
+        private double latitude;
+
+        private double longitude;
+
+        private int region;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.runway.convertor;
 
 import com.example.runway.domain.*;
 import com.example.runway.domain.pk.KeepPk;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.Message;
@@ -145,5 +146,23 @@ public class StoreConvertor {
                 .tts(false)
                 .embeds(embedList)
                 .build();
+    }
+
+    public static Store PostStoreInfo(AdminReq.StoreInfo storeInfo, String imgUrl) {
+        return Store.builder()
+                .name(storeInfo.getStoreName())
+                .website(storeInfo.getWebsite())
+                .phoneNumber(storeInfo.getPhoneNumber())
+                .time(storeInfo.getTime())
+                .instagramLink(storeInfo.getInstagramLink())
+                .latitude(storeInfo.getLatitude())
+                .longitude(storeInfo.getLongitude())
+                .imgUrl(imgUrl)
+                .searchContent(storeInfo.getStoreName())
+                .address(storeInfo.getAddress()).build();
+    }
+
+    public static StoreImg PostStoreImg(Long id, int index, String img) {
+        return StoreImg.builder().storeId(id).sequence(index).storeImg(img).build();
     }
 }

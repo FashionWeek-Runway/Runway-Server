@@ -29,6 +29,8 @@ public class InstagramFeed extends BaseEntity{
     @Column(name = "store_name")
     private String storeName;
 
+    private String description;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "feed_id")
     private List<InstagramImg> instagramImg = new ArrayList<>();

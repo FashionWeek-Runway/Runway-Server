@@ -89,6 +89,8 @@ public class HomeRes {
 
         private String storeName;
 
+        private String description;
+
         private String instaLink;
 
         private List<String> imgList;

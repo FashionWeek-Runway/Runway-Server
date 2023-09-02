@@ -1,0 +1,78 @@
+name: dev Runway API Server CI/CD
+
+on:
+  push:
+    branches: [prod]
+    #tags:
+    # - Dev-Api-v*.*.*
+  workflow_dispatch: # 수동 실행 옵션 (생략)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # action 스크립트가 작동될 OS
+
+    steps: # 작업 단계
+      - name: Checkout source code # 단계별 이름, 구분자로 소스를 가져옴
+        uses: actions/checkout@v2
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
+
+      - run: touch ./src/main/resources/AuthKey_3374Y294XA.p8
+      - run: echo "${{ secrets.AUTH_KEY }}" > ./src/main/resources/AuthKey_3374Y294XA.p8
+      - run: cat ./src/main/resources/AuthKey_3374Y294XA.p8
+
+      - run: touch ./src/main/resources/application-prod.properties
+      - run: echo "${{ secrets.APPLICATION_PROD_BEANSTALK }}" > ./src/main/resources/application-prod.properties
+      - run: cat ./src/main/resources/application-prod.properties
+
+      - name: create-fcm-json
+        id: create-fcm-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "runwayAccessKey.json"
+          json: ${{ secrets.FCM_JSON }}
+          dir: "./src/main/resources/"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+        shell: bash
+
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDDTHHmm
+          utcOffset: "+09:00"
+
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp build/libs/*.jar deploy/runway-prod-api.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions-prod deploy/.ebextensions
+          cp -r .platform deploy/.platform
+          cd deploy && zip -r runway-server-api-${{steps.current-time.outputs.formattedTime}}-${{github.sha}} .
+
+      - name: Deploy Consumer to EB
+        uses: einaregilsson/beanstalk-deploy@v19
+        with:
+          aws_access_key: ${{ secrets.AWS_BEAN_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_BEAN_SECRET_ACCESS_KEY }}
+          application_name: Runway-Prod
+          environment_name: Runway-Prod-env
+          version_label: runway-server-api-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}
+          region: ap-northeast-2
+          deployment_package: deploy/runway-server-api-${{steps.current-time.outputs.formattedTime}}-${{github.sha}}.zip
+          wait_for_deployment: false

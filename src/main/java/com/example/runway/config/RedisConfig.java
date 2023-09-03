@@ -26,6 +26,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
+
         RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration();
         clusterConfiguration.clusterNode(host, port);
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
@@ -34,7 +35,9 @@ public class RedisConfig {
                                 .connectTimeout(Duration.ofMillis(1000L)).build())
                         .build())
                 .commandTimeout(Duration.ofSeconds(1000L)).build();
-        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);    }
+
+        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
+    }
 
     @Bean
     public RedisTemplate<String, String> redisTemplate() {

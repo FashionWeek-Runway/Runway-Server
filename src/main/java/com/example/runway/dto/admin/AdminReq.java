@@ -3,6 +3,8 @@ package com.example.runway.dto.admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.List;
+
 public class AdminReq {
     @Getter
     @Setter
@@ -22,7 +24,7 @@ public class AdminReq {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StoreInfo {
-        private String storeName;
+        private String name;
 
         private String website;
 
@@ -38,6 +40,8 @@ public class AdminReq {
 
         private double longitude;
 
-        private int region;
+        private Long region;
+
+        private List<Long> categoryList;
     }
 }

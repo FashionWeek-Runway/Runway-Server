@@ -42,6 +42,7 @@ public class StoreServiceImpl implements StoreService{
     private final StoreInfoReportRepository storeInfoReportRepository;
     private final DiscordService discordService;
     private final AwsS3Service awsS3Service;
+    private final StoreCategoryRepository storeCategoryRepository;
 
 
     public List<String> getCategoryList(Long userId){
@@ -172,12 +173,19 @@ public class StoreServiceImpl implements StoreService{
         Store store = storeRepository.save(StoreConvertor.PostStoreInfo(storeInfo, imgUrl));
         List<StoreImg> storeImgs =new ArrayList<>();
 
-        List<String> imgUrlList = awsS3Service.uploadImage(storeImg, "store");
+        List<String> imgUrlList = awsS3Service.uploadImages(storeImg, "store");
 
         for(int i = 0; i<imgUrlList.size();i++){
+            System.out.println(imgUrlList.get(i));
             storeImgs.add(StoreConvertor.PostStoreImg(store.getId(), i+1, imgUrlList.get(i)));
         }
+
+        List<StoreCategory> storeCategories = new ArrayList<>();
+        for (Long categoryId : storeInfo.getCategoryList()){
+            storeCategories.add(StoreConvertor.StoreCategory(store.getId(), categoryId));
+        }
         storeImgRepository.saveAll(storeImgs);
+        storeCategoryRepository.saveAll(storeCategories);
     }
 
 

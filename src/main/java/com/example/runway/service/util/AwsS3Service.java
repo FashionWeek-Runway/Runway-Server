@@ -16,4 +16,5 @@ public interface AwsS3Service {
 
     String uploadByteCode(byte[] bytes, String review);
 
+    List<String> uploadImages(List<MultipartFile> storeImg, String store);
 }

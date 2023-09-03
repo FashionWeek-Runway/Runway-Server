@@ -150,7 +150,7 @@ public class StoreConvertor {
 
     public static Store PostStoreInfo(AdminReq.StoreInfo storeInfo, String imgUrl) {
         return Store.builder()
-                .name(storeInfo.getStoreName())
+                .name(storeInfo.getName())
                 .website(storeInfo.getWebsite())
                 .phoneNumber(storeInfo.getPhoneNumber())
                 .time(storeInfo.getTime())
@@ -158,7 +158,8 @@ public class StoreConvertor {
                 .latitude(storeInfo.getLatitude())
                 .longitude(storeInfo.getLongitude())
                 .imgUrl(imgUrl)
-                .searchContent(storeInfo.getStoreName())
+                .searchContent(storeInfo.getName())
+                .regionId(storeInfo.getRegion())
                 .address(storeInfo.getAddress()).build();
     }
 

@@ -173,9 +173,10 @@ public class StoreServiceImpl implements StoreService{
         Store store = storeRepository.save(StoreConvertor.PostStoreInfo(storeInfo, imgUrl));
         List<StoreImg> storeImgs =new ArrayList<>();
 
-        List<String> imgUrlList = awsS3Service.uploadImage(storeImg, "store");
+        List<String> imgUrlList = awsS3Service.uploadImages(storeImg, "store");
 
         for(int i = 0; i<imgUrlList.size();i++){
+            System.out.println(imgUrlList.get(i));
             storeImgs.add(StoreConvertor.PostStoreImg(store.getId(), i+1, imgUrlList.get(i)));
         }
 

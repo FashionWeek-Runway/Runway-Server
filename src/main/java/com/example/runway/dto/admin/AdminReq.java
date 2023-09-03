@@ -24,7 +24,7 @@ public class AdminReq {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StoreInfo {
-        private String storeName;
+        private String name;
 
         private String website;
 
@@ -40,7 +40,7 @@ public class AdminReq {
 
         private double longitude;
 
-        private int region;
+        private Long region;
 
         private List<Long> categoryList;
     }

@@ -61,6 +61,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             nativeQuery = true)
     Page<StoreInfoList> getBookMarkInfo(@Param("userId") Long userId, @Param("latitude") double latitude, @Param("longitude") double longitude, Pageable pageable);
 
+    List<Store> findByRegionIdAndStatus(Long regionId, boolean status);
+
 
     interface GetMapList{
         Long getStoreId();
@@ -137,9 +139,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             "   (6371*acos(cos(radians(:latitude))*cos(radians(S.latitude))*cos(radians(S.longitude)" +
             "   -radians(:longitude))+sin(radians(:latitude))*sin(radians(S.latitude))))as distance " +
             "    from Store S join Region R on S.region_id = R.id " +
-            "    where S.name LIKE concat('%',:content,'%') or S.address LIKE concat('%',:content,'%') or R.region LIKE concat('%',:content,'%') and S.status=true " +
+            "    where (S.name LIKE concat('%',:content,'%') or S.address LIKE concat('%',:content,'%') or R.region LIKE concat('%',:content,'%') )and S.status= :status " +
             "    group by S.id order by distance ",nativeQuery = true)
-    List<StoreInfoList> getStoreSearch(@Param("latitude") double latitude,@Param("longitude") double longitude,@Param("content") String content );
+    List<StoreInfoList> getStoreSearch(@Param("latitude") double latitude, @Param("longitude") double longitude, @Param("content") String content, @Param("status") boolean status);
     interface StoreSearch {
         Long getStoreId();
         String getStoreName();

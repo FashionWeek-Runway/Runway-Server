@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface RegionRepository extends JpaRepository<Region, Long> {
 
-    List<Region> findByRegionContaining(String content);
-
-
+    List<Region> findByRegionContainingAndStatus(String content, boolean b);
 }

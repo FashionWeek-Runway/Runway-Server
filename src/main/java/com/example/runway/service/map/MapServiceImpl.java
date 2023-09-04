@@ -100,7 +100,7 @@ public class MapServiceImpl implements MapService {
     @Override
     public MapRes.SearchList getStoreBySearch(MapReq.SearchStore searchStore) {
 
-        List<Region> region=regionRepository.findByRegionContaining(searchStore.getContent());
+        List<Region> region=regionRepository.findByRegionContainingAndStatus(searchStore.getContent(), true);
         List<MapRes.RegionSearchList> searchList=new ArrayList<>();
 
         region.forEach(
@@ -116,7 +116,7 @@ public class MapServiceImpl implements MapService {
         );
 
 
-        List<StoreRepository.StoreInfoList> storeSearchListResult=storeRepository.getStoreSearch(searchStore.getLatitude(),searchStore.getLongitude(),searchStore.getContent());
+        List<StoreRepository.StoreInfoList> storeSearchListResult=storeRepository.getStoreSearch(searchStore.getLatitude(),searchStore.getLongitude(),searchStore.getContent(),true);
         List<MapRes.StoreSearchList> storeSearchList=new ArrayList<>();
 
         storeSearchListResult.forEach(
@@ -148,7 +148,7 @@ public class MapServiceImpl implements MapService {
     @Override
     public List<MapRes.MapMarkerList> getStoreByRegion(Long regionId) {
 
-        List<Store> store=storeRepository.findByRegionId(regionId);
+        List<Store> store=storeRepository.findByRegionIdAndStatus(regionId, true);
         List<MapRes.MapMarkerList> markerList=new ArrayList<>();
 
         store.forEach(

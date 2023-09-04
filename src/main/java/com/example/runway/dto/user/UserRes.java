@@ -272,8 +272,13 @@ public class UserRes {
     public static class ReviewInquiry{
         @ApiModelProperty(notes="이전 리뷰 ID",required = false,example = "1")
         private Long prevReviewId;
+        @ApiModelProperty(notes="이전 리뷰 이미지",required = false,example = "이미지 url")
+        private String prevReviewImgUrl;
+
         @ApiModelProperty(notes="다음 리뷰 ID",required = false,example = "1")
         private Long nextReviewId;
+        @ApiModelProperty(notes="다음 리뷰 이미지",required = false,example = "이미지 url")
+        private String nextReviewImgUrl;
     }
 
 

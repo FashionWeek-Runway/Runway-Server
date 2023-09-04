@@ -1,18 +1,18 @@
 package com.example.runway.convertor;
 
-import com.example.runway.domain.Keep;
-import com.example.runway.domain.KeepOwnerFeed;
-import com.example.runway.domain.Store;
-import com.example.runway.domain.StoreReview;
+import com.example.runway.domain.*;
 import com.example.runway.domain.pk.KeepPk;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.map.MapRes;
+import com.example.runway.dto.store.Message;
 import com.example.runway.dto.store.StoreRes;
 import com.example.runway.dto.user.UserRes;
 import com.example.runway.repository.OwnerFeedRepository;
 import com.example.runway.repository.StoreRepository;
 import com.example.runway.repository.StoreReviewRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,7 +33,9 @@ public class StoreConvertor {
                 .storePhone(storeResult.getStorePhone())
                 .instagram(storeResult.getInstagram())
                 .webSite(storeResult.getWebsite())
-                .bookmark(checkBookMark).build();
+                .bookmark(checkBookMark)
+                .latitude(storeResult.getLatitude())
+                .longitude(storeResult.getLongitude()).build();
     }
 
     public static StoreRes.StoreReview StoreReviewBuilder(StoreReview review) {
@@ -45,7 +47,10 @@ public class StoreConvertor {
                 .storeId(storeResult.getStoreId())
                 .storeImg(storeResult.getStoreImg())
                 .storeName(storeResult.getStoreName())
-                .category(storeCategory).build();
+                .category(storeCategory)
+                .latitude(storeResult.getLatitude())
+                .longitude(storeResult.getLongitude())
+                .build();
     }
 
     public static MapRes.MapMarkerList PositionBuilder(StoreRepository.StoreInfoList storeResult) {
@@ -81,7 +86,7 @@ public class StoreConvertor {
         return KeepOwnerFeed.builder().feedId(feedId).userId(userId).build();
     }
 
-    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId, Long userId) {
+    public static StoreRes.ReviewInfo StoreReview(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReviewId, StoreRes.ReviewResult nextReviewId, Long userId) {
         return StoreRes.ReviewInfo.builder()
                 .reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
@@ -90,14 +95,19 @@ public class StoreConvertor {
                 .storeId(result.getStoreId())
                 .storeName(result.getStoreName())
                 .regionInfo(result.getRegionInfo())
-                .reviewInquiry(new StoreRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .reviewInquiry(StoreRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReviewId.getReviewId())
+                        .prevReviewImgUrl(prevReviewId.getReviewImgUrl())
+                        .nextReviewId(nextReviewId.getReviewId())
+                        .nextReviewImgUrl(nextReviewId.getReviewImgUrl())
+                        .build())
                 .bookmark(result.getBookMark())
                 .bookmarkCnt(result.getBookmarkCnt())
                 .isMy(userId.equals(result.getUserId()))
                 .build();
     }
 
-    public static HomeRes.ReviewInfo StoreReviewRecommend(StoreReviewRepository.GetStoreReview result, Long prevReviewId, Long nextReviewId, Long userId) {
+    public static HomeRes.ReviewInfo StoreReviewRecommend(StoreReviewRepository.GetStoreReview result, StoreRes.ReviewResult prevReviewId, StoreRes.ReviewResult nextReviewId, Long userId) {
         return HomeRes.ReviewInfo.builder()
                 .reviewId(result.getReviewId())
                 .profileImgUrl(result.getProfileImgUrl())
@@ -110,8 +120,54 @@ public class StoreConvertor {
                 .regionInfo(result.getRegionInfo())
                 .isMy(result.getUserId().equals(userId))
                 .bookmark(result.getBookMark())
-                .reviewInquiry(new UserRes.ReviewInquiry(prevReviewId,nextReviewId))
+                .reviewInquiry(UserRes.ReviewInquiry.builder()
+                        .prevReviewId(prevReviewId.getReviewId())
+                        .prevReviewImgUrl(prevReviewId.getReviewImgUrl())
+                        .nextReviewId(nextReviewId.getReviewId())
+                        .nextReviewImgUrl(nextReviewId.getReviewImgUrl())
+                        .build())
                 .build();
 
+    }
+
+    public static StoreInfoReport ReportStoreInfo(Store store, String reportReason) {
+        return StoreInfoReport.builder().storeId(store.getId()).reportReason(reportReason).build();
+    }
+
+    public static String MakeDiscordMessage(String name, String storeInfoReport) {
+        return "🚨쇼룸 "+ name + "에 잘못된 정보 신고가 들어왔어욧🚨\n" + storeInfoReport;
+    }
+
+    public static Message MessageBuilder(Store store, String storeInfoReport) {
+        List<Message.Embeds> embedList = new ArrayList<>();
+        embedList.add(Message.Embeds.builder().title("신고 내용").description(storeInfoReport).build());
+        return Message.builder()
+                .content("🚨쇼룸 "+ store.getName() + "에 잘못된 정보 신고가 들어왔어요🚨")
+                .tts(false)
+                .embeds(embedList)
+                .build();
+    }
+
+    public static Store PostStoreInfo(AdminReq.StoreInfo storeInfo, String imgUrl) {
+        return Store.builder()
+                .name(storeInfo.getName())
+                .website(storeInfo.getWebsite())
+                .phoneNumber(storeInfo.getPhoneNumber())
+                .time(storeInfo.getTime())
+                .instagramLink(storeInfo.getInstagramLink())
+                .latitude(storeInfo.getLatitude())
+                .longitude(storeInfo.getLongitude())
+                .imgUrl(imgUrl)
+                .searchContent(storeInfo.getName())
+                .regionId(storeInfo.getRegion())
+                .address(storeInfo.getAddress()).build();
+    }
+
+    public static StoreImg PostStoreImg(Long id, int index, String img) {
+        return StoreImg.builder().storeId(id).sequence(index).storeImg(img).build();
+    }
+
+    public static StoreCategory StoreCategory(Long storeId, Long categoryId) {
+        return StoreCategory.builder().storeId(storeId).categoryId(categoryId).build();
     }
 }

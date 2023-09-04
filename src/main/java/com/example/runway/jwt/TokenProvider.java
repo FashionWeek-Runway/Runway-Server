@@ -113,6 +113,8 @@ public class TokenProvider implements InitializingBean {
         Optional<User> users=userRepository.findById(userId);
         String userName = users.get().getUsername();
 
+        System.out.println(users.get().getAuthorities());
+
 
 
         return new UsernamePasswordAuthenticationToken(users.get(),"",users.get().getAuthorities());
@@ -129,6 +131,8 @@ public class TokenProvider implements InitializingBean {
             Long userId = claims.getBody().get("userId",Long.class);
 
             String expiredAt= redisService.getValues(token);
+
+            System.out.println(userId);
 
 
             if(expiredAt==null) return true;

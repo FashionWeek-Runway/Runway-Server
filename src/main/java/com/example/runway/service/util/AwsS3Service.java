@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AwsS3Service {
-    List<String> uploadImage(List<MultipartFile> multipartFile);
+    List<String> uploadImage(List<MultipartFile> multipartFile, String dirName);
     void deleteImage(String fileName);
     String createFileName(String fileName) throws ForbiddenException;
     String getFileExtension(String fileName) throws ForbiddenException;
@@ -16,4 +16,5 @@ public interface AwsS3Service {
 
     String uploadByteCode(byte[] bytes, String review);
 
+    List<String> uploadImages(List<MultipartFile> storeImg, String store);
 }

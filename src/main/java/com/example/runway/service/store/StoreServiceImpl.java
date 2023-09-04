@@ -4,20 +4,29 @@ import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.*;
 import com.example.runway.domain.pk.ReviewKeepPk;
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
+import com.example.runway.dto.store.StoreReq;
 import com.example.runway.dto.store.StoreRes;
+import com.example.runway.exception.BaseException;
 import com.example.runway.repository.*;
 import com.example.runway.service.util.AwsS3Service;
+import com.example.runway.service.util.DiscordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.example.runway.constants.CommonResponseStatus.NOT_EXIST_STORE;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +39,10 @@ public class StoreServiceImpl implements StoreService{
     private final KeepOwnerFeedRepository keepOwnerFeedRepository;
     private final UserCategoryRepository userCategoryRepository;
     private final ReviewKeepRepository reviewKeepRepository;
+    private final StoreInfoReportRepository storeInfoReportRepository;
+    private final DiscordService discordService;
+    private final AwsS3Service awsS3Service;
+    private final StoreCategoryRepository storeCategoryRepository;
 
 
     public List<String> getCategoryList(Long userId){
@@ -134,8 +147,46 @@ public class StoreServiceImpl implements StoreService{
         reviewKeepRepository.save(reviewKeep);
     }
 
+    @Override
+    public void reportStoreInfo(Long storeId, StoreReq.StoreReport storeReport) {
+        String reportReason = "";
 
+        Store store=storeRepository.findByIdAndStatus(storeId,true).orElseThrow(() ->
+                new BaseException(NOT_EXIST_STORE));
 
+        for (int index = 0; index < storeReport.getReportReason().size()-1; index++){
+            reportReason += StoreReportReason.getValueByIndex(storeReport.getReportReason().get(index)) + ", ";
+        }
+
+        reportReason+=StoreReportReason.getValueByIndex(storeReport.getReportReason().get(storeReport.getReportReason().size()-1));
+
+        StoreInfoReport storeInfoReport = StoreConvertor.ReportStoreInfo(store,reportReason);
+        storeInfoReportRepository.save(storeInfoReport);
+
+        discordService.sendMsg(store,reportReason);
+    }
+
+    @Override
+    @Transactional
+    public void postStore(AdminReq.StoreInfo storeInfo, MultipartFile storePresentImg, List<MultipartFile> storeImg) throws IOException {
+        String imgUrl = awsS3Service.upload(storePresentImg, "store");
+        Store store = storeRepository.save(StoreConvertor.PostStoreInfo(storeInfo, imgUrl));
+        List<StoreImg> storeImgs =new ArrayList<>();
+
+        List<String> imgUrlList = awsS3Service.uploadImages(storeImg, "store");
+
+        for(int i = 0; i<imgUrlList.size();i++){
+            System.out.println(imgUrlList.get(i));
+            storeImgs.add(StoreConvertor.PostStoreImg(store.getId(), i+1, imgUrlList.get(i)));
+        }
+
+        List<StoreCategory> storeCategories = new ArrayList<>();
+        for (Long categoryId : storeInfo.getCategoryList()){
+            storeCategories.add(StoreConvertor.StoreCategory(store.getId(), categoryId));
+        }
+        storeImgRepository.saveAll(storeImgs);
+        storeCategoryRepository.saveAll(storeCategories);
+    }
 
 
     private List<String> getStoreImgList(Long storeId) {

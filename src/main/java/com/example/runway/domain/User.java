@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -97,9 +98,14 @@ public class User extends BaseEntity implements UserDetails{
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
 
+    @Column(name = "role")
+    private String role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for(String role : role.split(","))
+            authorities.add(new SimpleGrantedAuthority(role));
+        return authorities;
     }
 
     public void updateToken(String fcmToken) {

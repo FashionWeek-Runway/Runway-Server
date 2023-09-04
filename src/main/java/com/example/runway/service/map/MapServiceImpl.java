@@ -74,10 +74,10 @@ public class MapServiceImpl implements MapService {
             storeResult=storeRepository.getBookMarkInfo(userId,filterMap.getLatitude(),filterMap.getLongitude(),pageReq);
         }
         else if(filterMap.getCategory().size()==0){
-            storeResult = storeRepository.getStoreInfoFilter(CATEGORY,pageReq, filterMap.getLatitude(), filterMap.getLongitude(),userId);
+            storeResult = storeRepository.getStoreInfoFilter(CATEGORY, pageReq, filterMap.getLatitude(), filterMap.getLongitude(),userId);
         }
         else{
-            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(),pageReq,filterMap.getLatitude(),filterMap.getLongitude(),userId);
+            storeResult= storeRepository.getStoreInfoFilter(filterMap.getCategory(), pageReq, filterMap.getLatitude(), filterMap.getLongitude(),userId);
         }
 
 
@@ -87,7 +87,9 @@ public class MapServiceImpl implements MapService {
                         result.getStoreImg(),
                         Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                         result.getStoreName(),
-                        result.getBookmark()
+                        result.getBookmark(),
+                        result.getLatitude(),
+                        result.getLongitude()
                 ))
         );
 
@@ -191,7 +193,9 @@ public class MapServiceImpl implements MapService {
                                 result.getStoreImg(),
                                 Stream.of(result.getStoreCategory().split(",")).collect(Collectors.toList()),
                                 result.getStoreName(),
-                                result.getBookmark()
+                                result.getBookmark(),
+                                result.getLatitude(),
+                                result.getLongitude()
                         ));
                 }
 

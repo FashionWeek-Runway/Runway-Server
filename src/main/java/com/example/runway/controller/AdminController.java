@@ -60,4 +60,6 @@ public class AdminController {
         return CommonResponse.onSuccess("성공");
     }
 
+    //@Operation(summary = "삭제")
+
 }

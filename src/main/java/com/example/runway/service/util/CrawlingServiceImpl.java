@@ -45,7 +45,8 @@ public class CrawlingServiceImpl implements CrawlingService{
 
         try {
             document = conn.get();
-        } catch (IOException e) {
+            Thread.sleep(200); //
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -75,7 +76,7 @@ public class CrawlingServiceImpl implements CrawlingService{
                 storeBlogList.add(storeBlog);
                 cnt++;
             }
-            if(cnt==6){
+            if(cnt==10){
                 break;
             }
 

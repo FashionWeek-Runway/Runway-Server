@@ -75,7 +75,7 @@ public class CrawlingServiceImpl implements CrawlingService{
                 storeBlogList.add(storeBlog);
                 cnt++;
             }
-            if(cnt==10){
+            if(cnt==6){
                 break;
             }
 

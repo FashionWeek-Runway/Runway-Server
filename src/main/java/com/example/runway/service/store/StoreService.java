@@ -46,4 +46,6 @@ public interface StoreService {
     void reportStoreInfo(Long storeId, StoreReq.StoreReport storeReport);
 
     void postStore(AdminReq.StoreInfo storeInfo, MultipartFile storePresentImg, List<MultipartFile> storeImg) throws IOException;
+
+    List<StoreRes.StoreBlog> getStoreScrapList(Long storeId);
 }

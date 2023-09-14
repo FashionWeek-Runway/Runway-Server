@@ -92,7 +92,7 @@ public class StoreController {
         log.info("api = get-store-blog 03-04,storeId = {}",storeId);
 
 
-        List<StoreRes.StoreBlog> storeBlog=crawlingService.getStoreBlog(storeName,storeId);
+        List<StoreRes.StoreBlog> storeBlog=storeService.getStoreScrapList(storeId);
 
         return CommonResponse.onSuccess(storeBlog);
     }

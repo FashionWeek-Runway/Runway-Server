@@ -43,6 +43,7 @@ public class StoreServiceImpl implements StoreService{
     private final DiscordService discordService;
     private final AwsS3Service awsS3Service;
     private final StoreCategoryRepository storeCategoryRepository;
+    private final StoreScrapRepository storeScrapRepository;
 
 
     public List<String> getCategoryList(Long userId){
@@ -186,6 +187,19 @@ public class StoreServiceImpl implements StoreService{
         }
         storeImgRepository.saveAll(storeImgs);
         storeCategoryRepository.saveAll(storeCategories);
+    }
+
+    @Override
+    public List<StoreRes.StoreBlog> getStoreScrapList(Long storeId) {
+        List<StoreScrap> storeScraps = storeScrapRepository.findByStoreId(storeId);
+        List<StoreRes.StoreBlog> storeBlogList = new ArrayList<>();
+
+        storeScraps.forEach(
+                result -> storeBlogList.add(
+                        StoreConvertor.StoreScrap(result)
+                )
+        );
+        return storeBlogList;
     }
 
 

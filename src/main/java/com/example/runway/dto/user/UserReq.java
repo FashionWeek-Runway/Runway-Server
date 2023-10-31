@@ -203,4 +203,14 @@ public class UserReq {
         @ApiModelProperty(notes ="19 애플코드", required = true, example = "runway8925!")
         private String code;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-20 FCM 토큰 저장 API Request🔑")
+    public static class FcmToken {
+        private String fcmToken;
+    }
 }

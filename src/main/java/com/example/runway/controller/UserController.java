@@ -268,4 +268,12 @@ public class UserController {
         authService.revoke(appleCode.getCode());
         return CommonResponse.onSuccess("회원 탈퇴 완료");
     }
+
+
+    @ApiOperation(value = "02-20 FCM 토큰 등록👤 ",notes = "FCM token 등록")
+    @PatchMapping("/apple/active")
+    public CommonResponse<String> postFcmToken(@AuthenticationPrincipal User user, @RequestBody UserReq.FcmToken fcmToken ){
+        userService.postFcmToken(user, fcmToken);
+        return CommonResponse.onSuccess("회원 탈퇴 완료");
+    }
 }

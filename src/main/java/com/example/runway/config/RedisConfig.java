@@ -2,6 +2,7 @@ package com.example.runway.config;
 
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,17 @@ import java.time.Duration;
 
 @Configuration
 @EnableRedisRepositories
+@Slf4j
 public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
 
     @Value("${spring.redis.port}")
     private int port;
+
+    @Value("${host.profile}")
+    private String profile;
+
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -35,8 +41,14 @@ public class RedisConfig {
                                 .connectTimeout(Duration.ofMillis(1000L)).build())
                         .build())
                 .commandTimeout(Duration.ofSeconds(1000L)).build();
-        //return  new LettuceConnectionFactory(host, port);
-        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
+        if(profile.equals("prod")){
+            log.info("Prod profile");
+            return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
+        }
+        else {
+            log.info("Dev profile");
+            return new LettuceConnectionFactory(host, port);
+        }
     }
 
     @Bean

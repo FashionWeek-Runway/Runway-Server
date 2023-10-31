@@ -342,5 +342,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public void deleteFcmToken(User user) {
+        user.setFcmToken(null);
+        userRepository.save(user);
+    }
+
 
 }

@@ -75,32 +75,15 @@ public class UserController {
         log.info("api = logout 02-02");
         //탈취된 토큰인지 검증
         Long userId = user.getId();
-
-        //헤더에서 토큰 가져오기
         String accessToken = tokenProvider.getJwt();
-        //jwt 에서 로그아웃 처리 & 오류처리 &
+
         tokenProvider.logOut(userId,accessToken);
-        //TODO : FCM 설정 시 메소드 주석 삭제
-        //logInService.deleteFcmToken(userId);
+
+        userService.deleteFcmToken(user);
         String result="로그아웃 성공";
         return CommonResponse.onSuccess(result);
     }
 
-    /*
-    // 토큰이 유효하다는 가정 하
-    // 만약 토큰이 만료되었다면 재발급 요청
-    @ApiOperation(value = "02-03 유저 위치 저장 👤", notes = "위치 저장 API")
-    @ResponseBody
-    @PostMapping("/location")
-    public CommonResponse<String> postUserLocation(@AuthenticationPrincipal User user, @RequestBody UserReq.UserLocation userLocation){
-
-        log.info("post-location");
-        log.info("api = post-location 02-03");
-        userService.postUserLocation(user,userLocation);
-        return CommonResponse.onSuccess("위치 정보 저장 성공");
-
-    }
-     */
 
     @ApiOperation(value = "02-03 마이페이지 조회(사장님 여부까지 포함) 👤 FRAME MY",notes = "마이페이지 조회")
     @GetMapping("/")

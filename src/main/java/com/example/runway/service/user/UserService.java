@@ -45,4 +45,6 @@ public interface UserService {
     void unActiveReview(User user);
 
     void postFcmToken(User user, UserReq.FcmToken fcmToken);
+
+    void deleteFcmToken(User user);
 }

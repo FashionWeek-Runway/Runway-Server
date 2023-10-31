@@ -26,7 +26,7 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${host.profile}")
+    @Value("${spring.profiles.active}")
     private String profile;
 
 
@@ -41,6 +41,7 @@ public class RedisConfig {
                                 .connectTimeout(Duration.ofMillis(1000L)).build())
                         .build())
                 .commandTimeout(Duration.ofSeconds(1000L)).build();
+        log.info(profile);
         if(profile.equals("prod")){
             log.info("Prod profile");
             return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);

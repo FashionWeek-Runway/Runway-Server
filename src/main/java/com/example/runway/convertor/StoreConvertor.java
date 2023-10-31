@@ -170,4 +170,14 @@ public class StoreConvertor {
     public static StoreCategory StoreCategory(Long storeId, Long categoryId) {
         return StoreCategory.builder().storeId(storeId).categoryId(categoryId).build();
     }
+
+    public static StoreRes.StoreBlog StoreScrap(StoreScrap result) {
+        return StoreRes.StoreBlog.builder()
+                .imgUrl(result.getImgUrl())
+                .imgCnt(result.getImgCnt())
+                .title(result.getTitle())
+                .webUrl(result.getWebUrl())
+                .content(result.getContent())
+                .build();
+    }
 }

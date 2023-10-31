@@ -41,24 +41,6 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
     private final AmazonS3 amazonS3;
 
-    public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
-        String fileName = dirName+"/"+UUID.randomUUID().toString() + ".jpg";
-
-        //MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
-
-        byte[] bytes = multipartFile.getBytes();
-
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("image/jpeg");
-        metadata.setContentLength(bytes.length);
-        amazonS3.putObject(bucket, fileName, byteArrayInputStream, metadata);
-
-
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
 
     @Override
     public String uploadByteCode(byte[] bytes, String dirName) {
@@ -232,7 +214,32 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         }
     }
 
+    public String upload(MultipartFile file,String dirName) throws ForbiddenException, IOException {
+        String fileName = null;
+        try {
+            fileName = dirName + "/" + createFileNames(file.getOriginalFilename());
+        } catch (ForbiddenException e) {
+            throw new ForbiddenException(FAIL_UPLOAD_IMG);
+        }
+        System.out.println(fileName);
 
+        byte[] bytes = new byte[0];
+        try {
+            bytes = file.getBytes();
+            // Convert the image to jpg
+        } catch (IOException e) {
+            throw new ForbiddenException(FAIL_UPLOAD_IMG);
+        }
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(bytes.length);
+        objectMetadata.setContentType("image/jpeg"); // Set content type to jpeg
+
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, new ByteArrayInputStream(bytes), objectMetadata));
+
+
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
 
     public String createFileNames(String fileName) throws ForbiddenException {
         // Check if the provided fileName has a valid extension
@@ -258,7 +265,8 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".heic", ".heic의 사본"};
 
         for (String extension : validExtensions) {
-            if (extension.equalsIgnoreCase(fileExtension)) {
+            if (extension.equalsIgnoreCase(fileExtension)){
+                System.out.println(fileExtension);
                 return true;
             }
         }

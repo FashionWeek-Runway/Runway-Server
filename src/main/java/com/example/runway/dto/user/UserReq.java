@@ -85,7 +85,6 @@ public class UserReq {
     @NoArgsConstructor
     @ApiModel(value = "01-10 소셜 회원가입 Request🔑")
     public static class SocialSignUp {
-        @ApiModelProperty(notes = "소셜 type",required = true,example = "KAKAO or APPLE")
         private String type;
 
         @ApiModelProperty(notes = "소셜 id", required = true, example = "214124215125")
@@ -203,5 +202,15 @@ public class UserReq {
     public static class AppleCode {
         @ApiModelProperty(notes ="19 애플코드", required = true, example = "runway8925!")
         private String code;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ApiModel(value = "02-20 FCM 토큰 저장 API Request🔑")
+    public static class FcmToken {
+        private String fcmToken;
     }
 }

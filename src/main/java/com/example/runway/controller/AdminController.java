@@ -5,6 +5,7 @@ import com.example.runway.domain.User;
 import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.service.instagram.InstagramService;
 import com.example.runway.service.store.StoreService;
+import com.example.runway.service.util.CrawlingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ import java.util.List;
 public class AdminController {
     private final InstagramService instagramService;
     private final StoreService storeService;
+    private final CrawlingService crawlingService;
 
 
     @Operation(summary = "06-01 인스타그램 피드 올리기")
@@ -59,5 +61,14 @@ public class AdminController {
         storeService.postStore(storeInfo, storePresentImg, storeImg);
         return CommonResponse.onSuccess("성공");
     }
+
+    @Operation(summary = "웹 사이트 스크랩핑")
+    @GetMapping("/scrap/{storeId}")
+    public CommonResponse<String> scrapWebSite(@PathVariable Long storeId){
+        crawlingService.scrapBlog(storeId);
+        return CommonResponse.onSuccess("성공");
+    }
+
+    //@Operation(summary = "삭제")
 
 }

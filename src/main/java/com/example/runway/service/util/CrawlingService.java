@@ -7,4 +7,6 @@ import java.util.List;
 public interface CrawlingService {
 
     List<StoreRes.StoreBlog> getStoreBlog(String storeName, Long storeId);
+
+    void scrapBlog(Long storeId);
 }

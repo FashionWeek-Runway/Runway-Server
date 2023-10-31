@@ -335,5 +335,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void postFcmToken(User user, UserReq.FcmToken fcmToken) {
+        user.setFcmToken(fcmToken.getFcmToken());
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deleteFcmToken(User user) {
+        user.setFcmToken(null);
+        userRepository.save(user);
+    }
+
 
 }

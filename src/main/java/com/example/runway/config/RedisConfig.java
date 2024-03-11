@@ -7,9 +7,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,18 +25,30 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.SocketOptions;
+
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
+    private final Environment environment;
+
+    private static final String LOCAL = "local";
     @Value("${spring.redis.host}")
     private String host;
 
     @Value("${spring.redis.port}")
     private int port;
 
+    public RedisConfig(Environment environment) {
+        this.environment = environment;
+    }
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-
+        if(environment.getActiveProfiles()[0].equals(LOCAL)) {
+            return new LettuceConnectionFactory(host, port);
+        }
         RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration();
         clusterConfiguration.clusterNode(host, port);
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
@@ -42,7 +57,6 @@ public class RedisConfig {
                                 .connectTimeout(Duration.ofMillis(1000L)).build())
                         .build())
                 .commandTimeout(Duration.ofSeconds(1000L)).build();
-        //return  new LettuceConnectionFactory(host, port);
         return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }
 

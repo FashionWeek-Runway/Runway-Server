@@ -17,14 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.stream.FileImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
+import java.util.UUID;
 
 import static com.example.runway.constants.CommonResponseStatus.FAIL_UPLOAD_IMG;
 import static com.example.runway.constants.CommonResponseStatus.WRONG_FORMAT_FILE;
@@ -36,10 +35,27 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.url}")
+    @Value("${cloud.front.url}")
     private String url;
 
     private final AmazonS3 amazonS3;
+
+    public String upload(MultipartFile multipartFile,String dirName) throws ForbiddenException, IOException {
+        String fileName = dirName+"/"+UUID.randomUUID().toString() + ".jpg";
+
+        //MultipartFile resizeFile=resizeImage(fileName,multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1),multipartFile,600);
+
+        byte[] bytes = multipartFile.getBytes();
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/jpeg");
+        metadata.setContentLength(bytes.length);
+        amazonS3.putObject(bucket, fileName, byteArrayInputStream, metadata);
+
+        return getImageUrl(fileName);
+    }
 
 
     @Override
@@ -52,7 +68,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
         amazonS3.putObject(new PutObjectRequest(bucket,s3FileName,new ByteArrayInputStream(bytes),metadata));
 
-        return amazonS3.getUrl(bucket,s3FileName).toString();
+        return getImageUrl(s3FileName);
     }
 
 
@@ -82,7 +98,7 @@ public class AwsS3ServiceImpl implements AwsS3Service{
 
             amazonS3.putObject(new PutObjectRequest(bucket,fileName,new ByteArrayInputStream(bytes),objectMetadata));
 
-            fileNameList.add(amazonS3.getUrl(bucket,fileName).toString());
+            fileNameList.add(getImageUrl(fileName));
         });
 
         return fileNameList;
@@ -105,10 +121,10 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     }
 
     public String createFileName(String fileName) throws ForbiddenException {
-        return UUID.randomUUID().toString().concat(getFileExtensions(fileName));
+        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
 
-    public String getFileExtensions(String fileName) throws ForbiddenException {
+    public String getFileExtension(String fileName) throws ForbiddenException {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
@@ -116,6 +132,9 @@ public class AwsS3ServiceImpl implements AwsS3Service{
         }
     }
 
+    private String getImageUrl(String fileName){
+        return url + "/" + fileName;
+    }
     /*
 
     MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
@@ -151,171 +170,4 @@ public class AwsS3ServiceImpl implements AwsS3Service{
     }
 
      */
-
-
-    private static class CustomMultipartFile implements MultipartFile {
-        private final String name;
-
-        private final String originalFilename;
-
-        private final String contentType;
-
-        private final byte[] content;
-        boolean isEmpty;
-
-
-        public CustomMultipartFile(String name, String originalFilename, String contentType, byte[] content) {
-            Assert.hasLength(name, "Name must not be null");
-            this.name = name;
-            this.originalFilename = (originalFilename != null ? originalFilename : "");
-            this.contentType = contentType;
-            this.content = (content != null ? content : new byte[0]);
-            this.isEmpty = false;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public String getOriginalFilename() {
-            return this.originalFilename;
-        }
-
-        @Override
-        public String getContentType() {
-            return this.contentType;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return (this.content.length == 0);
-        }
-
-        @Override
-        public long getSize() {
-            return this.content.length;
-        }
-
-        @Override
-        public byte[] getBytes() throws IOException {
-            return this.content;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return new ByteArrayInputStream(this.content);
-        }
-
-        @Override
-        public void transferTo(File dest) throws IOException, IllegalStateException {
-            FileCopyUtils.copy(this.content, dest);
-        }
-    }
-
-    public String upload(MultipartFile file,String dirName) throws ForbiddenException, IOException {
-        String fileName = null;
-        try {
-            fileName = dirName + "/" + createFileNames(file.getOriginalFilename());
-        } catch (ForbiddenException e) {
-            throw new ForbiddenException(FAIL_UPLOAD_IMG);
-        }
-        System.out.println(fileName);
-
-        byte[] bytes = new byte[0];
-        try {
-            bytes = file.getBytes();
-            // Convert the image to jpg
-        } catch (IOException e) {
-            throw new ForbiddenException(FAIL_UPLOAD_IMG);
-        }
-
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(bytes.length);
-        objectMetadata.setContentType("image/jpeg"); // Set content type to jpeg
-
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, new ByteArrayInputStream(bytes), objectMetadata));
-
-
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    public String createFileNames(String fileName) throws ForbiddenException {
-        // Check if the provided fileName has a valid extension
-        String fileExtension = getFileExtension(fileName);
-        if (!isValidImageExtension(fileExtension)) {
-            throw new ForbiddenException(WRONG_FORMAT_FILE);
-        }
-
-        // Generate a unique filename with jpg extension
-        return UUID.randomUUID().toString() + ".jpg";
-    }
-
-    public String getFileExtension(String fileName) throws ForbiddenException {
-        try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ForbiddenException(WRONG_FORMAT_FILE);
-        }
-    }
-
-    public boolean isValidImageExtension(String fileExtension) {
-        // Define a list of valid image file extensions (you can add more if needed)
-        String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".heic", ".heic의 사본"};
-
-        for (String extension : validExtensions) {
-            if (extension.equalsIgnoreCase(fileExtension)){
-                System.out.println(fileExtension);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public byte[] convertToJpg(byte[] imageData) throws IOException {
-        ByteArrayInputStream input = new ByteArrayInputStream(imageData);
-        BufferedImage image = ImageIO.read(input);
-
-        // Create a ByteArrayOutputStream to store the jpg image
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        // Write the image as jpg to the ByteArrayOutputStream
-        ImageIO.write(image, "jpg", output);
-
-        return output.toByteArray();
-    }
-
-    public List<String> uploadImages(List<MultipartFile> multipartFile, String dirName) {
-        List<String> fileNameList = new ArrayList<>();
-
-        multipartFile.forEach(file -> {
-            String fileName = null;
-            try {
-                fileName = dirName + "/" + createFileNames(file.getOriginalFilename());
-            } catch (ForbiddenException e) {
-                throw new ForbiddenException(FAIL_UPLOAD_IMG);
-            }
-
-            byte[] bytes = new byte[0];
-            try {
-                bytes = file.getBytes();
-                // Convert the image to jpg
-            } catch (IOException e) {
-                throw new ForbiddenException(FAIL_UPLOAD_IMG);
-            }
-
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(bytes.length);
-            objectMetadata.setContentType("image/jpeg"); // Set content type to jpeg
-
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, new ByteArrayInputStream(bytes), objectMetadata));
-
-            fileNameList.add(amazonS3.getUrl(bucket, fileName).toString());
-        });
-
-        return fileNameList;
-    }
-
 }

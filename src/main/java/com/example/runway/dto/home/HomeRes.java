@@ -89,9 +89,24 @@ public class HomeRes {
 
         private String storeName;
 
+        private String description;
+
         private String instaLink;
 
         private List<String> imgList;
 
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PopUp {
+        private Long popUpId;
+
+        private Long userId;
+
+        private String imgUrl;
     }
 }

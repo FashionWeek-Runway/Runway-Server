@@ -2,10 +2,13 @@ package com.example.runway.service.store;
 
 import com.example.runway.domain.User;
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreReq;
 import com.example.runway.dto.store.StoreRes;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface StoreService {
@@ -41,4 +44,8 @@ public interface StoreService {
     void checkBookMarkReview(Long userId, Long reviewId);
 
     void reportStoreInfo(Long storeId, StoreReq.StoreReport storeReport);
+
+    void postStore(AdminReq.StoreInfo storeInfo, MultipartFile storePresentImg, List<MultipartFile> storeImg) throws IOException;
+
+    List<StoreRes.StoreBlog> getStoreScrapList(Long storeId);
 }

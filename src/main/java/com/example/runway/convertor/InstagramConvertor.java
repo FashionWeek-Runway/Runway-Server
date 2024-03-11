@@ -27,6 +27,7 @@ public class InstagramConvertor {
         return HomeRes.InstaFeed.builder()
                 .feedId(result.getId())
                 .instaLink(result.getLink())
+                .description(result.getDescription())
                 .storeName(result.getStoreName())
                 .imgList(result.getInstagramImg().stream().map(InstagramImg::getImgUrl).collect(Collectors.toList()))
                 .build();

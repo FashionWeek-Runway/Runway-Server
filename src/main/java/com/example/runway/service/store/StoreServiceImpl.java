@@ -4,6 +4,7 @@ import com.example.runway.convertor.StoreConvertor;
 import com.example.runway.domain.*;
 import com.example.runway.domain.pk.ReviewKeepPk;
 import com.example.runway.dto.PageResponse;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.store.StoreReq;
 import com.example.runway.dto.store.StoreRes;
@@ -16,7 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +41,9 @@ public class StoreServiceImpl implements StoreService{
     private final ReviewKeepRepository reviewKeepRepository;
     private final StoreInfoReportRepository storeInfoReportRepository;
     private final DiscordService discordService;
+    private final AwsS3Service awsS3Service;
+    private final StoreCategoryRepository storeCategoryRepository;
+    private final StoreScrapRepository storeScrapRepository;
 
 
     public List<String> getCategoryList(Long userId){
@@ -158,6 +165,41 @@ public class StoreServiceImpl implements StoreService{
         storeInfoReportRepository.save(storeInfoReport);
 
         discordService.sendMsg(store,reportReason);
+    }
+
+    @Override
+    @Transactional
+    public void postStore(AdminReq.StoreInfo storeInfo, MultipartFile storePresentImg, List<MultipartFile> storeImg) throws IOException {
+        String imgUrl = awsS3Service.upload(storePresentImg, "store");
+        Store store = storeRepository.save(StoreConvertor.PostStoreInfo(storeInfo, imgUrl));
+        List<StoreImg> storeImgs =new ArrayList<>();
+
+        List<String> imgUrlList = awsS3Service.uploadImages(storeImg, "store");
+
+        for(int i = 0; i<imgUrlList.size();i++){
+            System.out.println(imgUrlList.get(i));
+            storeImgs.add(StoreConvertor.PostStoreImg(store.getId(), i+1, imgUrlList.get(i)));
+        }
+
+        List<StoreCategory> storeCategories = new ArrayList<>();
+        for (Long categoryId : storeInfo.getCategoryList()){
+            storeCategories.add(StoreConvertor.StoreCategory(store.getId(), categoryId));
+        }
+        storeImgRepository.saveAll(storeImgs);
+        storeCategoryRepository.saveAll(storeCategories);
+    }
+
+    @Override
+    public List<StoreRes.StoreBlog> getStoreScrapList(Long storeId) {
+        List<StoreScrap> storeScraps = storeScrapRepository.findByStoreId(storeId);
+        List<StoreRes.StoreBlog> storeBlogList = new ArrayList<>();
+
+        storeScraps.forEach(
+                result -> storeBlogList.add(
+                        StoreConvertor.StoreScrap(result)
+                )
+        );
+        return storeBlogList;
     }
 
 

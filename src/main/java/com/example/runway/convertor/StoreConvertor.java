@@ -2,6 +2,7 @@ package com.example.runway.convertor;
 
 import com.example.runway.domain.*;
 import com.example.runway.domain.pk.KeepPk;
+import com.example.runway.dto.admin.AdminReq;
 import com.example.runway.dto.home.HomeRes;
 import com.example.runway.dto.map.MapRes;
 import com.example.runway.dto.store.Message;
@@ -144,6 +145,39 @@ public class StoreConvertor {
                 .content("🚨쇼룸 "+ store.getName() + "에 잘못된 정보 신고가 들어왔어요🚨")
                 .tts(false)
                 .embeds(embedList)
+                .build();
+    }
+
+    public static Store PostStoreInfo(AdminReq.StoreInfo storeInfo, String imgUrl) {
+        return Store.builder()
+                .name(storeInfo.getName())
+                .website(storeInfo.getWebsite())
+                .phoneNumber(storeInfo.getPhoneNumber())
+                .time(storeInfo.getTime())
+                .instagramLink(storeInfo.getInstagramLink())
+                .latitude(storeInfo.getLatitude())
+                .longitude(storeInfo.getLongitude())
+                .imgUrl(imgUrl)
+                .searchContent(storeInfo.getName())
+                .regionId(storeInfo.getRegion())
+                .address(storeInfo.getAddress()).build();
+    }
+
+    public static StoreImg PostStoreImg(Long id, int index, String img) {
+        return StoreImg.builder().storeId(id).sequence(index).storeImg(img).build();
+    }
+
+    public static StoreCategory StoreCategory(Long storeId, Long categoryId) {
+        return StoreCategory.builder().storeId(storeId).categoryId(categoryId).build();
+    }
+
+    public static StoreRes.StoreBlog StoreScrap(StoreScrap result) {
+        return StoreRes.StoreBlog.builder()
+                .imgUrl(result.getImgUrl())
+                .imgCnt(result.getImgCnt())
+                .title(result.getTitle())
+                .webUrl(result.getWebUrl())
+                .content(result.getContent())
                 .build();
     }
 }

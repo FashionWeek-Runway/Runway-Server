@@ -145,8 +145,6 @@ public class StoreController {
 
         StoreRes.ReviewInfo reviewInfo=reviewService.getStoreReviewByReviewId(reviewId,userId);
 
-        //reviewService.readReview(reviewId,userId);
-
         return CommonResponse.onSuccess(reviewInfo);
     }
 

@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
     Page<StoreReview> findByStoreIdAndDeletedOrderByCreatedAtDescIdAsc(Long storeId,  boolean b,Pageable pageReq);
 
-    @Query(nativeQuery = true,value="select SR.id   'reviewId',SR.user_id'userId',\n" +
+    @Query(nativeQuery = true,
+        value="select SR.id 'reviewId',SR.user_id'userId',\n" +
             "       U.profile_url 'profileImgUrl',\n" +
             "       U.nickname,\n" +
             "       SR.img_url    'imgUrl',\n" +
@@ -28,7 +29,7 @@ public interface StoreReviewRepository extends JpaRepository<StoreReview,Long> {
             "         join User U on U.id = SR.user_id\n" +
             "         join Store S on S.id = SR.store_id\n" +
             "         join Region R on R.id = S.region_id\n" +
-            "         join ReviewKeep K on K.review_id=:reviewId " +
+            "         left join ReviewKeep K on K.review_id=:reviewId " +
             "where SR.id=:reviewId and SR.deleted=true")
     StoreReviewRepository.GetStoreReview getStoreReview(@Param("reviewId") Long reviewId, @Param("userId") Long userId);
 
